@@ -99,12 +99,12 @@ function QuickTour() {
     <section className="er-app my-8 grid gap-6" aria-labelledby="tour-h">
       <div>
         <p className="text-xs font-semibold uppercase text-muted-foreground">How it works</p>
-        <h2 id="tour-h" className="mt-1 text-2xl font-bold">From messy payments to owned gaps in 3 steps</h2>
-        <ol className="mt-5 list-none p-0 grid gap-4 sm:grid-cols-3">
+        <h2 id="tour-h" className="mt-1 text-xl font-bold sm:text-2xl">From messy payments to owned gaps in 3 steps</h2>
+        <ol className="mt-4 list-none p-0 grid gap-2 sm:gap-4 sm:grid-cols-3">
           {steps.map(([n, t, d]) => (
-            <li key={n} className="rounded-lg border border-border bg-card p-5">
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-primary font-bold text-primary-foreground">{n}</span>
-              <h3 className="mt-3 font-semibold">{t}</h3><p className="mt-1 text-sm text-muted-foreground">{d}</p>
+            <li key={n} className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 rounded-lg border border-border bg-card p-3 sm:block sm:p-5">
+              <span className="row-span-2 grid h-7 w-7 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground sm:h-8 sm:w-8">{n}</span>
+              <h3 className="font-semibold sm:mt-3">{t}</h3><p className="mt-0.5 text-sm text-muted-foreground sm:mt-1">{d}</p>
             </li>
           ))}
         </ol>
@@ -143,12 +143,12 @@ function CanonicalWorkflows() {
       <div className="mt-3 flex flex-wrap gap-3"><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/route.html">Quote to cash, end to end ↗</a></Button><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">Run brand tests ↗</a></Button><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/lender.html">Open lender desk ↗</a></Button></div>
       <details className="mt-5 border-t border-border pt-4"><summary className="cursor-pointer font-semibold">All 16 business rules</summary><div className="mt-4 grid gap-8 sm:grid-cols-2">{[['Brand mode', brandRules], ['Lender mode', lenderRules]].map(([title, rules]) => <div key={String(title)}><h3 className="font-semibold">{String(title)}</h3><dl className="mt-3 divide-y divide-border">{(rules as string[][]).map(([id, title, text]) => <div key={id} className="py-3"><dt className="text-sm font-semibold">{id} · {title}</dt>{text && <dd className="mt-1 text-sm leading-6 text-muted-foreground">{text}</dd>}</div>)}</dl></div>)}</div></details>
     </section>
-    <section className="border-b border-border py-10" aria-labelledby="lender-mode">
+    <section className="border-b border-border py-7 sm:py-10" aria-labelledby="lender-mode">
       <p className="text-xs font-semibold uppercase text-muted-foreground">Same engine · second desk</p>
-      <h2 id="lender-mode" className="mt-2 text-2xl font-semibold">Lender desk: when an EMI bounces</h2>
+      <h2 id="lender-mode" className="mt-2 text-xl font-semibold sm:text-2xl">Lender desk: when an EMI bounces</h2>
       <p className="mt-2 max-w-[62ch] text-sm leading-6 text-muted-foreground">For lenders, the "short payment" is a loan instalment that fails. The bank sends a return code; Every Rupee turns it into a reason, an owner and a next step, the same way it handles a short-paid invoice.</p>
-      <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
-        <ol className="m-0! grid list-none gap-2 p-0! text-sm">{[['Bank returns the EMI', 'with a NACH code'], ['Desk reads the code', 'and names the cause'], ['One owner, one next step', 'logged with a deadline']].map(([t, d], i) => <li key={t} className="flex gap-3 rounded-xl border border-border bg-card p-3"><span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold">{i + 1}</span><span><b className="block">{t}</b><span className="text-muted-foreground">{d}</span></span></li>)}</ol>
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+        <ol className="m-0! hidden list-none gap-2 p-0! text-sm lg:grid">{[['Bank returns the EMI', 'with a NACH code'], ['Desk reads the code', 'and names the cause'], ['One owner, one next step', 'logged with a deadline']].map(([t, d], i) => <li key={t} className="flex gap-3 rounded-xl border border-border bg-card p-3"><span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold">{i + 1}</span><span><b className="block">{t}</b><span className="text-muted-foreground">{d}</span></span></li>)}</ol>
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
           <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Bounce queue · sample</span><span>3 open</span></div>
           {[['Code 04', 'Not enough balance', 'Collections · call, then re-present', 'bg-money-wip/15 text-money-wip'], ['Code 61', 'Mandate cancelled', 'Ops · request a fresh mandate', 'bg-money-risk/10 text-money-risk'], ['Code 06', 'Stopped by customer', 'Relationship · talk first, may be a dispute', 'bg-money-risk/10 text-money-risk']].map(([c, m, n, k]) => <div key={c} className="grid gap-1 border-b border-border px-4 py-3 text-sm last:border-0 sm:grid-cols-[5.5rem_1fr_auto] sm:items-center"><span className="font-semibold">{c}</span><span>{m}</span><span className={'er-pill ' + k}>{n}</span></div>)}
@@ -424,8 +424,8 @@ function ImportedFooter() {
   return (
     <footer className="bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-white! text-(--ink2) text-[.86rem] mt-[32px]! pt-[28px] pr-0 pb-[20px] pl-0 [border-top:1px_solid_#E2E8F0]">
       <div className="col my-0 mx-auto max-w-[1040px]">
-        <div className="grid gap-8 sm:grid-cols-[1.3fr_1fr_1fr_1fr]">
-          <div>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-[1.3fr_1fr_1fr_1fr] sm:gap-8">
+          <div className="col-span-2 sm:col-span-1">
             <a className="flex items-center gap-2 font-semibold text-foreground no-underline" href="/"><svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Every Rupee">
               <circle cx="16" cy="16" r="13" fill="none" stroke="#64748B" strokeWidth="4.5" strokeDasharray="2.48 79.20" transform="rotate(-90 16 16)" />
               <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="31.07 50.61" strokeDashoffset="-4.08" transform="rotate(-90 16 16)" />
