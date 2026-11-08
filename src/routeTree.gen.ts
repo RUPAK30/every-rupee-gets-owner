@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CapabilitiesRouteImport } from './routes/capabilities'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as LenderDemoRouteImport } from './routes/lender-demo'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedWorkspaceRouteImport } from './routes/_authenticated/workspace'
 
@@ -41,6 +42,11 @@ const DemoRoute = DemoRouteImport.update({
   path: '/demo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LenderDemoRoute = LenderDemoRouteImport.update({
+  id: '/lender-demo',
+  path: '/lender-demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/capabilities': typeof CapabilitiesRoute
   '/demo': typeof DemoRoute
+  '/lender-demo': typeof LenderDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/workspace': typeof AuthenticatedWorkspaceRoute
 }
@@ -65,6 +72,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/capabilities': typeof CapabilitiesRoute
   '/demo': typeof DemoRoute
+  '/lender-demo': typeof LenderDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/workspace': typeof AuthenticatedWorkspaceRoute
 }
@@ -75,16 +83,29 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/capabilities': typeof CapabilitiesRoute
   '/demo': typeof DemoRoute
+  '/lender-demo': typeof LenderDemoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/workspace': typeof AuthenticatedWorkspaceRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/capabilities' | '/demo' | '/reset-password' | '/workspace'
+    | '/'
+    | '/auth'
+    | '/capabilities'
+    | '/demo'
+    | '/lender-demo'
+    | '/reset-password'
+    | '/workspace'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/auth' | '/capabilities' | '/demo' | '/reset-password' | '/workspace'
+    | '/'
+    | '/auth'
+    | '/capabilities'
+    | '/demo'
+    | '/lender-demo'
+    | '/reset-password'
+    | '/workspace'
   id:
     | '__root__'
     | '/'
@@ -92,6 +113,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/capabilities'
     | '/demo'
+    | '/lender-demo'
     | '/reset-password'
     | '/_authenticated/workspace'
   fileRoutesById: FileRoutesById
@@ -102,6 +124,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CapabilitiesRoute: typeof CapabilitiesRoute
   DemoRoute: typeof DemoRoute
+  LenderDemoRoute: typeof LenderDemoRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
@@ -142,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lender-demo': {
+      id: '/lender-demo'
+      path: '/lender-demo'
+      fullPath: '/lender-demo'
+      preLoaderRoute: typeof LenderDemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -176,6 +206,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CapabilitiesRoute: CapabilitiesRoute,
   DemoRoute: DemoRoute,
+  LenderDemoRoute: LenderDemoRoute,
   ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
