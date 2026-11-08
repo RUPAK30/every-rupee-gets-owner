@@ -1,0 +1,10 @@
+CREATE TABLE public.reconciliation_workspaces (user_id uuid PRIMARY KEY DEFAULT auth.uid(), data jsonb NOT NULL DEFAULT '{"invoices":[],"receipts":[],"allocations":[],"exceptions":[]}'::jsonb, version integer NOT NULL DEFAULT 1, updated_at timestamptz NOT NULL DEFAULT now());
+GRANT SELECT, INSERT, UPDATE ON public.reconciliation_workspaces TO authenticated;
+GRANT ALL ON public.reconciliation_workspaces TO service_role;
+ALTER TABLE public.reconciliation_workspaces ENABLE ROW LEVEL SECURITY;
+CREATE POLICY own_workspace_select ON public.reconciliation_workspaces FOR SELECT TO authenticated USING (user_id = auth.uid());
+CREATE POLICY own_workspace_insert ON public.reconciliation_workspaces FOR INSERT TO authenticated WITH CHECK (user_id = auth.uid());
+CREATE POLICY own_workspace_update ON public.reconciliation_workspaces FOR UPDATE TO authenticated USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
+CREATE TABLE public.demo_requests (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), name text NOT NULL, email text NOT NULL, company text NOT NULL, message text NOT NULL DEFAULT '', created_at timestamptz NOT NULL DEFAULT now());
+GRANT ALL ON public.demo_requests TO service_role;
+ALTER TABLE public.demo_requests ENABLE ROW LEVEL SECURITY;

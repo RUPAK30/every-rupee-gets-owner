@@ -203,3 +203,35 @@
   --color-mut: var(--mut);
 }
 /* site-import tokens: end */
+
+/* First-party workspace tokens; imported source CSS remains unchanged. */
+:root {
+  --workspace-background: oklch(0.99 0.002 180);
+  --workspace-ink: oklch(0.26 0.018 180);
+  --workspace-primary: oklch(0.44 0.075 183);
+  --workspace-muted: oklch(0.96 0.008 180);
+  --workspace-line: oklch(0.89 0.012 180);
+  --workspace-quiet: oklch(0.49 0.02 180);
+  --google-background: oklch(1 0 0);
+  --google-border: oklch(0.57 0.005 160);
+  --google-foreground: oklch(0.24 0 0);
+}
+.er-app {
+  --background: var(--workspace-background);
+  --foreground: var(--workspace-ink);
+  --primary: var(--workspace-primary);
+  --secondary: var(--workspace-muted);
+  --secondary-foreground: var(--workspace-ink);
+  --muted: var(--workspace-muted);
+  --muted-foreground: var(--workspace-quiet);
+  --border: var(--workspace-line);
+  --input: var(--workspace-line);
+  font-family: Inter, system-ui, sans-serif;
+  letter-spacing: 0;
+}
+.er-input { border: 1px solid var(--input); border-radius: 6px; padding: 9px 12px; background: var(--card); color: var(--foreground); min-width: 0; }
+.er-input:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+.er-table { width: 100%; text-align: left; font-size: 13px; border-collapse: collapse; }
+.er-table th { padding: 12px 10px; font-size: 11px; color: var(--muted-foreground); font-weight: 600; background: var(--muted); white-space: nowrap; }
+.er-table td { padding: 16px 10px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.er-google, .er-google:hover { background: var(--google-background); color: var(--google-foreground); border: 1px solid var(--google-border); box-shadow: none; }

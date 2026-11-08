@@ -2,3 +2,7 @@
 - [x] Import the supplied EveryRupee home page.
 - [x] Compare desktop and phone sections and primary controls with the source; repair confirmed mismatches.
 - [x] Verify the imported page and report limitations: five linked pages and three PDFs were not part of this single-page import; email delivery is not tested.
+- [x] Document a bounded website and reconciliation workspace release with acceptance checks.
+- [x] Build public demo entry, capability status and stored demo requests.
+- [x] Build CSV matching, manual allocation and exception handling with private saved workspaces and accounts.
+- [x] Test matching rules and verify public/private flows on desktop and phone.

@@ -1,5 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type MouseEvent } from "react";
+import { Button } from '@/components/ui/button';
+import { DemoRequest } from '@/components/reconciliation/demo-request';
+import { useAccount } from '@/lib/account-context';
 import capturedCSS from "../styles/site.css?raw";
 
 export const Route = createFileRoute("/")({
@@ -16,6 +19,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { signedIn } = useAccount();
   const [openDetails, setOpenDetails] = useState<Record<string, boolean>>({});
   const [deadline, setDeadline] = useState(23);
   const openHash = (hash: string) => {
@@ -53,7 +57,7 @@ function Index() {
           <nav className="hl items-center gap-[4px] [outline-color:#0F766E]!">
             <a href="#board">How it works</a>
             <a href="#thinking">The thinking</a>
-            <a href="/sources.html">Sources</a>
+            <a href="/capabilities">Sources</a>
           </nav>
           <a className="logo items-center text-[1.02rem] gap-[9px] tracking-[-.02em] no-underline [font-weight:650]" aria-label="Every Rupee home" href="/">
             <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Every Rupee">
@@ -64,13 +68,13 @@ function Index() {
             </svg>
             <span>Every Rupee</span>
           </a>
-          <div className="hr items-center gap-[10px] justify-end"><a className="hlink font-semibold no-underline" href="/route.html">Quote to cash</a> <a className="hlink font-semibold no-underline" href="/lender.html?tour=1">Lender</a></div>
+          <div className="hr items-center gap-[10px] justify-end"><Button size="sm" className="text-primary-foreground!" asChild><Link to="/workspace">{signedIn ? "Your workspace" : "Sign in"}</Link></Button></div>
         </div>
       </header>
       <main className="col my-0 mx-auto max-w-[1040px]">
         <ImportedSectionADistributorPaysShort />
-        <section className="q2c mt-[22px] mr-auto mb-[6px] ml-auto max-w-[1080px] py-0 px-[16px]" aria-label="Quote to cash, end to end">
-          <a className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white border-2 border-solid border-site-import-accent rounded-[16px] py-[18px] px-[20px] no-underline" href="/route.html">{"\n  "}<span className="q2k text-site-import-accent tracking-[0.14em] mb-[6px] uppercase [font:700_0.7rem_Inter,Arial]">New · quote to cash, end to end</span>{"\n  "}<b className="text-site-import-foreground text-[1.25rem] leading-[1.3]">Follow one discount from the sales approval to closed books</b>{"\n  "}<span className="q2s text-[0.93rem] mt-[6px] mr-0 mb-[12px] ml-0">Rahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.</span>{"\n  "}<span className="q2o items-center flex-wrap gap-[8px]"><i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#f0fdfa] rounded-[99px] text-site-import-accent text-[0.8rem] not-italic font-semibold py-[4px] px-[10px]">Clean match</i><i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#f0fdfa] rounded-[99px] text-site-import-accent text-[0.8rem] not-italic font-semibold py-[4px] px-[10px]">Over-deduction</i><i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#f0fdfa] rounded-[99px] text-site-import-accent text-[0.8rem] not-italic font-semibold py-[4px] px-[10px]">Expired approval</i><em className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-primary rounded-[10px] text-white not-italic font-bold py-[8px] px-[14px] [@media(max-width:600px)]:text-center [@media(max-width:600px)]:w-full">See it end to end →</em></span>{"\n"}</a>
+        <section className="er-app my-6 border-y border-border py-5">
+          <div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs uppercase font-semibold text-muted-foreground">First working release</p><h2 className="mt-2 text-xl font-semibold">Match the cash. Own the gap.</h2><p className="mt-2 text-sm text-muted-foreground">CSV reconciliation and private saved workspaces. No live bank or ERP connections.</p></div><Button variant="outline" asChild><Link to="/capabilities">What works today →</Link></Button></div>
         </section>
         <ImportedSection />
         <section className="sec" id="now">
@@ -86,7 +90,7 @@ function Index() {
 
 function ImportedSectionADistributorPaysShort() {
   return (
-    <section className="hero bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-site-import-primary! text-white text-center [clip-path:inset(0_-100vmax)]"><span style={{ display: "none" }} id="forchip" hidden /><span className="eye2 bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff14]! border-[#ffffff2e]! rounded-[999px] text-site-import-border! [border:1px_solid_var(--line)] [font-weight:550]">Portfolio case study by Rupak Ghanpathi<span className="hm"> · built solo · sample data</span></span><h1 className="text-white! font-[family-name:Inter,system-ui,sans-serif] font-bold tracking-[-.03em]! max-w-[22ch]">A distributor pays short. <em className="not-italic">On day 31 it's still nobody's problem.</em></h1><p className="lead text-[#cbd5e1]! max-w-[56ch]">Every Rupee is a short-payment reconciliation desk for FMCG finance teams, built from Cello World's public filings.<span className="hm"> Every gap gets one owner and ends in a credit note or a recovery.</span></p><div className="cta flex-wrap justify-center [@media(max-width:640px)]:grid-cols-[1fr_1fr] [@media(max-width:640px)]:mt-0! [@media(max-width:640px)]:w-full"><a className="btn g items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="/desk.html?tour=1">Try the live desk<svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a><a className="btn items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="#contact">Talk to Rupak</a></div><p className="thesis text-white! font-bold tracking-[-.01em]">The hard part of a deduction isn't matching it. It's owning it.</p><p className="dec bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff0f]! text-site-import-border! max-w-[640px] text-left"><b className="text-white!">The call I made:</b> control over speed. No auto write-offs, maker-checker above ₹10,000, strict matching at launch. Fewer auto-matches and more manual work, on purpose.</p></section>
+    <section className="hero bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-site-import-primary! text-white text-center [clip-path:inset(0_-100vmax)]"><span style={{ display: "none" }} id="forchip" hidden /><span className="eye2 bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff14]! border-[#ffffff2e]! rounded-[999px] text-site-import-border! [border:1px_solid_var(--line)] [font-weight:550]">Portfolio case study by Rupak Ghanpathi<span className="hm"> · built solo · sample data</span></span><h1 className="text-white! font-[family-name:Inter,system-ui,sans-serif] font-bold tracking-[-.03em]! max-w-[22ch]">A distributor pays short. <em className="not-italic">On day 31 it's still nobody's problem.</em></h1><p className="lead text-[#cbd5e1]! max-w-[56ch]">Every Rupee is a short-payment reconciliation desk for FMCG finance teams, built from Cello World's public filings.<span className="hm"> Every gap gets one owner and ends in a credit note or a recovery.</span></p><div className="cta flex-wrap justify-center [@media(max-width:640px)]:grid-cols-[1fr_1fr] [@media(max-width:640px)]:mt-0! [@media(max-width:640px)]:w-full"><a className="btn g items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="/demo">Try reconciliation demo<svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a><a className="btn items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="#contact">Talk to Rupak</a></div><p className="thesis text-white! font-bold tracking-[-.01em]">The hard part of a deduction isn't matching it. It's owning it.</p><p className="dec bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff0f]! text-site-import-border! max-w-[640px] text-left"><b className="text-white!">The call I made:</b> control over speed. Strict reference matching and no auto write-offs. Maker-checker and accounting approvals remain proposed controls, not enforced in this release.</p></section>
   );
 }
 
@@ -288,9 +292,9 @@ function ImportedSection() {
           <div className="ctl flex-wrap gap-[8px]">
             <button className="btn g sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" id="nx" type="button" hidden={step >= gap.s.length - 1} onClick={() => setStep(value => Math.min(value + 1, gap.s.length - 1))}>Next step <svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></button>
             <button className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" id="rs" type="button" onClick={() => setStep(0)}>Replay</button>
-            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="/desk.html">Do it in the product</a>
-            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="/route.html">Where the deduction started: the sales promise →</a>
-            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="/lender.html?tour=1">Same discipline for a lender: NACH bounces →</a>
+            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="/demo">Do it in the product</a>
+            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="https://everyrupee-o2c.vercel.app/route.html">Where the deduction started: the sales promise →</a>
+            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="https://everyrupee-o2c.vercel.app/lender.html?tour=1">Same discipline for a lender: NACH bounces →</a>
           </div>
         </div>
       </div>
@@ -357,7 +361,7 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
               </table>
               <p className="cap text-(--mut) text-[.78rem] mt-[8px] mr-[2px] mb-0 ml-[2px]">Illustrative: one gap from the sample data, traced through the workflow. "Today" is the common manual pattern, not a measured baseline.</p>
             </div>
-            <p className="text-(--gd) text-[.85rem] font-semibold tracking-[.01em] mt-[14px] mr-auto mb-0 ml-auto text-center">0 auto write-offs · maker-checker above ₹10,000 · 16 rules, 31 tests across brand and lender modes, run in the browser</p>
+            <p className="text-(--gd) text-[.85rem] font-semibold tracking-[.01em] mt-[14px] mr-auto mb-0 ml-auto text-center">Case-study targets: 0 auto write-offs · maker-checker above ₹10,000. These are proposed design controls; see current capability status.</p>
             <p className="trk text-[.72rem] font-bold tracking-[.08em] mt-[26px] mr-0 mb-[10px] ml-0 text-center uppercase" id="trace">Traceability · from a public filing to a running control</p>
             <ol className="tr6 gap-[10px] list-none m-0 p-0 [counter-reset:t]">
               <li className="p-[12px]">
@@ -505,8 +509,8 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
                 <ol className="pts list-none m-0 p-0 [counter-reset:p]">
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Evidence first.</b> Every fact dated and sourced.</li>
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">One owner per gap.</b> One decision, one deadline.</li>
-                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Testable rules.</b> 16 rules, 31 tests, "must block" cases included.</li>
-                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Controls built in.</b> Maker-checker, no auto write-offs. Zero SOX findings at HDFC.</li>
+                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Testable rules.</b> Case-study rules include "must block" scenarios; not all are enforced by this release.</li>
+                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Controls built in.</b> Proposed maker-checker and no auto write-offs. Product compliance is not independently verified.</li>
                 </ol>
               </div>
               <div className="pane bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white pt-[22px] pr-[22px] pb-[10px] pl-[22px]">
@@ -519,14 +523,14 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
               </div>
             </div>
             <div className="trust items-center bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#ffffffb3] border border-dashed border-[#e3e3e8] rounded-[16px] text-(--ink2) flex-wrap text-[.84rem] gap-y-[8px] gap-x-[22px] justify-center mt-[14px] py-[14px] px-[18px]" id="privacy">
-              <span><b className="text-(--ink)">Runs in your browser.</b> Uploaded files never leave your device.</span>
+              <span><b className="text-(--ink)">Runs in your browser.</b> Public demo changes are session-only; private records are sent to Lovable Cloud when saved.</span>
               <span>
-                <b className="text-(--ink)">No sign-up, no tracking.</b>
+                <b className="text-(--ink)">Accounts are required for private saved work.</b>
               </span>
               <span>
-                <b className="text-(--ink)">Sample data only.</b>
+                <b className="text-(--ink)">Public walkthrough uses sample data.</b>
               </span>
-              <a className="items-center font-semibold gap-[4px] no-underline" href="/sources.html">Sources, and what I don't claim <svg className="h-[13px] w-[13px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
+              <a className="items-center font-semibold gap-[4px] no-underline" href="/capabilities">Sources, and what I don't claim <svg className="h-[13px] w-[13px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a>
             </div>
           </section>
         </details>
@@ -536,7 +540,6 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
 }
 
 function ImportedSection2() {
-  const [question, setQuestion] = useState('');
   return (
     <section className="sec" id="contact">
       <div className="founder bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white gap-[22px] p-[24px] [@media(min-width:820px)]:items-center [@media(min-width:820px)]:grid-cols-[1.2fr_1fr]">
@@ -549,12 +552,9 @@ function ImportedSection2() {
         </div>
         <div className="reply">
           <h3 className="text-[1.1rem] mt-0 mr-0 mb-[4px] ml-0" id="rh">Building for finance ops or fintech?</h3>
-          <p className="text-(--mut) text-[.88rem] mt-0 mr-0 mb-[12px] ml-0" id="rp">One tap, email pre-filled.</p>
+          <p className="text-(--mut) text-[.88rem] mt-0 mr-0 mb-[12px] ml-0" id="rp">Request a demo below, or email Rupak directly.</p>
           <div className="chips flex-wrap gap-[8px] [@media(max-width:640px)]:gap-[8px] [@media(max-width:640px)]:grid-cols-[1fr_1fr]"><a className="chip p items-center text-[.88rem] h-[40px] py-0 px-[15px] no-underline transition-all duration-150 [font-weight:550] [@media(max-width:640px)]:justify-center [@media(max-width:640px)]:text-center" href={"mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let's%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20"} id="m1">Let's talk this week</a><a className="chip items-center text-[.88rem] h-[40px] py-0 px-[15px] no-underline transition-all duration-150 [font-weight:550] [@media(max-width:640px)]:justify-center [@media(max-width:640px)]:text-center" href={"mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20"} id="m3">Not a fit, here's why</a></div>
-          <form className="ask gap-[8px] mt-[12px] mr-0 mb-[4px] ml-0" id="askf" onSubmit={event => { event.preventDefault(); window.location.href = "mailto:rupakr2g@gmail.com?subject=" + encodeURIComponent("Every Rupee: a question") + "&body=" + encodeURIComponent("Hi Rupak,\n\n" + question.trim()); }}>
-            <input className="flex-1 h-[44px] min-w-0 py-0 px-[14px]" id="askq" value={question} onChange={event => setQuestion(event.target.value)} maxLength={200} placeholder="Or ask one question. I reply within a day." aria-label="Your question" />
-            <button className="btn g sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" type="submit">Ask</button>
-          </form>
+          <div className="er-app mt-5"><DemoRequest /></div>
           <p className="small items-center text-(--mut) text-[.8rem] gap-[8px] mt-[12px] mr-0 mb-0 ml-0"><span className="dot bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#34c759] rounded-[50%] flex-none h-[8px] w-[8px]" />Open to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner</p>
         </div>
       </div>
@@ -582,19 +582,19 @@ function ImportedFooter() {
           </div>
           <div>
             <h4 className="text-(--mut) text-[.72rem] tracking-[.08em] mt-0 mr-0 mb-[10px] ml-0 uppercase">The work</h4>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/desk.html">Open the product</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/demo">Open the product</a>
             <a className="text-[.88rem] py-[4px] px-0 no-underline" href={"mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A"} id="m4">Forward to a colleague</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/desk.html?uat=1">Run the brand tests</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/route.html">Sales → finance route</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/lender.html?tour=1">Lender mode</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/case-study.html">Full case study</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="Every_Rupee_Deck.pdf">Deck (PDF)</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="Cello_O2C_BRD.pdf">BRD (PDF)</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="Cello_O2C_One_Pager.pdf">One-pager (PDF)</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">Original case-study tests ↗</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/route.html">Original sales → finance case study ↗</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/lender.html?tour=1">Original lender case study ↗</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/case-study.html">Original full case study ↗</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/Every_Rupee_Deck.pdf">Deck (PDF)</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/Cello_O2C_BRD.pdf">BRD (PDF)</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/Cello_O2C_One_Pager.pdf">One-pager (PDF)</a>
           </div>
           <div>
             <h4 className="text-(--mut) text-[.72rem] tracking-[.08em] mt-0 mr-0 mb-[10px] ml-0 uppercase">Trust</h4>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/sources.html">Sources</a>
+            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/capabilities">Sources</a>
             <a className="text-[.88rem] py-[4px] px-0 no-underline" href="#privacy">Privacy</a>
             <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study">GitHub</a>
           </div>
