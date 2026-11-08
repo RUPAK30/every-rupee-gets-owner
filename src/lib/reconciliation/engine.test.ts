@@ -1,6 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { allocate, autoMatch, importCsv, invoiceBalance, receiptBalance, sampleWorkspace, validateWorkspace } from './engine';
 describe('reconciliation rules', () => {
+  it('keeps demo totals aligned with the homepage and README sample', () => {
+    const w = sampleWorkspace();
+    const billed = w.invoices.reduce((sum, invoice) => sum + invoice.amount, 0);
+    const received = w.receipts.reduce((sum, receipt) => sum + receipt.amount, 0);
+    expect(billed).toBe(19130000);
+    expect(received).toBe(17371000);
+    expect(billed - received).toBe(1759000);
+    expect(w.allocations).toHaveLength(0);
+  });
   it('matches exact invoice references and leaves missing references unapplied', () => { const w = autoMatch(sampleWorkspace()); expect(w.allocations).toHaveLength(3); expect(receiptBalance(w, 'UTR-003')).toBe(2835000); expect(invoiceBalance(w, 'INV-101')).toBe(118000); });
   it('never overallocates a receipt or invoice', () => { const w = autoMatch(sampleWorkspace()); expect(() => allocate(w, 'UTR-001', 'INV-103', 1)).toThrow(); expect(() => allocate(w, 'UTR-003', 'INV-101', 118001)).toThrow(); });
   it('supports a manual partial allocation', () => { const w = allocate(sampleWorkspace(), 'UTR-003', 'INV-103', 2835000); expect(invoiceBalance(w, 'INV-103')).toBe(315000); });
