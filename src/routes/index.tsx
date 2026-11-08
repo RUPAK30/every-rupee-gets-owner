@@ -52,23 +52,27 @@ function Index() {
         <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[50%] h-[420px] opacity-75 absolute right-[-140px] top-[-60px] w-[480px] [filter:blur(70px)]" />
         <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[50%] h-[360px] left-[38%] opacity-[.55] absolute top-[180px] w-[420px] [filter:blur(70px)]" />
       </div>
-      <header className="sticky top-0 z-30">
-        <div className="col hin items-center h-[64px] my-0 mx-auto max-w-[1040px]">
-          <nav className="hl items-center gap-[4px] [outline-color:#0F766E]!">
-            <a href="#board">How it works</a>
-            <a href="#thinking">The thinking</a>
-            <a href="/capabilities">Sources</a>
-          </nav>
-          <a className="logo items-center text-[1.02rem] gap-[9px] tracking-[-.02em] no-underline [font-weight:650]" aria-label="Every Rupee home" href="/">
+      <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
+        <div className="mx-auto grid h-16 max-w-[1040px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 md:grid-cols-[auto_1fr_auto]">
+          <a className="flex min-w-0 items-center gap-2 text-[1.02rem] font-semibold tracking-tight text-foreground no-underline" aria-label="Every Rupee home" href="/">
             <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Every Rupee">
               <circle cx="16" cy="16" r="13" fill="none" stroke="#64748B" strokeWidth="4.5" strokeDasharray="2.48 79.20" transform="rotate(-90 16 16)" />
               <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="31.07 50.61" strokeDashoffset="-4.08" transform="rotate(-90 16 16)" />
               <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="43.32 38.36" strokeDashoffset="-36.76" transform="rotate(-90 16 16)" />
               <text x="16" y="21.2" textAnchor="middle" fontFamily="Inter,Arial,sans-serif" fontWeight="700" fontSize="14" fill="#111827">₹</text>
             </svg>
-            <span>Every Rupee</span>
+            <span className="truncate">Every Rupee</span>
           </a>
-          <div className="hr items-center gap-[10px] justify-end"><Button size="sm" className="text-primary-foreground! min-h-11" asChild><a href="#contact" className="no-underline">Let's talk</a></Button><Button size="sm" variant="outline" className="min-h-11 max-sm:hidden" asChild><Link to="/workspace">{signedIn ? "Your workspace" : "Sign in"}</Link></Button></div>
+          <nav aria-label="Main" className="hidden items-center justify-center gap-1 md:flex">
+            <Link to="/demo" className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Product</Link>
+            <a href="#board" className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">How it works</a>
+            <a href="https://everyrupee-o2c.vercel.app/route.html" className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Quote to cash</a>
+            <a href="https://everyrupee-o2c.vercel.app/lender.html" className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Lender</a>
+          </nav>
+          <div className="flex shrink-0 items-center justify-end gap-2">
+            <Link to="/workspace" className="hidden px-3 py-2 text-sm font-medium text-foreground no-underline hover:underline sm:inline">{signedIn ? "Workspace" : "Sign in"}</Link>
+            <Button size="sm" className="min-h-10 text-primary-foreground! no-underline!" asChild><a href="#contact">Let's talk</a></Button>
+          </div>
         </div>
       </header>
       <main className="col my-0 mx-auto max-w-[1040px]">
@@ -82,7 +86,7 @@ function Index() {
         <QuickTour />
         <CanonicalWorkflows />
         <h2 className="mt-12 text-2xl font-bold" id="go-deeper">Go deeper</h2>
-        <p className="text-sm text-muted-foreground">The full case study, the evidence and the thinking behind it.</p>
+        <p className="text-sm text-muted-foreground">The evidence, the reasoning and the sources behind the product.</p>
         <ImportedSection />
         <section className="sec" id="now">
           <div className="nowst bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white overflow-hidden"><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">+14% vs +8.8%</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">Cello's receivables vs revenue, FY26</span></a><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">₹3.5–5</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">distributor margin per ₹100</span></a><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">{deadline === null ? <span className="[color:inherit]! [@media(max-width:640px)]:leading-[1.3]" id="xd2">Deadline passed</span> : <><span className="[color:inherit]! [@media(max-width:640px)]:leading-[1.3]" id="xd2">{deadline}</span> days</>}</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">{deadline === null ? 'GST credit notes for FY 2025-26 are no longer allowed' : 'to the credit-note deadline, 30 Nov'}</span></a></div>
@@ -186,7 +190,7 @@ function CanonicalWorkflows() {
 function ImportedSectionADistributorPaysShort() {
   return (
     <section className="er-app py-12 text-center sm:py-16" aria-labelledby="intro-title">
-      <p className="text-sm font-medium text-muted-foreground">Portfolio case study by Rupak Ghanpathi · sample data</p>
+      <p className="text-sm font-medium text-muted-foreground">By Rupak Ghanpathi · shown with sample data</p>
       <h1 id="intro-title" className="mx-auto mt-4 max-w-[24ch] text-4xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-2xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
       <p className="mx-auto mt-5 max-w-[60ch] text-base leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><Link to="/demo">Try the demo</Link></Button><Button asChild variant="outline" className="min-h-11"><a href="#contact">Let's talk</a></Button></div>
@@ -632,21 +636,15 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
 function ImportedSection2() {
   return (
     <section className="sec" id="contact">
-      <div className="founder bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white gap-[22px] p-[24px] [@media(min-width:820px)]:items-center [@media(min-width:820px)]:grid-cols-[1.2fr_1fr]">
-        <div className="me items-start gap-[16px]">
-          <img className="rounded-[50%] flex-none h-[64px] object-cover w-[64px]" src="/site-assets/21263e0575cbfff1.jpg" alt="Rupak Ghanpathi" width="64" height="64" loading="lazy" />
-          <div>
-            <p className="text-(--ink2) text-[.95rem] mt-0 mr-0 mb-[8px] ml-0"><strong className="text-(--ink)">I'm Rupak.</strong> I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.</p>
-            <p className="sig text-(--ink) text-[1.05rem] mt-0 mr-0 mb-[8px] ml-0">— Rupak</p>
-          </div>
+      <div className="er-app mx-auto max-w-[760px] rounded-xl border border-border bg-card p-5 sm:p-7">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-3 border-b border-border pb-4">
+          <img className="h-11 w-11 shrink-0 rounded-full object-cover" src="/site-assets/21263e0575cbfff1.jpg" alt="Rupak Ghanpathi" width="44" height="44" loading="lazy" />
+          <p className="m-0 min-w-0 text-sm text-muted-foreground"><strong className="text-foreground">Rupak Ghanpathi</strong> · Ex-HDFC Bank BA · 25+ BRDs · zero SOX findings</p>
         </div>
-        <div className="reply">
-          <h3 className="text-[1.1rem] mt-0 mr-0 mb-[4px] ml-0" id="rh">Building for finance ops or fintech?</h3>
-          <p className="text-(--mut) text-[.88rem] mt-0 mr-0 mb-[12px] ml-0" id="rp">Request a demo below, or email Rupak directly.</p>
-          <div className="chips flex-wrap gap-[8px] [@media(max-width:640px)]:gap-[8px] [@media(max-width:640px)]:grid-cols-[1fr_1fr]"><a className="chip p items-center text-[.88rem] h-[40px] py-0 px-[15px] no-underline transition-all duration-150 [font-weight:550] [@media(max-width:640px)]:justify-center [@media(max-width:640px)]:text-center" href={"mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let's%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20"} id="m1">Let's talk this week</a><a className="chip items-center text-[.88rem] h-[40px] py-0 px-[15px] no-underline transition-all duration-150 [font-weight:550] [@media(max-width:640px)]:justify-center [@media(max-width:640px)]:text-center" href={"mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20"} id="m3">Not a fit, here's why</a></div>
-          <div className="er-app mt-5"><DemoRequest /></div>
-          <p className="small items-center text-(--mut) text-[.8rem] gap-[8px] mt-[12px] mr-0 mb-0 ml-0"><span className="dot bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#34c759] rounded-[50%] flex-none h-[8px] w-[8px]" />Open to BA and Product roles · fintech, BFSI, finance software · anywhere in India · immediate joiner</p>
-        </div>
+        <h2 className="mt-4 mb-1 text-xl font-semibold" id="rh">Let's talk this week</h2>
+        <p className="mb-4 text-sm text-muted-foreground">Replies within 24 hours by email · or write to <a className="font-medium" href="mailto:rupakr2g@gmail.com">rupakr2g@gmail.com</a></p>
+        <DemoRequest />
+        <p className="mt-3 mb-0 flex items-center gap-2 text-xs text-muted-foreground"><span className="h-2 w-2 shrink-0 rounded-full bg-(--money-ok)" />Open to BA and Product roles · fintech, BFSI, finance software · anywhere in India · immediate joiner</p>
       </div>
     </section>
   );
@@ -654,51 +652,23 @@ function ImportedSection2() {
 
 function ImportedFooter() {
   return (
-    <footer className="bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-white! text-(--ink2) text-[.86rem] mt-[40px]! pt-[40px] pr-0 pb-[20px] pl-0 pt-[30px]! [border-top:1px_solid_#E2E8F0]">
+    <footer className="bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-white! text-(--ink2) text-[.86rem] mt-[32px]! pt-[28px] pr-0 pb-[20px] pl-0 [border-top:1px_solid_#E2E8F0]">
       <div className="col my-0 mx-auto max-w-[1040px]">
-        <div className="fgrid">
-          <div className="fbrand">
-            <a className="logo items-center text-[1.02rem] gap-[9px] tracking-[-.02em] no-underline [font-weight:650]" href="/">
-              <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Every Rupee">
-                <circle cx="16" cy="16" r="13" fill="none" stroke="#64748B" strokeWidth="4.5" strokeDasharray="2.48 79.20" transform="rotate(-90 16 16)" />
-                <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="31.07 50.61" strokeDashoffset="-4.08" transform="rotate(-90 16 16)" />
-                <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="43.32 38.36" strokeDashoffset="-36.76" transform="rotate(-90 16 16)" />
-                <text x="16" y="21.2" textAnchor="middle" fontFamily="Inter,Arial,sans-serif" fontWeight="700" fontSize="14" fill="#111827">₹</text>
-              </svg>
-              <span>Every Rupee</span>
-            </a>
-            <p className="text-(--mut) text-[.88rem] mt-[10px] mr-0 mb-[12px] ml-0 max-w-[30ch]">Every short-paid rupee gets a reason, an owner and an ending.</p>
-            <a className="fmail text-[.88rem] font-semibold no-underline" href="mailto:rupakr2g@gmail.com">rupakr2g@gmail.com</a>
-          </div>
+        <div className="grid gap-8 sm:grid-cols-[1.3fr_1fr_1fr_1fr]">
           <div>
-            <h4 className="text-(--mut) text-[.72rem] tracking-[.08em] mt-0 mr-0 mb-[10px] ml-0 uppercase">The work</h4>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/demo">Open the product</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href={"mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A"} id="m4">Forward to a colleague</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">Original case-study tests ↗</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/route.html">Original sales → finance case study ↗</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/lender.html?tour=1">Original lender case study ↗</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/case-study.html">Original full case study ↗</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/Every_Rupee_Deck.pdf">Deck (PDF)</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/Cello_O2C_BRD.pdf">BRD (PDF)</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://everyrupee-o2c.vercel.app/Cello_O2C_One_Pager.pdf">One-pager (PDF)</a>
+            <a className="flex items-center gap-2 font-semibold text-foreground no-underline" href="/"><svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Every Rupee">
+              <circle cx="16" cy="16" r="13" fill="none" stroke="#64748B" strokeWidth="4.5" strokeDasharray="2.48 79.20" transform="rotate(-90 16 16)" />
+              <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="31.07 50.61" strokeDashoffset="-4.08" transform="rotate(-90 16 16)" />
+              <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="43.32 38.36" strokeDashoffset="-36.76" transform="rotate(-90 16 16)" />
+              <text x="16" y="21.2" textAnchor="middle" fontFamily="Inter,Arial,sans-serif" fontWeight="700" fontSize="14" fill="#111827">₹</text>
+            </svg><span>Every Rupee</span></a>
+            <p className="mt-2 mb-0 max-w-[30ch] text-sm text-muted-foreground">Every short-paid rupee gets a reason, an owner and an ending.</p>
           </div>
-          <div>
-            <h4 className="text-(--mut) text-[.72rem] tracking-[.08em] mt-0 mr-0 mb-[10px] ml-0 uppercase">Trust</h4>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="/capabilities">Sources</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="#privacy">Privacy</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study">GitHub</a>
-          </div>
-          <div>
-            <h4 className="text-(--mut) text-[.72rem] tracking-[.08em] mt-0 mr-0 mb-[10px] ml-0 uppercase">More by Rupak</h4>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://rupak-lemon.vercel.app">Portfolio</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://lull-hr.vercel.app/">Viraam</a>
-            <a className="text-[.88rem] py-[4px] px-0 no-underline" href="https://tentoday.vercel.app/">Ten Today</a>
-          </div>
+          <div><h4 className="mt-0 mb-2 text-[.72rem] font-semibold uppercase tracking-[.08em] text-muted-foreground">Product</h4><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="/demo">Open the demo</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">Full desk ↗</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="https://everyrupee-o2c.vercel.app/route.html">Quote to cash ↗</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="https://everyrupee-o2c.vercel.app/lender.html">Lender ↗</a></div>
+          <div><h4 className="mt-0 mb-2 text-[.72rem] font-semibold uppercase tracking-[.08em] text-muted-foreground">Resources</h4><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="#board">How it works</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="/capabilities">Sources</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="https://everyrupee-o2c.vercel.app/case-study.html">Documentation ↗</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="#privacy">Privacy</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study">GitHub ↗</a></div>
+          <div><h4 className="mt-0 mb-2 text-[.72rem] font-semibold uppercase tracking-[.08em] text-muted-foreground">Rupak</h4><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="https://rupak-lemon.vercel.app">Portfolio</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="https://lull-hr.vercel.app/">Viraam</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="https://tentoday.vercel.app/">Ten Today</a><a className="block py-1 text-sm text-muted-foreground no-underline hover:text-foreground" href="mailto:rupakr2g@gmail.com">rupakr2g@gmail.com</a></div>
         </div>
-        <div className="fb text-(--mut) flex-wrap text-[.76rem] gap-[10px] justify-between mt-[28px] pt-[16px] [border-top:1px_solid_var(--line)]">
-          <span>© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.</span>
-          <span>Tax rules summarised from public sources, Oct 2026. Not tax advice.</span>
-        </div>
+        <p className="mt-6 mb-0 border-t border-border pt-4 text-xs text-muted-foreground">© 2026 Every Rupee · Independent product by Rupak Ghanpathi · Not affiliated with any brand named in samples · Tax rules summarised from public sources, Oct 2026. Not tax advice.</p>
       </div>
     </footer>
   );
