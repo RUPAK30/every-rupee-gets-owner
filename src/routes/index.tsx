@@ -68,7 +68,7 @@ function Index() {
             </svg>
             <span>Every Rupee</span>
           </a>
-          <div className="hr items-center gap-[10px] justify-end"><Button size="sm" asChild><Link to="/workspace">{signedIn ? "Your workspace" : "Sign in"}</Link></Button></div>
+          <div className="hr items-center gap-[10px] justify-end"><Button size="sm" className="text-primary-foreground!" asChild><Link to="/workspace">{signedIn ? "Your workspace" : "Sign in"}</Link></Button></div>
         </div>
       </header>
       <main className="col my-0 mx-auto max-w-[1040px]">
