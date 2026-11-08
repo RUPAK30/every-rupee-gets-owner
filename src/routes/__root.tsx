@@ -1,3 +1,4 @@
+import { Toaster } from '@/components/ui/sonner';
 import { useMatches as useImportedMatches } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
@@ -125,6 +126,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body {...importedDocument?.body}>
         {children}
+        <Toaster richColors position="bottom-center" />
         <Scripts />
       </body>
     </html>
