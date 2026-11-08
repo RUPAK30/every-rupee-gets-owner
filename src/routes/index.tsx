@@ -99,12 +99,12 @@ function QuickTour() {
     <section className="er-app my-8 grid gap-6" aria-labelledby="tour-h">
       <div>
         <p className="text-xs font-semibold uppercase text-muted-foreground">How it works</p>
-        <h2 id="tour-h" className="mt-1 text-2xl font-bold">From messy payments to owned gaps in 3 steps</h2>
-        <ol className="mt-5 list-none p-0 grid gap-4 sm:grid-cols-3">
+        <h2 id="tour-h" className="mt-1 text-xl font-bold sm:text-2xl">From messy payments to owned gaps in 3 steps</h2>
+        <ol className="mt-4 list-none p-0 grid gap-2 sm:gap-4 sm:grid-cols-3">
           {steps.map(([n, t, d]) => (
-            <li key={n} className="rounded-lg border border-border bg-card p-5">
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-primary font-bold text-primary-foreground">{n}</span>
-              <h3 className="mt-3 font-semibold">{t}</h3><p className="mt-1 text-sm text-muted-foreground">{d}</p>
+            <li key={n} className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 rounded-lg border border-border bg-card p-3 sm:block sm:p-5">
+              <span className="row-span-2 grid h-7 w-7 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground sm:h-8 sm:w-8">{n}</span>
+              <h3 className="font-semibold sm:mt-3">{t}</h3><p className="mt-0.5 text-sm text-muted-foreground sm:mt-1">{d}</p>
             </li>
           ))}
         </ol>
@@ -143,12 +143,12 @@ function CanonicalWorkflows() {
       <div className="mt-3 flex flex-wrap gap-3"><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/route.html">Quote to cash, end to end ↗</a></Button><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">Run brand tests ↗</a></Button><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/lender.html">Open lender desk ↗</a></Button></div>
       <details className="mt-5 border-t border-border pt-4"><summary className="cursor-pointer font-semibold">All 16 business rules</summary><div className="mt-4 grid gap-8 sm:grid-cols-2">{[['Brand mode', brandRules], ['Lender mode', lenderRules]].map(([title, rules]) => <div key={String(title)}><h3 className="font-semibold">{String(title)}</h3><dl className="mt-3 divide-y divide-border">{(rules as string[][]).map(([id, title, text]) => <div key={id} className="py-3"><dt className="text-sm font-semibold">{id} · {title}</dt>{text && <dd className="mt-1 text-sm leading-6 text-muted-foreground">{text}</dd>}</div>)}</dl></div>)}</div></details>
     </section>
-    <section className="border-b border-border py-10" aria-labelledby="lender-mode">
+    <section className="border-b border-border py-7 sm:py-10" aria-labelledby="lender-mode">
       <p className="text-xs font-semibold uppercase text-muted-foreground">Same engine · second desk</p>
-      <h2 id="lender-mode" className="mt-2 text-2xl font-semibold">Lender desk: when an EMI bounces</h2>
+      <h2 id="lender-mode" className="mt-2 text-xl font-semibold sm:text-2xl">Lender desk: when an EMI bounces</h2>
       <p className="mt-2 max-w-[62ch] text-sm leading-6 text-muted-foreground">For lenders, the "short payment" is a loan instalment that fails. The bank sends a return code; Every Rupee turns it into a reason, an owner and a next step, the same way it handles a short-paid invoice.</p>
-      <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
-        <ol className="m-0! grid list-none gap-2 p-0! text-sm">{[['Bank returns the EMI', 'with a NACH code'], ['Desk reads the code', 'and names the cause'], ['One owner, one next step', 'logged with a deadline']].map(([t, d], i) => <li key={t} className="flex gap-3 rounded-xl border border-border bg-card p-3"><span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold">{i + 1}</span><span><b className="block">{t}</b><span className="text-muted-foreground">{d}</span></span></li>)}</ol>
+      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+        <ol className="m-0! hidden list-none gap-2 p-0! text-sm lg:grid">{[['Bank returns the EMI', 'with a NACH code'], ['Desk reads the code', 'and names the cause'], ['One owner, one next step', 'logged with a deadline']].map(([t, d], i) => <li key={t} className="flex gap-3 rounded-xl border border-border bg-card p-3"><span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold">{i + 1}</span><span><b className="block">{t}</b><span className="text-muted-foreground">{d}</span></span></li>)}</ol>
         <div className="overflow-hidden rounded-2xl border border-border bg-card">
           <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Bounce queue · sample</span><span>3 open</span></div>
           {[['Code 04', 'Not enough balance', 'Collections · call, then re-present', 'bg-money-wip/15 text-money-wip'], ['Code 61', 'Mandate cancelled', 'Ops · request a fresh mandate', 'bg-money-risk/10 text-money-risk'], ['Code 06', 'Stopped by customer', 'Relationship · talk first, may be a dispute', 'bg-money-risk/10 text-money-risk']].map(([c, m, n, k]) => <div key={c} className="grid gap-1 border-b border-border px-4 py-3 text-sm last:border-0 sm:grid-cols-[5.5rem_1fr_auto] sm:items-center"><span className="font-semibold">{c}</span><span>{m}</span><span className={'er-pill ' + k}>{n}</span></div>)}
@@ -164,16 +164,16 @@ function ImportedSectionADistributorPaysShort() {
     <section className="er-app py-12 text-center sm:py-16" aria-labelledby="intro-title">
       <p className="text-sm font-medium text-muted-foreground">Order-to-cash · Deduction management</p>
       <p className="mt-1 text-xs text-muted-foreground">Portfolio case study by Rupak Ghanpathi · sample data</p>
-      <h1 id="intro-title" className="mx-auto mt-4 max-w-[24ch] text-4xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-2xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
-      <p className="mx-auto mt-5 max-w-[60ch] text-base leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
+      <h1 id="intro-title" className="mx-auto mt-3 max-w-[24ch] text-3xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
+      <p className="mx-auto mt-4 max-w-[60ch] text-sm leading-6 sm:text-base sm:leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button><Button asChild variant="outline" className="min-h-11 no-underline!"><Link to="/demo">Explore on my own</Link></Button></div>
       <div className="mt-3 flex flex-wrap justify-center gap-2">{['16 rules', '31/31 tests passing', '0 write-offs by rule'].map(label => <Button key={label} asChild variant="outline" size="sm" className="h-8 rounded-full text-xs no-underline!"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">{label}</a></Button>)}</div>
       <p className="mt-6 font-semibold">The hard part of a deduction isn't matching it. It's owning it.</p>
       
-      <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-8 block max-w-[720px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
+      <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-6 block max-w-[720px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
         <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Reconciliation desk</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-(--money-ok)" />Live sample</span></div>
-        {[['INV-101 · Aarav Distributors', '₹1,180 short · Scheme claim · Owner: Asha', 'bg-money-wip/15 text-money-wip'], ['INV-102 · Meera Trading', '₹12,400 short · Scheme claim · Unowned', 'bg-money-risk/10 text-money-risk'], ['INV-103 · Southern Stores', '₹3,150 short · No reason yet', 'bg-money-risk/10 text-money-risk'], ['INV-104 · Eastern Wholesale', '₹860 short · No reason yet', 'bg-money-risk/10 text-money-risk'], ['Billed ₹1,91,300 · Received ₹1,73,710', 'Gap ₹17,590', 'bg-money-wip/15 text-money-wip']].map(([id, t, c]) => <div key={id} className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5 text-sm last:border-0"><span className="font-medium text-foreground">{id}</span><span className={'er-pill ' + c}>{t}</span></div>)}
-        <p className="px-4 py-2.5 text-center text-xs font-semibold text-primary">Open the live desk →</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4">{[['INV-101', 'Aarav Distributors', '₹1,180 short', 'Scheme claim · Asha', 'text-money-wip'], ['INV-102', 'Meera Trading', '₹12,400 short', 'Scheme claim · Unowned', 'text-money-risk'], ['INV-103', 'Southern Stores', '₹3,150 short', 'No reason yet', 'text-money-risk'], ['INV-104', 'Eastern Wholesale', '₹860 short', 'No reason yet', 'text-money-risk']].map(([id, n, amt, why, c]) => <div key={id} className="min-w-0 border-b border-r border-border px-3 py-2.5 text-xs even:border-r-0 sm:border-b-0 sm:even:border-r sm:last:border-r-0"><p className="truncate font-medium text-foreground">{id} · {n}</p><p className={'mt-0.5 text-sm font-semibold ' + c}>{amt}</p><p className="truncate text-muted-foreground">{why}</p></div>)}</div>
+        <p className="border-t border-border px-4 py-2 text-center text-xs text-muted-foreground">Billed ₹1,91,300 · Received ₹1,73,710 · <span className="font-semibold text-money-wip">Gap ₹17,590</span> · <span className="font-semibold text-primary">Open the live desk →</span></p>
       </Link>
     </section>
   );
@@ -424,8 +424,8 @@ function ImportedFooter() {
   return (
     <footer className="bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-white! text-(--ink2) text-[.86rem] mt-[32px]! pt-[28px] pr-0 pb-[20px] pl-0 [border-top:1px_solid_#E2E8F0]">
       <div className="col my-0 mx-auto max-w-[1040px]">
-        <div className="grid gap-8 sm:grid-cols-[1.3fr_1fr_1fr_1fr]">
-          <div>
+        <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-[1.3fr_1fr_1fr_1fr] sm:gap-8">
+          <div className="col-span-2 sm:col-span-1">
             <a className="flex items-center gap-2 font-semibold text-foreground no-underline" href="/"><svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Every Rupee">
               <circle cx="16" cy="16" r="13" fill="none" stroke="#64748B" strokeWidth="4.5" strokeDasharray="2.48 79.20" transform="rotate(-90 16 16)" />
               <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="31.07 50.61" strokeDashoffset="-4.08" transform="rotate(-90 16 16)" />
