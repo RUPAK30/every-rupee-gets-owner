@@ -94,29 +94,6 @@ const steps = [
   ["3", "Resolve", "Each gap gets an owner and a decision note. Accounting actions run in the canonical live desk."],
 ];
 
-const loop = [
-  { label: 'Unexplained', cls: 'bg-money-risk/10 text-money-risk', owner: '—', note: 'Customer paid ₹4,87,600 against ₹5,00,000' },
-  { label: 'Matched', cls: 'bg-money-wip/15 text-money-wip', owner: '—', note: 'Receipt matched to INV-2041 by reference' },
-  { label: 'Owned', cls: 'bg-money-wip/15 text-money-wip', owner: 'Priya · AR', note: 'Gap assigned: promo deduction claimed' },
-  { label: 'Closed', cls: 'bg-money-ok/15 text-money-ok', owner: 'Priya · AR', note: 'Credit note issued. Gap closed.' },
-];
-function HeroLoop() {
-  const [i, setI] = useState(0);
-  useEffect(() => { if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setI(3); return; } const t = setInterval(() => setI(x => (x + 1) % loop.length), 1800); return () => clearInterval(t); }, []);
-  const s = loop[i] ?? loop[0];
-  if (!s) return null;
-  return (
-    <section className="er-app relative z-10 mx-auto -mt-8 max-w-[720px] rounded-xl border border-border bg-card p-5 shadow-xl" aria-label="How a short payment moves through Every Rupee">
-      <div className="flex items-center justify-between text-xs text-muted-foreground"><span>Reconciliation desk · sample</span><span>Step {i + 1} of 4</span></div>
-      <div className="mt-3 grid grid-cols-[1fr_auto] items-center gap-3 border-y border-border py-4 tabular-nums">
-        <div><b>INV-2041</b> · Sample distributor<p key={i} className="er-rise mt-1 text-sm text-muted-foreground">{s.note}</p></div>
-        <div className="text-right"><b className="text-lg">₹12,400</b><div className="mt-1"><span className={'er-pill ' + s.cls}>{s.label}</span></div></div>
-      </div>
-      <div className="mt-3 flex justify-between text-xs text-muted-foreground"><span>Owner: {s.owner}</span><span className="flex gap-1">{loop.map((_, n) => <i key={n} className={'h-1.5 w-6 rounded-full ' + (n <= i ? 'bg-accent' : 'bg-border')} />)}</span></div>
-    </section>
-  );
-}
-
 function QuickTour() {
   return (
     <section className="er-app my-10 grid gap-10" aria-labelledby="tour-h">
@@ -344,75 +321,6 @@ const gaps = [
     ]
   }
 ];
-
-function ImportedSection() {
-  const [current, setCurrent] = useState(0);
-  const [step, setStep] = useState(0);
-  const gap = gaps[current] ?? gaps[0];
-  if (!gap) return null;
-  return (
-    <section className="board bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white mt-[34px] mr-0 mb-0 ml-0 overflow-hidden" id="board">
-      <div className="bh items-center [background:linear-gradient(180deg,#FDFDFE,#fff)] flex-wrap gap-[12px] justify-between py-[16px] px-[20px] [border-bottom:1px_solid_var(--line)]">
-        <div>
-          <b className="text-[1rem]">Today's short-payments</b>
-          <br />
-          <small className="text-(--mut) text-[.82rem]">Click a gap: what, why, who, how it ends.</small>
-        </div>
-        <small className="text-(--mut) text-[.82rem]">Sample data · 4 gaps · ₹17,590</small>
-      </div>
-      <div className="bg [@media(min-width:880px)]:grid-cols-[1.05fr_1fr]">
-        <ul className="rows list-none m-0 p-[8px]" role="tablist" id="rows">
-          <li>
-            <button role="tab" aria-selected={current === 0} onClick={() => { setCurrent(0); setStep(0); }}>
-              <span className="text-[1rem] font-bold [font-variant-numeric:tabular-nums]">₹1,180</span>
-              <span className="rs text-[.88rem]">Scheme claim<small className="text-(--mut) text-[.78rem]">Festival discount, budget approved</small></span>
-              <span className="st bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[999px] text-(--gd) text-[.7rem] font-semibold py-[3px] px-[9px] whitespace-nowrap [@media(max-width:560px)]:col-start-2">Closed</span>
-            </button>
-          </li>
-          <li>
-            <button role="tab" aria-selected={current === 1} onClick={() => { setCurrent(1); setStep(0); }}>
-              <span className="text-[1rem] font-bold [font-variant-numeric:tabular-nums]">₹12,400</span>
-              <span className="rs text-[.88rem]">Scheme claim<small className="text-(--mut) text-[.78rem]">No approved budget: a verbal promise</small></span>
-              <span className="st bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-(--gold-s) rounded-[999px] text-(--gold) text-[.7rem] font-semibold py-[3px] px-[9px] whitespace-nowrap [@media(max-width:560px)]:col-start-2">1 day left</span>
-            </button>
-          </li>
-          <li>
-            <button role="tab" aria-selected={current === 2} onClick={() => { setCurrent(2); setStep(0); }}>
-              <span className="text-[1rem] font-bold [font-variant-numeric:tabular-nums]">₹3,150</span>
-              <span className="rs text-[.88rem]">Damage claim<small className="text-(--mut) text-[.78rem]">Proof of delivery attached</small></span>
-              <span className="st bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[999px] text-[#0071e3] text-[.7rem] font-semibold py-[3px] px-[9px] whitespace-nowrap [@media(max-width:560px)]:col-start-2">Owner assigned</span>
-            </button>
-          </li>
-          <li>
-            <button role="tab" aria-selected={current === 3} onClick={() => { setCurrent(3); setStep(0); }}>
-              <span className="text-[1rem] font-bold [font-variant-numeric:tabular-nums]">₹860</span>
-              <span className="rs text-[.88rem]">TDS<small className="text-(--mut) text-[.78rem]">Tax withheld under section 194Q</small></span>
-              <span className="st bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[999px] text-(--gd) text-[.7rem] font-semibold py-[3px] px-[9px] whitespace-nowrap [@media(max-width:560px)]:col-start-2">Matched</span>
-            </button>
-          </li>
-        </ul>
-        <div className="det [background:linear-gradient(160deg,#FBFBFD,#FAFAFC)] py-[20px] px-[22px]" role="tabpanel" aria-live="polite">
-          <h3 className="text-[1.15rem] tracking-[-.02em] mt-0 mr-0 mb-[4px] ml-0" id="dt">{gap.a} · {gap.r}</h3>
-          <p className="text-(--mut) text-[.86rem] mt-0 mr-0 mb-[14px] ml-0" id="ds">{gap.w}</p>
-          <div className="qa gap-[8px] mt-0 mr-0 mb-[16px] ml-0" id="qa">
-            {gap.q.map(([label, text]) => <div className="text-[.9rem]" key={label}><b className="text-(--gd) text-[.7rem] tracking-[.07em] pt-[2px] uppercase">{label}</b><span>{text}</span></div>)}
-          </div>
-          <div className="track gap-[6px] mt-0 mr-0 mb-[10px] ml-0" id="tr">
-            {gap.s.map((_, index) => <span key={index} className={index <= step ? 'on' : ''} />)}
-          </div>
-          <p className="text-(--ink2) text-[.86rem] mt-0 mr-0 mb-[12px] ml-0 min-h-[2.6em]" id="sg">Step {step + 1} of {gap.s.length} · <span dangerouslySetInnerHTML={{ __html: gap.s[step] ?? '' }} /></p>
-          <div className="ctl flex-wrap gap-[8px]">
-            <button className="btn g sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" id="nx" type="button" hidden={step >= gap.s.length - 1} onClick={() => setStep(value => Math.min(value + 1, gap.s.length - 1))}>Next step <svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></button>
-            <button className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" id="rs" type="button" onClick={() => setStep(0)}>Replay</button>
-            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="/demo">Do it in the product</a>
-            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="https://everyrupee-o2c.vercel.app/route.html">Where the deduction started: the sales promise →</a>
-            <a className="btn sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href="https://everyrupee-o2c.vercel.app/lender.html?tour=1">Same discipline for a lender: NACH bounces →</a>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline }: { openDetails: Record<string, boolean>; setOpenDetails: React.Dispatch<React.SetStateAction<Record<string, boolean>>>; deadline: number | null }) {
   const [values, setValues] = useState({ bill: 500, pct: 3, days: 60, rate: 12 });
