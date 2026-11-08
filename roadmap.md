@@ -9,4 +9,4 @@
 - [x] Align homepage and capability claims with canonical rules and browser-test counts; add two external workflow sections.
 - [x] Block unsupported high-value self-resolution in the shared engine and desk; retain no write-off actions.
 - [x] Verify focused rule tests, calculator, links and desktop/mobile presentation.
-- [ ] Apply exactly six homepage changes: full-desk callout, before/after caption, controls copy, proof chips, immediate quote-to-cash card, and two section deletions; verify presentation.
+- [x] Apply exactly six homepage changes: full-desk callout, before/after caption, controls copy, proof chips, immediate quote-to-cash card, and two section deletions; verify presentation.
