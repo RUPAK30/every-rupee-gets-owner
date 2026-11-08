@@ -19,12 +19,12 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [tour, setTour] = useState<number | null>(null);
   useEffect(() => { if (demo && new URLSearchParams(window.location.search).get('tour') === '1') setTour(0); }, [demo]);
   const tourSteps: TourStep[] = [
-    { target: 'receipts', title: 'Meet a small business', text: 'It sent 4 bills to customers (Bills sent) and got 4 payments in its bank (Payments received). Our job: check every rupee arrived.' },
+    { target: 'receipts', title: 'Meet a small business', text: 'It sent 4 bills totalling ₹1,91,300 and received 4 payments totalling ₹1,73,710. The difference is ₹17,590. Our job: check which bills were paid.' },
     { target: 'automatch', title: 'Pair payments with bills', text: 'Most payments mention a bill number. The desk uses it to pair them, exactly, never by guessing.', cta: 'Auto-match for me', run: () => { setTab('reconcile'); change(autoMatch(w), 'Payments paired with their bills.'); } },
     { target: 'invoices', title: 'Spot the short payments', text: 'Look at Status. Paid means the full amount came in. Partial means the customer paid less: Aarav is ₹1,180 short, Eastern is ₹860 short, and Meera is ₹12,400 short.' },
-    { target: 'receipts', title: 'A payment with no bill number', text: 'One ₹28,350 payment named no bill. The desk will not guess, so a person pairs it by hand. Here it belongs to Southern Stores.', cta: 'Pair it for me', run: () => action(() => change(allocate(w, 'UTR-003', 'INV-103', 2835000), 'UTR-003 paired with INV-103.')) },
+    { target: 'receipts', title: 'A payment with no bill number', text: 'The ₹28,350 payment named no bill, so it stays unreferenced and Southern Stores’ ₹31,500 bill stays unpaid. In this sample, you can confirm the pairing by hand; that leaves ₹3,150 short.', cta: 'Pair it for me', run: () => action(() => change(allocate(w, 'UTR-003', 'INV-103', 2835000), 'UTR-003 paired with INV-103.')) },
     { target: 'tabs', title: 'Explain every missing rupee', text: 'Short bills land in Step 2. Each needs a reason (discount, damage, tax) and a person who owns it. Nothing is quietly written off.', cta: 'Show me Step 2', run: () => setTab('exceptions') },
-    { target: 'totals', title: 'That is reconciliation', text: 'Open a case with Review to record a decision. For gaps above ₹10,000, a second person must approve. You just did what finance teams do every month.' },
+    { target: 'totals', title: 'That is reconciliation', text: 'Once all payments are paired, ₹1,73,710 is matched against ₹1,91,300 billed, leaving ₹17,590 still owed. Open a case with Review to record a decision. For gaps above ₹10,000, a second person must approve.' },
   ];
   function change(next: Data, message?: string) { const checked = validateWorkspace(next); const prev = w; setW(checked); setDirty(true); setError(''); setNotice(''); if (message) toast.success(message, { action: { label: 'Undo', onClick: () => setW(prev) } }); }
   function action(fn: () => void) { try { setError(''); fn(); } catch (e) { setError(e instanceof Error ? e.message : 'Action failed.'); } }
