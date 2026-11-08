@@ -68,14 +68,14 @@ function Index() {
             </svg>
             <span>Every Rupee</span>
           </a>
-          <div className="hr items-center gap-[10px] justify-end"><Button size="sm" className="text-primary-foreground!" asChild><Link to="/workspace">{signedIn ? "Your workspace" : "Sign in"}</Link></Button></div>
+          <div className="hr items-center gap-[10px] justify-end"><Button size="sm" className="text-primary-foreground! min-h-11" asChild><a href="#contact" className="no-underline">Let's talk</a></Button><Button size="sm" variant="outline" className="min-h-11 max-sm:hidden" asChild><Link to="/workspace">{signedIn ? "Your workspace" : "Sign in"}</Link></Button></div>
         </div>
       </header>
       <main className="col my-0 mx-auto max-w-[1040px]">
         <ImportedSectionADistributorPaysShort />
-        <section className="er-app my-6 border-y border-border py-5">
-          <div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs uppercase font-semibold text-muted-foreground">First working release</p><h2 className="mt-2 text-xl font-semibold">Match the cash. Own the gap.</h2><p className="mt-2 text-sm text-muted-foreground">CSV reconciliation and private saved workspaces. No live bank or ERP connections.</p></div><Button variant="outline" asChild><Link to="/capabilities">What works today →</Link></Button></div>
-        </section>
+        <QuickTour />
+        <h2 className="mt-12 text-2xl font-bold" id="go-deeper">Go deeper</h2>
+        <p className="text-sm text-muted-foreground">The full case study, the evidence and the thinking behind it.</p>
         <ImportedSection />
         <section className="sec" id="now">
           <div className="nowst bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white overflow-hidden"><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">+14% vs +8.8%</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">Cello's receivables vs revenue, FY26</span></a><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">₹3.5–5</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">distributor margin per ₹100</span></a><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]"><span className="[color:inherit]! [@media(max-width:640px)]:leading-[1.3]" id="xd2">{deadline}</span> days</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">to the credit-note deadline, 30 Nov</span></a></div>
@@ -84,13 +84,60 @@ function Index() {
         <ImportedSection2 />
       </main>
       <ImportedFooter />
+      <a href="#contact" className="er-app fixed bottom-4 right-4 z-40 sm:hidden rounded-full no-underline bg-primary px-5 py-3 min-h-11 font-semibold text-primary-foreground shadow-lg">Let's talk</a>
     </div>
+  );
+}
+
+const steps = [
+  ["1", "Import", "Upload invoices and receipts as CSV files."],
+  ["2", "Auto-match", "Exact reference matches are paired. Unclear ones are never guessed."],
+  ["3", "Resolve", "Each gap gets an owner and a note, and ends as a credit note or a recovery."],
+];
+const audiences = [
+  ["Finance ops", "Fewer spreadsheets. Every short payment is tracked to closure."],
+  ["CFO", "You can see the money still recoverable and who owns each gap."],
+  ["Product manager", "A scoped first release: strict matching over speed, with honest limits."],
+  ["Hiring manager / TA", "Designed and built solo by Rupak Ghanpathi, from the problem framing to a working app."],
+];
+
+function QuickTour() {
+  return (
+    <section className="er-app my-10 grid gap-10" aria-labelledby="tour-h">
+      <div>
+        <p className="text-xs font-semibold uppercase text-muted-foreground">How it works</p>
+        <h2 id="tour-h" className="mt-1 text-2xl font-bold">From messy payments to owned gaps in 3 steps</h2>
+        <ol className="mt-5 list-none p-0 grid gap-4 sm:grid-cols-3">
+          {steps.map(([n, t, d]) => (
+            <li key={n} className="rounded-lg border border-border bg-card p-5">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-primary font-bold text-primary-foreground">{n}</span>
+              <h3 className="mt-3 font-semibold">{t}</h3><p className="mt-1 text-sm text-muted-foreground">{d}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-card p-5">
+        <div><p className="text-xs font-semibold uppercase text-muted-foreground">Sample case</p>
+          <p className="mt-1 text-lg"><b>₹12,400 short payment:</b> unexplained and ownerless before, <b>matched, owned and closed</b> after.</p></div>
+        <Button className="min-h-11 text-primary-foreground!" asChild><Link to="/demo">Try the live demo, no sign-up</Link></Button>
+      </div>
+      <div>
+        <h2 className="text-2xl font-bold">Built for</h2>
+        <ul className="mt-4 list-none p-0 grid gap-4 sm:grid-cols-2">
+          {audiences.map(([t, d]) => <li key={t} className="rounded-lg border border-border bg-card p-5"><h3 className="font-semibold">{t}</h3><p className="mt-1 text-sm text-muted-foreground">{d}</p></li>)}
+        </ul>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-4 text-sm">
+        <p><b>Working today:</b> CSV import, auto-match, manual allocation, exceptions, private saved workspaces. <b>Planned:</b> bank and ERP connections.</p>
+        <Link to="/capabilities" className="font-semibold underline">Full status →</Link>
+      </div>
+    </section>
   );
 }
 
 function ImportedSectionADistributorPaysShort() {
   return (
-    <section className="hero bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-site-import-primary! text-white text-center [clip-path:inset(0_-100vmax)]"><span style={{ display: "none" }} id="forchip" hidden /><span className="eye2 bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff14]! border-[#ffffff2e]! rounded-[999px] text-site-import-border! [border:1px_solid_var(--line)] [font-weight:550]">Portfolio case study by Rupak Ghanpathi<span className="hm"> · built solo · sample data</span></span><h1 className="text-white! font-[family-name:Inter,system-ui,sans-serif] font-bold tracking-[-.03em]! max-w-[22ch]">A distributor pays short. <em className="not-italic">On day 31 it's still nobody's problem.</em></h1><p className="lead text-[#cbd5e1]! max-w-[56ch]">Every Rupee is a short-payment reconciliation desk for FMCG finance teams, built from Cello World's public filings.<span className="hm"> Every gap gets one owner and ends in a credit note or a recovery.</span></p><div className="cta flex-wrap justify-center [@media(max-width:640px)]:grid-cols-[1fr_1fr] [@media(max-width:640px)]:mt-0! [@media(max-width:640px)]:w-full"><a className="btn g items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="/demo">Try reconciliation demo<svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a><a className="btn items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="#contact">Talk to Rupak</a></div><p className="thesis text-white! font-bold tracking-[-.01em]">The hard part of a deduction isn't matching it. It's owning it.</p><p className="dec bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff0f]! text-site-import-border! max-w-[640px] text-left"><b className="text-white!">The call I made:</b> control over speed. Strict reference matching and no auto write-offs. Maker-checker and accounting approvals remain proposed controls, not enforced in this release.</p></section>
+    <section className="hero bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-site-import-primary! text-white text-center [clip-path:inset(0_-100vmax)]"><span style={{ display: "none" }} id="forchip" hidden /><span className="eye2 bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff14]! border-[#ffffff2e]! rounded-[999px] text-site-import-border! [border:1px_solid_var(--line)] [font-weight:550]">Portfolio case study by Rupak Ghanpathi<span className="hm"> · built solo · sample data</span></span><h1 className="text-white! font-[family-name:Inter,system-ui,sans-serif] font-bold tracking-[-.03em]! max-w-[22ch]">Reconcile every short payment, <em className="not-italic">from invoice to cash.</em></h1><p className="lead text-[#cbd5e1]! max-w-[56ch]">Indian B2B finance teams use Every Rupee to find, explain and recover the deductions customers take from invoices.<span className="hm"> Every gap gets one owner and ends in a credit note or a recovery.</span></p><div className="cta flex-wrap justify-center [@media(max-width:640px)]:grid-cols-[1fr_1fr] [@media(max-width:640px)]:mt-0! [@media(max-width:640px)]:w-full"><a className="btn g items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="/demo">Try reconciliation demo<svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a><a className="btn items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="#contact">Let's talk</a></div><p className="thesis text-white! font-bold tracking-[-.01em]">The hard part of a deduction isn't matching it. It's owning it.</p><p className="dec bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff0f]! text-site-import-border! max-w-[640px] text-left"><b className="text-white!">The call I made:</b> control over speed. Strict reference matching and no auto write-offs. Maker-checker and accounting approvals remain proposed controls, not enforced in this release.</p></section>
   );
 }
 
