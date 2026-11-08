@@ -272,7 +272,7 @@ const gaps = [
     "w": "Proof of delivery attached",
     "st": [
       "s-chk",
-      "Needs checker"
+      "Owner assigned"
     ],
     "q": [
       [
@@ -281,7 +281,7 @@ const gaps = [
       ],
       [
         "Why",
-        "Proof attached, but above his usual pattern, so a person checks (BR-3)."
+        "Proof attached, and under ₹10,000, so the owner resolves it directly (BR-3)."
       ],
       [
         "Who",
@@ -405,7 +405,7 @@ function ImportedSection() {
   );
 }
 
-function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline }: { openDetails: Record<string, boolean>; setOpenDetails: React.Dispatch<React.SetStateAction<Record<string, boolean>>>; deadline: number }) {
+function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline }: { openDetails: Record<string, boolean>; setOpenDetails: React.Dispatch<React.SetStateAction<Record<string, boolean>>>; deadline: number | null }) {
   const [values, setValues] = useState({ bill: 500, pct: 3, days: 60, rate: 12 });
   const cash = values.bill * values.pct / 100 * values.days / 30;
   const money = (value: number) => value >= 100 ? '₹' + (value / 100).toFixed(2).replace(/\.00$/, '') + ' crore' : '₹' + value.toFixed(1).replace(/\.0$/, '') + ' lakh';
@@ -536,8 +536,8 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
                   <small className="text-(--mut) text-[.76rem]">CGST Act s.34(2); s.15(3)(b) as amended by Finance Act 2026; CBIC Circular 251/08/2025. Summarised from public sources, Oct 2026. Not tax advice.</small>
                 </div>
                 <div className="ex2 [background:linear-gradient(160deg,#F5F5F7,#F5F5F7)] border border-solid border-[#e8e8ed] rounded-[18px] py-[22px] px-[14px] text-center">
-                  <b className="text-[#0071e3] text-[3.4rem] tracking-[-.04em] leading-none [font-variant-numeric:tabular-nums]" id="xd">{deadline}</b>
-                  <span className="text-(--ink2) text-[.82rem] mt-[8px]" id="xl">days to the FY 2025-26 credit-note deadline</span>
+                  <b className="text-[#0071e3] text-[3.4rem] tracking-[-.04em] leading-none [font-variant-numeric:tabular-nums]" id="xd">{deadline === null ? 'Passed' : deadline}</b>
+                  <span className="text-(--ink2) text-[.82rem] mt-[8px]" id="xl">{deadline === null ? 'Deadline passed: GST credit notes for FY 2025-26 are no longer allowed' : 'days to the FY 2025-26 credit-note deadline'}</span>
                 </div>
               </div>
             </div>
