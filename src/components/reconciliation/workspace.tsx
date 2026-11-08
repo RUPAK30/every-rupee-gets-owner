@@ -4,7 +4,7 @@ import { Link } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, Download, Upload, RotateCcw, Save, Check, Search, Trash2, Wallet, GitMerge } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { allocate, autoMatch, emptyWorkspace, importCsv, invoiceBalance, money, parseMoney, receiptBalance, sampleWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
+import { allocate, autoMatch, emptyWorkspace, importCsv, invoiceBalance, money, parseMoney, receiptBalance, sampleWorkspace, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
 
 type Props = { initial: Data; demo?: boolean; onSave?: (data: Data) => Promise<void>; onSignOut?: () => Promise<void> };
 function download(filename: string, text: string) { const url = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
@@ -15,7 +15,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [receipt, setReceipt] = useState(''); const [invoice, setInvoice] = useState(''); const [amount, setAmount] = useState(''); const [manual, setManual] = useState(false);
   const [caseId, setCaseId] = useState<string | null>(null); const [reason, setReason] = useState(''); const [owner, setOwner] = useState(''); const [notes, setNotes] = useState(''); const [resolved, setResolved] = useState(false);
   const [reset, setReset] = useState(false);
-  function change(next: Data, message?: string) { const prev = w; setW(next); setDirty(true); setError(''); setNotice(''); if (message) toast.success(message, { action: { label: 'Undo', onClick: () => setW(prev) } }); }
+  function change(next: Data, message?: string) { const checked = validateWorkspace(next); const prev = w; setW(checked); setDirty(true); setError(''); setNotice(''); if (message) toast.success(message, { action: { label: 'Undo', onClick: () => setW(prev) } }); }
   function action(fn: () => void) { try { setError(''); fn(); } catch (e) { setError(e instanceof Error ? e.message : 'Action failed.'); } }
   function openCase(id: string) { const e = w.exceptions.find(e => e.invoiceId === id); setCaseId(id); setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setResolved(e?.resolved ?? false); }
   const billed = w.invoices.reduce((s, i) => s + i.amount, 0); const received = w.receipts.reduce((s, r) => s + r.amount, 0); const matched = w.allocations.reduce((s, a) => s + a.amount, 0);
