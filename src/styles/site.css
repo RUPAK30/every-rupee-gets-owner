@@ -470,7 +470,13 @@ h1 em {
 
 .track {
   display: flex;
+  --track-rest: oklch(0.96 0.003 265);
+  --track-start: oklch(0.72 0.19 145);
+  --track-end: oklch(0.57 0.21 255);
 }
+
+.track span { flex: 1; height: 6px; border-radius: 9px; background: var(--track-rest); transition: background .3s; }
+.track span.on { background: linear-gradient(90deg, var(--track-start), var(--track-end)); }
 
 .ctl {
   display: flex;
