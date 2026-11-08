@@ -68,7 +68,7 @@ function Index() {
             </svg>
             <span>Every Rupee</span>
           </a>
-          <div className="hr items-center gap-[10px] justify-end"><Button size="sm" className="text-primary-foreground! min-h-11" asChild><a href="#contact">Let's talk</a></Button><Button size="sm" variant="outline" className="min-h-11 max-sm:hidden" asChild><Link to="/workspace">{signedIn ? "Your workspace" : "Sign in"}</Link></Button></div>
+          <div className="hr items-center gap-[10px] justify-end"><Button size="sm" className="text-primary-foreground! min-h-11" asChild><a href="#contact" className="no-underline">Let's talk</a></Button><Button size="sm" variant="outline" className="min-h-11 max-sm:hidden" asChild><Link to="/workspace">{signedIn ? "Your workspace" : "Sign in"}</Link></Button></div>
         </div>
       </header>
       <main className="col my-0 mx-auto max-w-[1040px]">
@@ -84,7 +84,7 @@ function Index() {
         <ImportedSection2 />
       </main>
       <ImportedFooter />
-      <a href="#contact" className="er-app fixed bottom-4 right-4 z-40 sm:hidden rounded-full bg-primary px-5 py-3 min-h-11 font-semibold text-primary-foreground shadow-lg">Let's talk</a>
+      <a href="#contact" className="er-app fixed bottom-4 right-4 z-40 sm:hidden rounded-full no-underline bg-primary px-5 py-3 min-h-11 font-semibold text-primary-foreground shadow-lg">Let's talk</a>
     </div>
   );
 }
@@ -107,7 +107,7 @@ function QuickTour() {
       <div>
         <p className="text-xs font-semibold uppercase text-muted-foreground">How it works</p>
         <h2 id="tour-h" className="mt-1 text-2xl font-bold">From messy payments to owned gaps in 3 steps</h2>
-        <ol className="mt-5 grid gap-4 sm:grid-cols-3">
+        <ol className="mt-5 list-none p-0 grid gap-4 sm:grid-cols-3">
           {steps.map(([n, t, d]) => (
             <li key={n} className="rounded-lg border border-border bg-card p-5">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-primary font-bold text-primary-foreground">{n}</span>
@@ -123,7 +123,7 @@ function QuickTour() {
       </div>
       <div>
         <h2 className="text-2xl font-bold">Built for</h2>
-        <ul className="mt-4 grid gap-4 sm:grid-cols-2">
+        <ul className="mt-4 list-none p-0 grid gap-4 sm:grid-cols-2">
           {audiences.map(([t, d]) => <li key={t} className="rounded-lg border border-border bg-card p-5"><h3 className="font-semibold">{t}</h3><p className="mt-1 text-sm text-muted-foreground">{d}</p></li>)}
         </ul>
       </div>
