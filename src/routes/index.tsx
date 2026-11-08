@@ -73,6 +73,7 @@ function Index() {
       </header>
       <main className="col my-0 mx-auto max-w-[1040px]">
         <ImportedSectionADistributorPaysShort />
+        <HeroLoop />
         <QuickTour />
         <h2 className="mt-12 text-2xl font-bold" id="go-deeper">Go deeper</h2>
         <p className="text-sm text-muted-foreground">The full case study, the evidence and the thinking behind it.</p>
@@ -100,6 +101,28 @@ const audiences = [
   ["Product manager", "A scoped first release: strict matching over speed, with honest limits."],
   ["Hiring manager / TA", "Designed and built solo by Rupak Ghanpathi, from the problem framing to a working app."],
 ];
+
+const loop = [
+  { label: 'Unexplained', cls: 'bg-money-risk/10 text-money-risk', owner: '—', note: 'Customer paid ₹4,87,600 against ₹5,00,000' },
+  { label: 'Matched', cls: 'bg-money-wip/15 text-money-wip', owner: '—', note: 'Receipt matched to INV-2041 by reference' },
+  { label: 'Owned', cls: 'bg-money-wip/15 text-money-wip', owner: 'Priya · AR', note: 'Gap assigned: promo deduction claimed' },
+  { label: 'Recovered', cls: 'bg-money-ok/15 text-money-ok', owner: 'Priya · AR', note: 'Credit note issued. Gap closed.' },
+];
+function HeroLoop() {
+  const [i, setI] = useState(0);
+  useEffect(() => { if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setI(3); return; } const t = setInterval(() => setI(x => (x + 1) % loop.length), 1800); return () => clearInterval(t); }, []);
+  const s = loop[i];
+  return (
+    <section className="er-app relative z-10 mx-auto -mt-8 max-w-[720px] rounded-xl border border-border bg-card p-5 shadow-xl" aria-label="How a short payment moves through Every Rupee">
+      <div className="flex items-center justify-between text-xs text-muted-foreground"><span>Reconciliation desk · sample</span><span>Step {i + 1} of 4</span></div>
+      <div className="mt-3 grid grid-cols-[1fr_auto] items-center gap-3 border-y border-border py-4 tabular-nums">
+        <div><b>INV-2041</b> · Sharma Distributors<p key={i} className="er-rise mt-1 text-sm text-muted-foreground">{s.note}</p></div>
+        <div className="text-right"><b className="text-lg">₹12,400</b><div className="mt-1"><span className={'er-pill ' + s.cls}>{s.label}</span></div></div>
+      </div>
+      <div className="mt-3 flex justify-between text-xs text-muted-foreground"><span>Owner: {s.owner}</span><span className="flex gap-1">{loop.map((_, n) => <i key={n} className={'h-1.5 w-6 rounded-full ' + (n <= i ? 'bg-accent' : 'bg-border')} />)}</span></div>
+    </section>
+  );
+}
 
 function QuickTour() {
   return (
@@ -137,7 +160,7 @@ function QuickTour() {
 
 function ImportedSectionADistributorPaysShort() {
   return (
-    <section className="hero bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-site-import-primary! text-white text-center [clip-path:inset(0_-100vmax)]"><span style={{ display: "none" }} id="forchip" hidden /><span className="eye2 bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff14]! border-[#ffffff2e]! rounded-[999px] text-site-import-border! [border:1px_solid_var(--line)] [font-weight:550]">Portfolio case study by Rupak Ghanpathi<span className="hm"> · built solo · sample data</span></span><h1 className="text-white! font-[family-name:Inter,system-ui,sans-serif] font-bold tracking-[-.03em]! max-w-[22ch]">Reconcile every short payment, <em className="not-italic">from invoice to cash.</em></h1><p className="lead text-[#cbd5e1]! max-w-[56ch]">Indian B2B finance teams use Every Rupee to find, explain and recover the deductions customers take from invoices.<span className="hm"> Every gap gets one owner and ends in a credit note or a recovery.</span></p><div className="cta flex-wrap justify-center [@media(max-width:640px)]:grid-cols-[1fr_1fr] [@media(max-width:640px)]:mt-0! [@media(max-width:640px)]:w-full"><a className="btn g items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="/demo">Try reconciliation demo<svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a><a className="btn items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="#contact">Let's talk</a></div><p className="thesis text-white! font-bold tracking-[-.01em]">The hard part of a deduction isn't matching it. It's owning it.</p><p className="dec bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff0f]! text-site-import-border! max-w-[640px] text-left"><b className="text-white!">The call I made:</b> control over speed. Strict reference matching and no auto write-offs. Maker-checker and accounting approvals remain proposed controls, not enforced in this release.</p></section>
+    <section className="hero bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-site-import-primary! text-white text-center [clip-path:inset(0_-100vmax)]"><span style={{ display: "none" }} id="forchip" hidden /><span className="eye2 bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff14]! border-[#ffffff2e]! rounded-[999px] text-site-import-border! [border:1px_solid_var(--line)] [font-weight:550]">Portfolio case study by Rupak Ghanpathi<span className="hm"> · built solo · sample data</span></span><h1 className="text-white! font-[family-name:Inter,system-ui,sans-serif] font-bold tracking-[-.03em]! max-w-[22ch]">Reconcile every short payment, <em className="not-italic">from invoice to cash.</em></h1><p className="lead text-[#cbd5e1]! max-w-[56ch]">Indian B2B finance teams use Every Rupee to find, explain and recover the deductions customers take from invoices.<span className="hm"> Every gap gets one owner and ends in a credit note or a recovery.</span></p><div className="cta flex-wrap justify-center [@media(max-width:640px)]:grid-cols-[1fr_1fr] [@media(max-width:640px)]:mt-0! [@media(max-width:640px)]:w-full"><a className="btn g items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="/demo">Try the demo<svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a><a className="btn items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="#contact">Let's talk</a></div><p className="thesis text-white! font-bold tracking-[-.01em]">The hard part of a deduction isn't matching it. It's owning it.</p><p className="dec bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff0f]! text-site-import-border! max-w-[640px] text-left"><b className="text-white!">The call I made:</b> control over speed. Strict reference matching and no auto write-offs. Maker-checker and accounting approvals remain proposed controls, not enforced in this release.</p></section>
   );
 }
 
