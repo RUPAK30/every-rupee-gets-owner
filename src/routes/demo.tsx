@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { Workspace } from '@/components/reconciliation/workspace';
-import { sampleWorkspace } from '@/lib/reconciliation/engine';
+import { starterWorkspace } from '@/lib/reconciliation/engine';
 export const Route = createFileRoute('/demo')({ head: () => ({ meta: [{ title: 'Every Rupee · Interactive reconciliation demo' }, { name: 'description', content: 'Try reference matching, partial allocations and deduction review with illustrative records.' }, { property: 'og:title', content: 'Every Rupee · Reconciliation demo' }, { property: 'og:description', content: 'An interactive sample reconciliation workspace.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' }] }), component: Demo });
-function Demo() { return <Workspace initial={sampleWorkspace()} demo />; }
+function Demo() { return <Workspace initial={starterWorkspace()} demo />; }

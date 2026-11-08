@@ -67,6 +67,22 @@ export function importCsv(w: Workspace, kind: 'invoices' | 'receipts', csv: stri
   return validateWorkspace({ ...w, [kind]: [...w[kind], ...rows] });
 }
 export const money = (cents: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(cents / 100);
+/** Small round numbers for first-time visitors on /demo. */
+export function starterWorkspace(): Workspace {
+  return { invoices: [
+    { id: 'INV-101', customer: 'Aarav Distributors', amount: 1000000, date: '2026-10-01' },
+    { id: 'INV-102', customer: 'Meera Trading', amount: 500000, date: '2026-10-04' },
+    { id: 'INV-103', customer: 'Southern Stores', amount: 300000, date: '2026-10-08' },
+    { id: 'INV-104', customer: 'Eastern Wholesale', amount: 200000, date: '2026-10-12' },
+  ], receipts: [
+    { id: 'UTR-001', reference: 'INV-101', amount: 900000, date: '2026-10-15' },
+    { id: 'UTR-002', reference: 'INV-102', amount: 500000, date: '2026-10-16' },
+    { id: 'UTR-003', reference: '', amount: 300000, date: '2026-10-18' },
+    { id: 'UTR-004', reference: 'INV-104', amount: 180000, date: '2026-10-19' },
+  ], allocations: [], exceptions: [
+    { invoiceId: 'INV-101', reason: 'Scheme claim', owner: 'Asha', notes: 'Festival discount claimed; approval evidence pending.', resolved: false },
+  ] };
+}
 export function sampleWorkspace(): Workspace {
   return { invoices: [
     { id: 'INV-101', customer: 'Aarav Distributors', amount: 1180000, date: '2026-10-01' },
