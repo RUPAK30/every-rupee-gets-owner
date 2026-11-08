@@ -38,3 +38,5 @@ use the editor.
 - Keep matching deterministic and CSV parsing in the shared engine; live integrations remain outside the workspace until separately implemented.
 - Use one root auth subscriber and the authenticated route gate; protected server functions enforce authentication independently.
 - This single-account workspace cannot approve high-value exceptions without a separate checker; reject such resolutions in shared validation and attribute full maker-checker workflows to the canonical desk.
+
+- Lender return-code rules live in one shared module; AI explanations may only reword them and suggestions must be one of the allowed outcomes, logged only after a person confirms.
