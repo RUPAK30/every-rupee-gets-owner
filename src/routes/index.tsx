@@ -163,6 +163,7 @@ function ImportedSectionADistributorPaysShort() {
   return (
     <section className="er-app py-12 text-center sm:py-16" aria-labelledby="intro-title">
       <p className="text-sm font-medium text-muted-foreground">Order-to-cash · Deduction management</p>
+      <p className="mt-1 text-xs text-muted-foreground">Portfolio case study by Rupak Ghanpathi · sample data</p>
       <h1 id="intro-title" className="mx-auto mt-4 max-w-[24ch] text-4xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-2xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
       <p className="mx-auto mt-5 max-w-[60ch] text-base leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button><Button asChild variant="outline" className="min-h-11 no-underline!"><Link to="/demo">Explore on my own</Link></Button></div>
@@ -171,7 +172,7 @@ function ImportedSectionADistributorPaysShort() {
       
       <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-8 block max-w-[720px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
         <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Reconciliation desk</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-(--money-ok)" />Live sample</span></div>
-        {[['INV-102 · Meera Trading', '₹5,000 · Paid in full', 'bg-money-ok/15 text-money-ok'], ['INV-101 · Aarav Distributors', '₹1,000 short · Scheme claim · Owner: Asha', 'bg-money-wip/15 text-money-wip'], ['INV-104 · Eastern Wholesale', '₹200 short · No reason yet · Unowned', 'bg-money-risk/10 text-money-risk']].map(([id, t, c]) => <div key={id} className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5 text-sm last:border-0"><span className="font-medium text-foreground">{id}</span><span className={'er-pill ' + c}>{t}</span></div>)}
+        {[['INV-101 · Aarav Distributors', '₹1,180 short · Scheme claim · Owner: Asha', 'bg-money-wip/15 text-money-wip'], ['INV-104 · Eastern Wholesale', '₹860 short · TDS u/s 194Q · Matched', 'bg-money-ok/15 text-money-ok'], ['INV-102 · Meera Trading', '₹12,400 short · No reason yet · Unowned', 'bg-money-risk/10 text-money-risk']].map(([id, t, c]) => <div key={id} className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5 text-sm last:border-0"><span className="font-medium text-foreground">{id}</span><span className={'er-pill ' + c}>{t}</span></div>)}
         <p className="px-4 py-2.5 text-center text-xs font-semibold text-primary">Open the live desk →</p>
       </Link>
     </section>
