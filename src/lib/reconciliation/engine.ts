@@ -55,10 +55,10 @@ export function importCsv(w: Workspace, kind: 'invoices' | 'receipts', csv: stri
   if (!result.data.length) throw new Error('The CSV contains no records.');
   const rows = result.data.map((r, index) => {
     try {
-      const date = r.date?.trim() ?? '';
+      const date = r['date']?.trim() ?? '';
       if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !Number.isFinite(Date.parse(date)) || new Date(date).toISOString().slice(0, 10) !== date) throw new Error('Use a valid YYYY-MM-DD date.');
-      const base = { id: r.id?.trim(), date, amount: parseMoney(r.amount ?? '') };
-      return kind === 'invoices' ? invoiceSchema.parse({ ...base, customer: r.customer }) : receiptSchema.parse({ ...base, reference: r.reference ?? '' });
+      const base = { id: r['id']?.trim(), date, amount: parseMoney(r['amount'] ?? '') };
+      return kind === 'invoices' ? invoiceSchema.parse({ ...base, customer: r['customer'] }) : receiptSchema.parse({ ...base, reference: r['reference'] ?? '' });
     } catch (error) { throw new Error(`Row ${index + 2}: ${error instanceof Error ? error.message : 'Invalid record'}`); }
   });
   return validateWorkspace({ ...w, [kind]: [...w[kind], ...rows] });
