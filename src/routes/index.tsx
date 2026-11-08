@@ -190,13 +190,18 @@ function CanonicalWorkflows() {
 function ImportedSectionADistributorPaysShort() {
   return (
     <section className="er-app py-12 text-center sm:py-16" aria-labelledby="intro-title">
-      <p className="text-sm font-medium text-muted-foreground">By Rupak Ghanpathi · shown with sample data</p>
+      <p className="text-sm font-medium text-muted-foreground">Order-to-cash · Deduction management</p>
       <h1 id="intro-title" className="mx-auto mt-4 max-w-[24ch] text-4xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-2xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
       <p className="mx-auto mt-5 max-w-[60ch] text-base leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><Link to="/demo">Try the demo</Link></Button><Button asChild variant="outline" className="min-h-11"><a href="#contact">Let's talk</a></Button></div>
       <div className="mt-3 flex flex-wrap justify-center gap-2">{['16 rules', '31/31 tests passing', '0 write-offs by rule'].map(label => <Button key={label} asChild variant="outline" size="sm" className="h-8 rounded-full text-xs no-underline!"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">{label}</a></Button>)}</div>
       <p className="mt-6 font-semibold">The hard part of a deduction isn't matching it. It's owning it.</p>
       <div className="mx-auto mt-5 max-w-[68ch] border-y border-border py-4 text-sm leading-6 text-muted-foreground">Maker-checker above ₹10,000 and zero write-offs by rule are enforced and tested in the <a className="font-semibold text-primary underline" href="https://everyrupee-o2c.vercel.app/desk.html">full desk</a> (16 rules, 31/31 tests). This lighter demo shows matching and exceptions.</div>
+      <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-8 block max-w-[720px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Reconciliation desk</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-(--money-ok)" />Live sample</span></div>
+        {[['INV-101 · Aarav Distributors', '₹1,180 short · Scheme claim · Owner: Asha', 'bg-money-wip/15 text-money-wip'], ['INV-102 · Meera Trading', '₹12,400 short · No approved budget · Unowned', 'bg-money-risk/10 text-money-risk'], ['INV-104 · Eastern Wholesale', '₹860 short · TDS to verify', 'bg-money-wip/15 text-money-wip']].map(([id, t, c]) => <div key={id} className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5 text-sm last:border-0"><span className="font-medium text-foreground">{id}</span><span className={'er-pill ' + c}>{t}</span></div>)}
+        <p className="px-4 py-2.5 text-center text-xs font-semibold text-primary">Open the live desk →</p>
+      </Link>
     </section>
   );
 }
@@ -469,22 +474,22 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
               <p className="cap text-(--mut) text-[.78rem] mt-[8px] mr-[2px] mb-0 ml-[2px]">Illustrative: one gap from the sample data, traced through the workflow. "Today" is the common manual pattern, not a measured baseline.</p>
             </div>
             <p className="text-(--gd) text-[.85rem] font-semibold tracking-[.01em] mt-[14px] mr-auto mb-0 ml-auto text-center">0 write-offs by rule · maker-checker above ₹10,000. Enforced and tested in the full desk.</p>
-            <p className="trk text-[.72rem] font-bold tracking-[.08em] mt-[26px] mr-0 mb-[10px] ml-0 text-center uppercase" id="trace">Canonical live desk · from a public filing to a running control</p>
+            <p className="trk text-[.72rem] font-bold tracking-[.08em] mt-[26px] mr-0 mb-[10px] ml-0 text-center uppercase" id="trace">Traceability · every control traced from signal to screen</p>
             <ol className="tr6 gap-[10px] list-none m-0 p-0 [counter-reset:t]">
               <li className="p-[12px]">
-                <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Filing</small>
+                <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Signal</small>
                 <b className="text-[.86rem] leading-[1.3] mb-[4px]">Receivables +14.0% vs revenue +8.8%</b>
                 <span className="text-(--mut) text-[.76rem]">Cello World, FY25→FY26</span>
               </li>
               <li className="p-[12px]">
-                <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Assumption</small>
+                <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Risk</small>
                 <b className="text-[.86rem] leading-[1.3] mb-[4px]">Short-payments sit unowned</b>
                 <span className="text-(--mut) text-[.76rem]">A reason to look, not a diagnosis</span>
               </li>
               <li className="p-[12px]">
-                <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Requirement</small>
+                <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Control spec</small>
                 <b className="text-[.86rem] leading-[1.3] mb-[4px]">US-5: no self-approval above ₹10,000</b>
-                <span className="text-(--mut) text-[.76rem]">In the BRD</span>
+                <span className="text-(--mut) text-[.76rem]">Specified, not optional</span>
               </li>
               <li className="p-[12px]">
                 <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Rule</small>
@@ -584,7 +589,7 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
             <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#eef5ff] rounded-[50%] text-[#0a66d1] flex-none text-[1.1rem] not-italic h-[30px] place-items-center transition-transform duration-200 w-[30px]" aria-hidden="true">+</i>
           </summary>
           <section className="sec m-0!" id="thinking">
-            <p className="k text-[.74rem] font-bold tracking-[.12em]! mt-0 mr-0 mb-[8px] ml-0 text-left! uppercase">The thinking</p>
+            <p className="k text-[.74rem] font-bold tracking-[.12em]! mt-0 mr-0 mb-[8px] ml-0 text-left! uppercase">Design principles</p>
             <h2 className="text-[clamp(1.5rem,3vw,2.1rem)]! font-bold tracking-[-.02em] leading-[1.15] mt-0 mr-auto mb-[22px] ml-auto mb-[16px]! ml-0! max-w-[30ch]! text-left!">Controls first, failure planned for</h2>
             <div className="cm gap-[12px] mt-0 mr-0 mb-[14px] ml-0 max-w-none [@media(min-width:820px)]:items-stretch [@media(min-width:820px)]:grid-cols-[1.2fr_1fr]">
               <div className="cost bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white rounded-[16px] m-0! max-w-none py-[14px] px-[18px] [border:1px_solid_var(--line)]">
@@ -595,11 +600,11 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
                   <li className="my-[3px] mx-0">A slower first close: Sales must enter scheme dates and budgets before rules can accept a claim.</li>
                 </ul>
               </div>
-              <p className="miss bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white rounded-[16px] text-(--ink2) text-[.95rem] m-0! max-w-none py-[14px] px-[18px] text-left [border:1px_solid_var(--line)]"><b className="text-(--ink)">What I got wrong:</b> v2 was a wall of text, so I rebuilt it as something you can run, because a spec nobody executes isn't a spec.</p>
+              <p className="miss bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white rounded-[16px] text-(--ink2) text-[.95rem] m-0! max-w-none py-[14px] px-[18px] text-left [border:1px_solid_var(--line)]"><b className="text-(--ink)">Why it runs:</b> a spec nobody executes isn't a spec, so every rule ships as a working, tested control.</p>
             </div>
             <div className="two-up gap-[14px] [@media(min-width:820px)]:grid-cols-[1fr_1fr]">
               <div className="pane bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white pt-[22px] pr-[22px] pb-[10px] pl-[22px]">
-                <h3 className="text-[1rem] mt-0 mr-0 mb-[12px] ml-0">How I'd work from week one</h3>
+                <h3 className="text-[1rem] mt-0 mr-0 mb-[12px] ml-0">How the product works</h3>
                 <ol className="pts list-none m-0 p-0 [counter-reset:p]">
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Evidence first.</b> Every fact dated and sourced.</li>
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">One owner per gap.</b> One decision, one deadline.</li>
@@ -644,7 +649,7 @@ function ImportedSection2() {
         <h2 className="mt-4 mb-1 text-xl font-semibold" id="rh">Let's talk this week</h2>
         <p className="mb-4 text-sm text-muted-foreground">Replies within 24 hours by email · or write to <a className="font-medium" href="mailto:rupakr2g@gmail.com">rupakr2g@gmail.com</a></p>
         <DemoRequest />
-        <p className="mt-3 mb-0 flex items-center gap-2 text-xs text-muted-foreground"><span className="h-2 w-2 shrink-0 rounded-full bg-(--money-ok)" />Open to BA and Product roles · fintech, BFSI, finance software · anywhere in India · immediate joiner</p>
+        <p className="mt-3 mb-0 flex items-center gap-2 text-xs text-muted-foreground"><span className="h-2 w-2 shrink-0 rounded-full bg-(--money-ok)" />Architected by Rupak Ghanpathi · ex-HDFC Bank BA (25+ BRDs, 0 SOX findings) · open to Product & BA roles in fintech and BFSI</p>
       </div>
     </section>
   );
