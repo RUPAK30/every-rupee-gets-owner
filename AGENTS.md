@@ -31,3 +31,9 @@ use the editor.
 
 ## Imported website
 - Keep imported page markup and interaction state in its route file, preserving captured CSS and local media so source fidelity remains reviewable.
+
+## Reconciliation release
+- Keep money as integer paise and validate all allocations in the shared engine on both browser and server to prevent over-allocation.
+- Public demo data is session-only; private workspaces are account-scoped Cloud JSON documents with optimistic version checks to prevent silent overwrites.
+- Keep matching deterministic and CSV parsing in the shared engine; live integrations remain outside the workspace until separately implemented.
+- Use one root auth subscriber and the authenticated route gate; protected server functions enforce authentication independently.
