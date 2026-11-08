@@ -17,17 +17,16 @@ export const explainReturnCode = createServerFn({ method: 'POST' })
         model: 'openai/gpt-6-astra',
         instructions: 'You explain Indian auto-debit (NACH) bounce codes to someone with no finance background. Use ONLY the desk rule given; never invent facts, laws or actions. Reply as JSON: {"explanation": one plain sentence under 25 words, "suggestion": one short action phrased as a suggestion that must be chosen from the allowed outcomes}.',
         input: `Code ${data.code}. Desk rule: cause="${rule.cause}", owner="${rule.owner}", next step="${rule.next}", allowed outcomes=${JSON.stringify(rule.outcomes)}.`,
-        text: { format: { type: 'json_object' } },
       });
       let text = '';
       for (const item of res.output ?? []) if (item.type === 'message') for (const c of item.content) if (c.type === 'output_text') text += c.text;
-      const parsed = z.object({ explanation: z.string().max(300), suggestion: z.string().max(200) }).parse(JSON.parse(text));
+      const parsed = z.object({ explanation: z.string().max(300), suggestion: z.string().max(200) }).parse(JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1)));
       const suggestion = rule.outcomes.find(o => o === parsed.suggestion) ?? rule.outcomes[0]!;
       const out = { explanation: parsed.explanation, suggestion };
       cache.set(data.code, out);
       return { ...out, error: null as string | null };
     } catch (e) {
-      console.error('explainReturnCode failed', e);
+      console.error('explainReturnCode failed', e, JSON.stringify((e as { remote?: unknown }).remote));
       return { explanation: '', suggestion: '', error: 'The AI explanation is unavailable right now. The desk rule above still applies.' };
     }
   });
