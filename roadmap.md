@@ -6,6 +6,6 @@
 - [x] Build public demo entry, capability status and stored demo requests.
 - [x] Build CSV matching, manual allocation and exception handling with private saved workspaces and accounts.
 - [x] Test matching rules and verify public/private flows on desktop and phone.
-- [ ] Align homepage and capability claims with canonical rules and browser-test counts; add two external workflow sections.
-- [ ] Block unsupported high-value self-resolution in the shared engine and desk; retain no write-off actions.
-- [ ] Verify focused rule tests, calculator, links and desktop/mobile presentation.
+- [x] Align homepage and capability claims with canonical rules and browser-test counts; add two external workflow sections.
+- [x] Block unsupported high-value self-resolution in the shared engine and desk; retain no write-off actions.
+- [x] Verify focused rule tests, calculator, links and desktop/mobile presentation.
