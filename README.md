@@ -27,9 +27,21 @@ Finance teams lose money in the gap between what was billed and what the bank re
 
 - **Money is integer paise** — no floating-point rounding, ever.
 - **One shared engine** (`src/lib/reconciliation/engine.ts`) — the same validation runs in the browser and on the server. Over-allocation is impossible.
-- **16 business rules, 31 tests** — including BR-5: no single account can approve a high-value exception without a separate checker.
+- **Tested here: 11 tests** — matching, no over-allocation, atomic CSV import, BR-4 (write-offs rejected) and BR-5 (no resolution above ₹10,000 without a separate checker).
+- **The full tested desk** (16 business rules, 31 tests, brand and lender modes) runs at https://everyrupee-o2c.vercel.app — this app is its lighter, interactive front end.
 - **Lender return codes live in one module** (`lender-codes.ts`) — AI explanations may only reword the desk's rule, and suggestions must be one of the allowed outcomes, logged only after a person confirms.
 - **Honesty by design** — bank/ERP integrations and compliance certifications are labelled "planned", never claimed as live.
+
+
+## How Every Rupee was built
+
+1. **Start from a real, public problem.** Cello World's annual reports showed receivables growing faster than revenue (+14% vs +8.8%, FY25 → FY26). Distributors earn ₹3.5–5 per ₹100, so they deduct schemes and claims at payment. Who owns a short-paid rupee? Usually nobody.
+2. **Write the rules before the screens.** A BRD, user stories and business rules, each with a test. Early drafts had errors I caught and fixed: the wrong GST section (corrected to CGST s.34(2)), a TDS/TCS clash that no longer exists after April 2025, and overstated tax risk.
+3. **Build the desk, then break it on purpose.** The full desk enforces maker-checker above ₹10,000, no write-off by any rule, a balanced ledger entry on every action, and GST vs financial credit notes by the 30 November deadline. An end-to-end click test found three places a rupee could lose its owner; all three were fixed and tested.
+4. **Prove the same discipline works for lenders.** Lender mode gives each NACH return code a reason, an owner and a next step, with RBI's 2023 penal-charge rules and SMA ageing.
+5. **Follow the deduction back to where it started.** Ten Today, a sales workflow module, shares one approval record with Every Rupee: a deduction clears up to the approved cap (compared like with like on GST), the excess returns to the rep who promised it, and only the rep's own claims older than 15 days block the next discount.
+6. **Make it readable in 90 seconds.** Nobody switches between two apps, so the whole route became one page: https://everyrupee-o2c.vercel.app/route.html
+7. **This app: a lighter, interactive front end.** CSV import, matching, exceptions, private workspaces, and a lender desk, with money held as integer paise and BR-4/BR-5 enforced in a shared engine. Its claims are kept identical to the full desk.
 
 ## Stack
 
