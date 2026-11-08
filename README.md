@@ -2,7 +2,7 @@
 
 Order-to-cash reconciliation, explained in plain language. Every rupee billed gets an owner, a reason, or a receipt — never a guess.
 
-**Live:** https://every-rupee-finance-guide.lovable.app
+**Live:** https://every-rupee-gets-owner.lovable.app
 
 A portfolio case study by Rupak Ghanpathi, built with sample data.
 
