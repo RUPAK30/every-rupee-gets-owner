@@ -9,7 +9,7 @@ export const workspaceSchema = z.object({
   invoices: z.array(invoiceSchema).max(1000), receipts: z.array(receiptSchema).max(1000),
   allocations: z.array(z.object({ id, invoiceId: id, receiptId: id, amount })).max(5000),
   exceptions: z.array(z.object({ invoiceId: id, reason: z.string().max(150), owner: z.string().max(150), notes: z.string().max(2000), resolved: z.boolean() })).max(1000),
-});
+}).strict();
 export type Workspace = z.infer<typeof workspaceSchema>;
 export const emptyWorkspace = (): Workspace => ({ invoices: [], receipts: [], allocations: [], exceptions: [] });
 export const invoiceBalance = (w: Workspace, invoiceId: string) => (w.invoices.find(i => i.id === invoiceId)?.amount ?? 0) - w.allocations.filter(a => a.invoiceId === invoiceId).reduce((s, a) => s + a.amount, 0);
@@ -21,7 +21,10 @@ export function validateWorkspace(input: unknown): Workspace {
   for (const a of w.allocations) if (!w.invoices.some(i => i.id === a.invoiceId) || !w.receipts.some(r => r.id === a.receiptId)) throw new Error('Allocation references a missing record.');
   for (const i of w.invoices) if (invoiceBalance(w, i.id) < 0) throw new Error('Allocation exceeds invoice balance.');
   for (const r of w.receipts) if (receiptBalance(w, r.id) < 0) throw new Error('Allocation exceeds receipt balance.');
-  for (const e of w.exceptions) if (!w.invoices.some(i => i.id === e.invoiceId)) throw new Error('Exception references a missing invoice.');
+  for (const e of w.exceptions) {
+    if (!w.invoices.some(i => i.id === e.invoiceId)) throw new Error('Exception references a missing invoice.');
+    if (e.resolved && invoiceBalance(w, e.invoiceId) > 1_000_000) throw new Error('BR-5: resolutions above ₹10,000 require a different checker. Self-approval is blocked; this single-account workspace cannot record that approval.');
+  }
   return w;
 }
 export function allocate(w: Workspace, receiptId: string, invoiceId: string, cents: number): Workspace {

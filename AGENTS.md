@@ -37,3 +37,4 @@ use the editor.
 - Public demo data is session-only; private workspaces are account-scoped Cloud JSON documents with optimistic version checks to prevent silent overwrites.
 - Keep matching deterministic and CSV parsing in the shared engine; live integrations remain outside the workspace until separately implemented.
 - Use one root auth subscriber and the authenticated route gate; protected server functions enforce authentication independently.
+- This single-account workspace cannot approve high-value exceptions without a separate checker; reject such resolutions in shared validation and attribute full maker-checker workflows to the canonical desk.

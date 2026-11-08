@@ -75,6 +75,7 @@ function Index() {
         <ImportedSectionADistributorPaysShort />
         <HeroLoop />
         <QuickTour />
+        <CanonicalWorkflows />
         <h2 className="mt-12 text-2xl font-bold" id="go-deeper">Go deeper</h2>
         <p className="text-sm text-muted-foreground">The full case study, the evidence and the thinking behind it.</p>
         <ImportedSection />
@@ -85,7 +86,7 @@ function Index() {
         <ImportedSection2 />
       </main>
       <ImportedFooter />
-      <a href="#contact" className="er-app fixed bottom-4 right-4 z-40 sm:hidden rounded-full no-underline bg-primary px-5 py-3 min-h-11 font-semibold text-primary-foreground shadow-lg">Let's talk</a>
+      <a href="#contact" className="hidden">Let's talk</a>
     </div>
   );
 }
@@ -93,7 +94,7 @@ function Index() {
 const steps = [
   ["1", "Import", "Upload invoices and receipts as CSV files."],
   ["2", "Auto-match", "Exact reference matches are paired. Unclear ones are never guessed."],
-  ["3", "Resolve", "Each gap gets an owner and a note, and ends as a credit note or a recovery."],
+  ["3", "Resolve", "Each gap gets an owner and a decision note. Accounting actions run in the canonical live desk."],
 ];
 const audiences = [
   ["Finance ops", "Fewer spreadsheets. Every short payment is tracked to closure."],
@@ -106,17 +107,18 @@ const loop = [
   { label: 'Unexplained', cls: 'bg-money-risk/10 text-money-risk', owner: '—', note: 'Customer paid ₹4,87,600 against ₹5,00,000' },
   { label: 'Matched', cls: 'bg-money-wip/15 text-money-wip', owner: '—', note: 'Receipt matched to INV-2041 by reference' },
   { label: 'Owned', cls: 'bg-money-wip/15 text-money-wip', owner: 'Priya · AR', note: 'Gap assigned: promo deduction claimed' },
-  { label: 'Recovered', cls: 'bg-money-ok/15 text-money-ok', owner: 'Priya · AR', note: 'Credit note issued. Gap closed.' },
+  { label: 'Closed', cls: 'bg-money-ok/15 text-money-ok', owner: 'Priya · AR', note: 'Credit note issued. Gap closed.' },
 ];
 function HeroLoop() {
   const [i, setI] = useState(0);
   useEffect(() => { if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setI(3); return; } const t = setInterval(() => setI(x => (x + 1) % loop.length), 1800); return () => clearInterval(t); }, []);
-  const s = loop[i] ?? loop[0]!;
+  const s = loop[i] ?? loop[0];
+  if (!s) return null;
   return (
     <section className="er-app relative z-10 mx-auto -mt-8 max-w-[720px] rounded-xl border border-border bg-card p-5 shadow-xl" aria-label="How a short payment moves through Every Rupee">
       <div className="flex items-center justify-between text-xs text-muted-foreground"><span>Reconciliation desk · sample</span><span>Step {i + 1} of 4</span></div>
       <div className="mt-3 grid grid-cols-[1fr_auto] items-center gap-3 border-y border-border py-4 tabular-nums">
-        <div><b>INV-2041</b> · Sharma Distributors<p key={i} className="er-rise mt-1 text-sm text-muted-foreground">{s.note}</p></div>
+        <div><b>INV-2041</b> · Sample distributor<p key={i} className="er-rise mt-1 text-sm text-muted-foreground">{s.note}</p></div>
         <div className="text-right"><b className="text-lg">₹12,400</b><div className="mt-1"><span className={'er-pill ' + s.cls}>{s.label}</span></div></div>
       </div>
       <div className="mt-3 flex justify-between text-xs text-muted-foreground"><span>Owner: {s.owner}</span><span className="flex gap-1">{loop.map((_, n) => <i key={n} className={'h-1.5 w-6 rounded-full ' + (n <= i ? 'bg-accent' : 'bg-border')} />)}</span></div>
@@ -158,9 +160,48 @@ function QuickTour() {
   );
 }
 
+function CanonicalWorkflows() {
+  const brandRules = [
+    ['BR-1', 'Identify', 'Virtual account per distributor.'],
+    ['BR-2', 'Split', 'TDS u/s 194Q.'],
+    ['BR-3', 'Validate', 'Auto-accept only with evidence, within budget, under tolerance.'],
+    ['BR-4', 'No write-off by rule', 'No rule can ever write money off.'],
+    ['BR-5', 'Maker-checker above ₹10,000', 'Self-approval blocked.'],
+    ['BR-6', 'Credit notes', 'Reported to IRP within 30 days.'],
+    ['BR-7', 'Credit flag', 'On the next order.'],
+    ['BR-8', 'Verbal-promise scheme', 'Goes to Regional sales head within 3 days.'],
+    ['BR-9', 'Balanced vouchers', 'Every movement posts a balanced voucher.'],
+    ['BR-10', 'Sales approval and cap', 'Match a deduction to its sales approval and split at the cap; a pre-tax cap clears up to cap + 18% GST.'],
+    ['BR-11', 'Rep-owned claims', "Only the rep's own claims older than 15 days block the next discount; Finance backlog never does."],
+  ];
+  const lenderRules = [
+    ['LR-1', 'Match', ''], ['LR-2', 'Read the NACH return code', ''],
+    ['LR-3', 'Charge fairly', 'RBI Aug 2023 penal charges: no capitalisation, no interest on penal.'],
+    ['LR-4', 'Own the overdue', 'SMA-0/1/2 buckets.'], ['LR-5', 'Control', ''],
+  ];
+  return <div className="er-app my-10">
+    <section className="border-y border-border py-7" aria-labelledby="canonical-rules">
+      <p className="text-xs font-semibold uppercase text-muted-foreground">Canonical product · external live desks</p>
+      <h2 id="canonical-rules" className="mt-2 text-2xl font-semibold">16 business rules. 31 tests passing.</h2>
+      <p className="mt-3 text-sm leading-6 text-muted-foreground">11 brand-mode rules (BR-1 to BR-11), 5 lender-mode rules (LR-1 to LR-5). The canonical product reports 31 tests passing: 19 brand, 12 lender, run in the browser. These are its test counts, not this workspace's.</p>
+      <div className="mt-4 flex flex-wrap gap-3"><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">Run brand tests ↗</a></Button><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/lender.html">Open lender desk ↗</a></Button></div>
+      <details className="mt-5 border-t border-border pt-4"><summary className="cursor-pointer font-semibold">All 16 business rules</summary><div className="mt-4 grid gap-8 sm:grid-cols-2">{[['Brand mode', brandRules], ['Lender mode', lenderRules]].map(([title, rules]) => <div key={String(title)}><h3 className="font-semibold">{String(title)}</h3><dl className="mt-3 divide-y divide-border">{(rules as string[][]).map(([id, title, text]) => <div key={id} className="py-3"><dt className="text-sm font-semibold">{id} · {title}</dt>{text && <dd className="mt-1 text-sm leading-6 text-muted-foreground">{text}</dd>}</div>)}</dl></div>)}</div></details>
+    </section>
+    <section className="border-b border-border py-8" aria-labelledby="quote-cash"><p className="text-xs font-semibold uppercase text-muted-foreground">Sales → Finance</p><h2 id="quote-cash" className="mt-2 text-2xl font-semibold">Quote to cash: one discount, end to end</h2><p className="mt-3 max-w-[75ch] text-sm leading-7 text-muted-foreground">A sales approval in Ten Today becomes a shared record; the deduction clears up to the cap, the excess goes to the rep, an expired approval goes back to the approver. Three outcomes, every ledger entry, invoice balances to the rupee.</p><Button asChild className="mt-4 text-primary-foreground! no-underline!"><a href="https://everyrupee-o2c.vercel.app/route.html">Open quote-to-cash workflow ↗</a></Button></section>
+    <section className="border-b border-border py-8" aria-labelledby="lender-mode"><p className="text-xs font-semibold uppercase text-muted-foreground">Lender workflow</p><h2 id="lender-mode" className="mt-2 text-2xl font-semibold">Lender mode: EMI bounces</h2><p className="mt-3 text-sm text-muted-foreground">Each NACH return code gets an owner and a next step.</p><dl className="mt-4 grid gap-5 sm:grid-cols-3">{[['04', 'Insufficient balance', 'Contact, then re-present.'], ['61', 'Mandate cancelled', 'Fresh mandate.'], ['06', 'Stopped by customer', 'Talk first; may be a dispute.']].map(([code, label, next]) => <div key={code}><dt className="text-sm font-semibold">{code} · {label}</dt><dd className="mt-1 text-sm text-muted-foreground">{next}</dd></div>)}</dl><Button asChild className="mt-5 text-primary-foreground! no-underline!"><a href="https://everyrupee-o2c.vercel.app/lender.html">Open lender workflow ↗</a></Button></section>
+  </div>;
+}
+
 function ImportedSectionADistributorPaysShort() {
   return (
-    <section className="hero bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-site-import-primary! text-white text-center [clip-path:inset(0_-100vmax)]"><span style={{ display: "none" }} id="forchip" hidden /><span className="eye2 bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff14]! border-[#ffffff2e]! rounded-[999px] text-site-import-border! [border:1px_solid_var(--line)] [font-weight:550]">Portfolio case study by Rupak Ghanpathi<span className="hm"> · built solo · sample data</span></span><h1 className="text-white! font-[family-name:Inter,system-ui,sans-serif] font-bold tracking-[-.03em]! max-w-[22ch]">Reconcile every short payment, <em className="not-italic">from invoice to cash.</em></h1><p className="lead text-[#cbd5e1]! max-w-[56ch]">Indian B2B finance teams use Every Rupee to find, explain and recover the deductions customers take from invoices.<span className="hm"> Every gap gets one owner and ends in a credit note or a recovery.</span></p><div className="cta flex-wrap justify-center [@media(max-width:640px)]:grid-cols-[1fr_1fr] [@media(max-width:640px)]:mt-0! [@media(max-width:640px)]:w-full"><a className="btn g items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="/demo">Try the demo<svg className="h-[15px] transition-transform duration-150 w-[15px]" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3l5 5-5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></a><a className="btn items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline [@media(max-width:640px)]:justify-center" href="#contact">Let's talk</a></div><p className="thesis text-white! font-bold tracking-[-.01em]">The hard part of a deduction isn't matching it. It's owning it.</p><p className="dec bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-[#ffffff0f]! text-site-import-border! max-w-[640px] text-left"><b className="text-white!">The call I made:</b> control over speed. Strict reference matching and no auto write-offs. Maker-checker and accounting approvals remain proposed controls, not enforced in this release.</p></section>
+    <section className="er-app py-12 text-center sm:py-16" aria-labelledby="intro-title">
+      <p className="text-sm font-medium text-muted-foreground">Portfolio case study by Rupak Ghanpathi · sample data</p>
+      <h1 id="intro-title" className="mx-auto mt-4 max-w-[24ch] text-4xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-2xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
+      <p className="mx-auto mt-5 max-w-[60ch] text-base leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
+      <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><Link to="/demo">Try the demo</Link></Button><Button asChild variant="outline" className="min-h-11"><a href="#contact">Let's talk</a></Button></div>
+      <p className="mt-6 font-semibold">The hard part of a deduction isn't matching it. It's owning it.</p>
+      <div className="mx-auto mt-5 max-w-[68ch] border-y border-border py-4 text-sm leading-6 text-muted-foreground"><b className="text-foreground">Enforced and tested in the live desk:</b> maker-checker above ₹10,000 with self-approval blocked (BR-5); no rule can ever write money off (BR-4).<br /><a className="font-semibold text-primary underline" href="https://everyrupee-o2c.vercel.app/desk.html">See it run ↗</a><p className="mt-2">The live desk is the canonical product. This app's single-account workspace blocks resolutions above ₹10,000; it does not provide a separate checker or accounting postings.</p></div>
+    </section>
   );
 }
 
@@ -398,7 +439,7 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
                   <tr>
                     <th className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-card text-(--mut) tracking-[.06em] text-left uppercase" />
                     <th className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-card text-(--mut) tracking-[.06em] text-left uppercase">How it often runs today</th>
-                    <th className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-card text-(--mut) tracking-[.06em] text-left uppercase">On the desk</th>
+                    <th className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-card text-(--mut) tracking-[.06em] text-left uppercase">Canonical live desk</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -431,8 +472,8 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
               </table>
               <p className="cap text-(--mut) text-[.78rem] mt-[8px] mr-[2px] mb-0 ml-[2px]">Illustrative: one gap from the sample data, traced through the workflow. "Today" is the common manual pattern, not a measured baseline.</p>
             </div>
-            <p className="text-(--gd) text-[.85rem] font-semibold tracking-[.01em] mt-[14px] mr-auto mb-0 ml-auto text-center">Case-study targets: 0 auto write-offs · maker-checker above ₹10,000. These are proposed design controls; see current capability status.</p>
-            <p className="trk text-[.72rem] font-bold tracking-[.08em] mt-[26px] mr-0 mb-[10px] ml-0 text-center uppercase" id="trace">Traceability · from a public filing to a running control</p>
+            <p className="text-(--gd) text-[.85rem] font-semibold tracking-[.01em] mt-[14px] mr-auto mb-0 ml-auto text-center">Enforced and tested in the canonical live desk: no rule can ever write money off (BR-4); maker-checker above ₹10,000, self-approval blocked (BR-5).</p>
+            <p className="trk text-[.72rem] font-bold tracking-[.08em] mt-[26px] mr-0 mb-[10px] ml-0 text-center uppercase" id="trace">Canonical live desk · from a public filing to a running control</p>
             <ol className="tr6 gap-[10px] list-none m-0 p-0 [counter-reset:t]">
               <li className="p-[12px]">
                 <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Filing</small>
@@ -579,8 +620,8 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
                 <ol className="pts list-none m-0 p-0 [counter-reset:p]">
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Evidence first.</b> Every fact dated and sourced.</li>
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">One owner per gap.</b> One decision, one deadline.</li>
-                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Testable rules.</b> Case-study rules include "must block" scenarios; not all are enforced by this release.</li>
-                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Controls built in.</b> Proposed maker-checker and no auto write-offs. Product compliance is not independently verified.</li>
+                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Testable rules.</b> 16 business rules and 31 browser tests across the canonical brand and lender desks. See the live desk for the full controls.</li>
+                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Controls built in.</b> Maker-checker above ₹10,000 and no write-off by rule are enforced and tested in the canonical live desk. Product certifications are not claimed.</li>
                 </ol>
               </div>
               <div className="pane bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white pt-[22px] pr-[22px] pb-[10px] pl-[22px]">
