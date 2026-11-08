@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const { signedIn } = useAccount();
   const [openDetails, setOpenDetails] = useState<Record<string, boolean>>({});
-  const [deadline, setDeadline] = useState(23);
+  const [deadline, setDeadline] = useState<number | null>(null);
   const openHash = (hash: string) => {
     const target = document.getElementById(hash.slice(1));
     const detail = target?.closest('details');
@@ -30,10 +30,10 @@ function Index() {
   };
   useEffect(() => {
     if (location.hash) openHash(location.hash);
-    const now = new Date();
-    let end = new Date(now.getFullYear(), 10, 30, 23, 59, 59);
-    if (now > end) end = new Date(now.getFullYear() + 1, 10, 30, 23, 59, 59);
-    setDeadline(Math.ceil((end.getTime() - now.getTime()) / 86400000));
+    // Deadline: 30 November 2026, end of day IST (UTC+5:30). Computed in UTC so it is correct from any timezone.
+    const end = Date.UTC(2026, 10, 30, 18, 29, 59); // 2026-11-30 23:59:59 IST
+    const now = Date.now();
+    setDeadline(now > end ? null : Math.ceil((end - now) / 86400000));
   }, []);
   const followAnchor = (event: MouseEvent<HTMLDivElement>) => {
     if (!(event.target instanceof Element)) return;
@@ -85,7 +85,7 @@ function Index() {
         <p className="text-sm text-muted-foreground">The full case study, the evidence and the thinking behind it.</p>
         <ImportedSection />
         <section className="sec" id="now">
-          <div className="nowst bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white overflow-hidden"><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">+14% vs +8.8%</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">Cello's receivables vs revenue, FY26</span></a><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">₹3.5–5</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">distributor margin per ₹100</span></a><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]"><span className="[color:inherit]! [@media(max-width:640px)]:leading-[1.3]" id="xd2">{deadline}</span> days</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">to the credit-note deadline, 30 Nov</span></a></div>
+          <div className="nowst bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white overflow-hidden"><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">+14% vs +8.8%</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">Cello's receivables vs revenue, FY26</span></a><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">₹3.5–5</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">distributor margin per ₹100</span></a><a className={"text-center no-underline [&:hover]:bg-none [&:hover]:[background-position:0%_0%] [&:hover]:[background-size:auto_auto] [&:hover]:[background-repeat:repeat] [&:hover]:[background-origin:padding-box] [&:hover]:[background-clip:border-box] [&:hover]:[background-attachment:scroll] [&:hover]:bg-site-import-background"} href="#evidence"><b className="text-site-import-primary! tracking-[-.02em]">{deadline === null ? <span className="[color:inherit]! [@media(max-width:640px)]:leading-[1.3]" id="xd2">Deadline passed</span> : <><span className="[color:inherit]! [@media(max-width:640px)]:leading-[1.3]" id="xd2">{deadline}</span> days</>}</b><span className="text-(--mut) [@media(max-width:640px)]:leading-[1.3]">{deadline === null ? 'GST credit notes for FY 2025-26 are no longer allowed' : 'to the credit-note deadline, 30 Nov'}</span></a></div>
         </section>
         <ImportedSectionOpenWhatYouCare openDetails={openDetails} setOpenDetails={setOpenDetails} deadline={deadline} />
         <ImportedSection2 />
@@ -175,12 +175,10 @@ function CanonicalWorkflows() {
   return <div className="er-app my-10">
     <section className="border-y border-border py-7" aria-labelledby="canonical-rules">
       <p className="text-xs font-semibold uppercase text-muted-foreground">Canonical product · external live desks</p>
-      <h2 id="canonical-rules" className="mt-2 text-2xl font-semibold">16 business rules. 31 tests passing.</h2>
-      <p className="mt-3 text-sm leading-6 text-muted-foreground">11 brand-mode rules (BR-1 to BR-11), 5 lender-mode rules (LR-1 to LR-5). The canonical product reports 31 tests passing: 19 brand, 12 lender, run in the browser. These are its test counts, not this workspace's.</p>
-      <div className="mt-4 flex flex-wrap gap-3"><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">Run brand tests ↗</a></Button><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/lender.html">Open lender desk ↗</a></Button></div>
+      <p id="canonical-rules" className="text-xs font-semibold uppercase text-muted-foreground">Full tested desk</p>
+      <div className="mt-3 flex flex-wrap gap-3"><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">Run brand tests ↗</a></Button><Button asChild variant="outline"><a href="https://everyrupee-o2c.vercel.app/lender.html">Open lender desk ↗</a></Button></div>
       <details className="mt-5 border-t border-border pt-4"><summary className="cursor-pointer font-semibold">All 16 business rules</summary><div className="mt-4 grid gap-8 sm:grid-cols-2">{[['Brand mode', brandRules], ['Lender mode', lenderRules]].map(([title, rules]) => <div key={String(title)}><h3 className="font-semibold">{String(title)}</h3><dl className="mt-3 divide-y divide-border">{(rules as string[][]).map(([id, title, text]) => <div key={id} className="py-3"><dt className="text-sm font-semibold">{id} · {title}</dt>{text && <dd className="mt-1 text-sm leading-6 text-muted-foreground">{text}</dd>}</div>)}</dl></div>)}</div></details>
     </section>
-    <section className="border-b border-border py-8" aria-labelledby="quote-cash"><p className="text-xs font-semibold uppercase text-muted-foreground">Sales → Finance</p><h2 id="quote-cash" className="mt-2 text-2xl font-semibold">Quote to cash: one discount, end to end</h2><p className="mt-3 max-w-[75ch] text-sm leading-7 text-muted-foreground">A sales approval in Ten Today becomes a shared record; the deduction clears up to the cap, the excess goes to the rep, an expired approval goes back to the approver. Three outcomes, every ledger entry, invoice balances to the rupee.</p><Button asChild className="mt-4 text-primary-foreground! no-underline!"><a href="https://everyrupee-o2c.vercel.app/route.html">Open quote-to-cash workflow ↗</a></Button></section>
     <section className="border-b border-border py-8" aria-labelledby="lender-mode"><p className="text-xs font-semibold uppercase text-muted-foreground">Lender workflow</p><h2 id="lender-mode" className="mt-2 text-2xl font-semibold">Lender mode: EMI bounces</h2><p className="mt-3 text-sm text-muted-foreground">Each NACH return code gets an owner and a next step.</p><dl className="mt-4 grid gap-5 sm:grid-cols-3">{[['04', 'Insufficient balance', 'Contact, then re-present.'], ['61', 'Mandate cancelled', 'Fresh mandate.'], ['06', 'Stopped by customer', 'Talk first; may be a dispute.']].map(([code, label, next]) => <div key={code}><dt className="text-sm font-semibold">{code} · {label}</dt><dd className="mt-1 text-sm text-muted-foreground">{next}</dd></div>)}</dl><Button asChild className="mt-5 text-primary-foreground! no-underline!"><a href="https://everyrupee-o2c.vercel.app/lender.html">Open lender workflow ↗</a></Button></section>
   </div>;
 }
@@ -373,7 +371,7 @@ function ImportedSection() {
             <button role="tab" aria-selected={current === 2} onClick={() => { setCurrent(2); setStep(0); }}>
               <span className="text-[1rem] font-bold [font-variant-numeric:tabular-nums]">₹3,150</span>
               <span className="rs text-[.88rem]">Damage claim<small className="text-(--mut) text-[.78rem]">Proof of delivery attached</small></span>
-              <span className="st bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[999px] text-[#0071e3] text-[.7rem] font-semibold py-[3px] px-[9px] whitespace-nowrap [@media(max-width:560px)]:col-start-2">Needs checker</span>
+              <span className="st bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[999px] text-[#0071e3] text-[.7rem] font-semibold py-[3px] px-[9px] whitespace-nowrap [@media(max-width:560px)]:col-start-2">Owner assigned</span>
             </button>
           </li>
           <li>
@@ -647,7 +645,7 @@ function ImportedSection2() {
           <p className="text-(--mut) text-[.88rem] mt-0 mr-0 mb-[12px] ml-0" id="rp">Request a demo below, or email Rupak directly.</p>
           <div className="chips flex-wrap gap-[8px] [@media(max-width:640px)]:gap-[8px] [@media(max-width:640px)]:grid-cols-[1fr_1fr]"><a className="chip p items-center text-[.88rem] h-[40px] py-0 px-[15px] no-underline transition-all duration-150 [font-weight:550] [@media(max-width:640px)]:justify-center [@media(max-width:640px)]:text-center" href={"mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let's%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20"} id="m1">Let's talk this week</a><a className="chip items-center text-[.88rem] h-[40px] py-0 px-[15px] no-underline transition-all duration-150 [font-weight:550] [@media(max-width:640px)]:justify-center [@media(max-width:640px)]:text-center" href={"mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20"} id="m3">Not a fit, here's why</a></div>
           <div className="er-app mt-5"><DemoRequest /></div>
-          <p className="small items-center text-(--mut) text-[.8rem] gap-[8px] mt-[12px] mr-0 mb-0 ml-0"><span className="dot bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#34c759] rounded-[50%] flex-none h-[8px] w-[8px]" />Open to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner</p>
+          <p className="small items-center text-(--mut) text-[.8rem] gap-[8px] mt-[12px] mr-0 mb-0 ml-0"><span className="dot bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#34c759] rounded-[50%] flex-none h-[8px] w-[8px]" />Open to BA and Product roles · fintech, BFSI, finance software · anywhere in India · immediate joiner</p>
         </div>
       </div>
     </section>
