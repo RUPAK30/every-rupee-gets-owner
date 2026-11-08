@@ -96,7 +96,7 @@ const steps = [
 
 function QuickTour() {
   return (
-    <section className="er-app my-10 grid gap-10" aria-labelledby="tour-h">
+    <section className="er-app my-8 grid gap-6" aria-labelledby="tour-h">
       <div>
         <p className="text-xs font-semibold uppercase text-muted-foreground">How it works</p>
         <h2 id="tour-h" className="mt-1 text-2xl font-bold">From messy payments to owned gaps in 3 steps</h2>
@@ -108,11 +108,6 @@ function QuickTour() {
             </li>
           ))}
         </ol>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-border bg-card p-5">
-        <div><p className="text-xs font-semibold uppercase text-muted-foreground">Sample case</p>
-          <p className="mt-1 text-lg"><b>₹12,400 short payment:</b> unexplained and ownerless before, <b>matched, owned and closed</b> after.</p></div>
-        <Button className="min-h-11 text-primary-foreground!" asChild><Link to="/demo">Try the live demo, no sign-up</Link></Button>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-4 text-sm">
         <p><b>Working today:</b> CSV import, auto-match, manual allocation, exceptions, private saved workspaces. <b>Planned:</b> bank and ERP connections.</p>
