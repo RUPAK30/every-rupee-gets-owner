@@ -73,6 +73,11 @@ function Index() {
       </header>
       <main className="col my-0 mx-auto max-w-[1040px]">
         <ImportedSectionADistributorPaysShort />
+        <section className="er-app mb-12 w-full rounded-lg border border-border bg-card p-6 sm:p-8" aria-labelledby="discount-journey">
+          <h2 id="discount-journey" className="text-2xl font-semibold">Follow one discount from the sales approval to closed books</h2>
+          <p className="mt-3 text-sm leading-7 text-muted-foreground">Three outcomes, every ledger entry, the invoice balances to the rupee.</p>
+          <Button asChild className="mt-4 text-primary-foreground! no-underline!"><a href="https://everyrupee-o2c.vercel.app/route.html">See it end to end</a></Button>
+        </section>
         <HeroLoop />
         <QuickTour />
         <CanonicalWorkflows />
@@ -95,12 +100,6 @@ const steps = [
   ["1", "Import", "Upload invoices and receipts as CSV files."],
   ["2", "Auto-match", "Exact reference matches are paired. Unclear ones are never guessed."],
   ["3", "Resolve", "Each gap gets an owner and a decision note. Accounting actions run in the canonical live desk."],
-];
-const audiences = [
-  ["Finance ops", "Fewer spreadsheets. Every short payment is tracked to closure."],
-  ["CFO", "You can see the money still recoverable and who owns each gap."],
-  ["Product manager", "A scoped first release: strict matching over speed, with honest limits."],
-  ["Hiring manager / TA", "Designed and built solo by Rupak Ghanpathi, from the problem framing to a working app."],
 ];
 
 const loop = [
@@ -145,12 +144,6 @@ function QuickTour() {
         <div><p className="text-xs font-semibold uppercase text-muted-foreground">Sample case</p>
           <p className="mt-1 text-lg"><b>₹12,400 short payment:</b> unexplained and ownerless before, <b>matched, owned and closed</b> after.</p></div>
         <Button className="min-h-11 text-primary-foreground!" asChild><Link to="/demo">Try the live demo, no sign-up</Link></Button>
-      </div>
-      <div>
-        <h2 className="text-2xl font-bold">Built for</h2>
-        <ul className="mt-4 list-none p-0 grid gap-4 sm:grid-cols-2">
-          {audiences.map(([t, d]) => <li key={t} className="rounded-lg border border-border bg-card p-5"><h3 className="font-semibold">{t}</h3><p className="mt-1 text-sm text-muted-foreground">{d}</p></li>)}
-        </ul>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-4 text-sm">
         <p><b>Working today:</b> CSV import, auto-match, manual allocation, exceptions, private saved workspaces. <b>Planned:</b> bank and ERP connections.</p>
@@ -199,8 +192,9 @@ function ImportedSectionADistributorPaysShort() {
       <h1 id="intro-title" className="mx-auto mt-4 max-w-[24ch] text-4xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-2xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
       <p className="mx-auto mt-5 max-w-[60ch] text-base leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><Link to="/demo">Try the demo</Link></Button><Button asChild variant="outline" className="min-h-11"><a href="#contact">Let's talk</a></Button></div>
+      <div className="mt-3 flex flex-wrap justify-center gap-2">{['16 rules', '31/31 tests passing', '0 write-offs by rule'].map(label => <Button key={label} asChild variant="outline" size="sm" className="h-8 rounded-full text-xs no-underline!"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">{label}</a></Button>)}</div>
       <p className="mt-6 font-semibold">The hard part of a deduction isn't matching it. It's owning it.</p>
-      <div className="mx-auto mt-5 max-w-[68ch] border-y border-border py-4 text-sm leading-6 text-muted-foreground"><b className="text-foreground">Enforced and tested in the live desk:</b> maker-checker above ₹10,000 with self-approval blocked (BR-5); no rule can ever write money off (BR-4).<br /><a className="font-semibold text-primary underline" href="https://everyrupee-o2c.vercel.app/desk.html">See it run ↗</a><p className="mt-2">The live desk is the canonical product. This app's single-account workspace blocks resolutions above ₹10,000; it does not provide a separate checker or accounting postings.</p></div>
+      <div className="mx-auto mt-5 max-w-[68ch] border-y border-border py-4 text-sm leading-6 text-muted-foreground">Maker-checker above ₹10,000 and zero write-offs by rule are enforced and tested in the <a className="font-semibold text-primary underline" href="https://everyrupee-o2c.vercel.app/desk.html">full desk</a> (16 rules, 31/31 tests). This lighter demo shows matching and exceptions.</div>
     </section>
   );
 }
@@ -472,7 +466,7 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
               </table>
               <p className="cap text-(--mut) text-[.78rem] mt-[8px] mr-[2px] mb-0 ml-[2px]">Illustrative: one gap from the sample data, traced through the workflow. "Today" is the common manual pattern, not a measured baseline.</p>
             </div>
-            <p className="text-(--gd) text-[.85rem] font-semibold tracking-[.01em] mt-[14px] mr-auto mb-0 ml-auto text-center">Enforced and tested in the canonical live desk: no rule can ever write money off (BR-4); maker-checker above ₹10,000, self-approval blocked (BR-5).</p>
+            <p className="text-(--gd) text-[.85rem] font-semibold tracking-[.01em] mt-[14px] mr-auto mb-0 ml-auto text-center">0 write-offs by rule · maker-checker above ₹10,000. Enforced and tested in the full desk.</p>
             <p className="trk text-[.72rem] font-bold tracking-[.08em] mt-[26px] mr-0 mb-[10px] ml-0 text-center uppercase" id="trace">Canonical live desk · from a public filing to a running control</p>
             <ol className="tr6 gap-[10px] list-none m-0 p-0 [counter-reset:t]">
               <li className="p-[12px]">
@@ -576,20 +570,7 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
               </div>
               <p className="text-(--mut) text-[.75rem] col-start-1 col-end-[-1] m-0">Billing × share × days÷30 = cash stuck. Try your own numbers.</p>
             </div>
-            <div className="mt-[16px]" id="ask">
-              <div className="hook [background:linear-gradient(135deg,#F5F5F7,#F5F5F7)] border border-solid border-[#e8e8ed] rounded-[18px] mt-0 mr-auto mb-[12px] ml-auto max-w-[720px] py-[16px] px-[20px]" id="hook" hidden>
-                <small className="text-[#0071e3] text-[.7rem] font-bold tracking-[.08em] mb-[4px] uppercase" id="hookt" />
-                <p className="text-(--ink) text-[1rem] leading-normal m-0" id="hookp" />
-              </div>
-              <div className="askq [background:linear-gradient(135deg,#F5F5F7,#F5F5F7)] my-0 mx-auto max-w-none p-[22px] text-center">
-                <small className="text-[.72rem] font-bold tracking-[.08em] mb-[6px] uppercase">The question I'd ask you</small>
-                <p className="text-(--ink) text-[1.15rem] leading-[1.4] mt-0 mr-0 mb-[14px] ml-0 [font-weight:650]" id="l3">Which deduction type creates the most tickets or manual work for your customers today?</p>
-                <a className="btn g sm items-center cursor-pointer gap-[8px] tracking-[-.01em] no-underline" href={"mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20"} id="m5">Answer it in one line</a>
-              </div>
-              <span id="l1" hidden>Your customers' AR teams live in this queue. Every unexplained deduction is a ticket, a manual match or a churn reason for your product.</span>
-              <span id="l2" hidden>Sit with support and implementation, map the top deduction types your customers raise, and write the rules and UAT cases for one of them.</span>
-              <span id="lensh" hidden />
-            </div>
+
           </section>
         </details>
         <details id="detail-thinking" open={openDetails['detail-thinking'] ?? false} onToggle={event => { const open = event.currentTarget.open; setOpenDetails(previous => previous['detail-thinking'] === open ? previous : { ...previous, ['detail-thinking']: open }); }} className="dp bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white overflow-hidden">
@@ -620,8 +601,8 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
                 <ol className="pts list-none m-0 p-0 [counter-reset:p]">
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Evidence first.</b> Every fact dated and sourced.</li>
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">One owner per gap.</b> One decision, one deadline.</li>
-                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Testable rules.</b> 16 business rules and 31 browser tests across the canonical brand and lender desks. See the live desk for the full controls.</li>
-                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Controls built in.</b> Maker-checker above ₹10,000 and no write-off by rule are enforced and tested in the canonical live desk. Product certifications are not claimed.</li>
+                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Testable rules.</b> The full desk runs 16 rules with 31 passing tests, including every "must block" case. This demo enforces matching and exceptions only.</li>
+                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Controls built in.</b> Maker-checker and no write-offs by rule: enforced and tested in the full desk. Product certifications are not claimed.</li>
                 </ol>
               </div>
               <div className="pane bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white pt-[22px] pr-[22px] pb-[10px] pl-[22px]">
