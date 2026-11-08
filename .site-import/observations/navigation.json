@@ -1,0 +1,1442 @@
+[
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "How it works",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#board",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#board",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "The thinking",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#thinking",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#thinking",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Sources",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "\u20b9Every Rupee",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Quote to cash",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Lender",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Try the live desk",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/desk.html?tour=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/desk.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Talk to Rupak",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#contact",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#contact",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "New \u00b7 quote to cash, end to end\n  Follow one discount from the sales approval to closed books\n  Rahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.\n  Clean matchOver-deductionExpired approvalSee it end to end \u2192",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Do it in the product",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/desk.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/desk.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Where the deduction started: the sales promise \u2192",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Same discipline for a lender: NACH bounces \u2192",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "+14% vs +8.8%Cello's receivables vs revenue, FY26",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "\u20b93.5\u20135distributor margin per \u20b9100",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "23 daysto the credit-note deadline, 30 Nov",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Answer it in one line",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Sources, and what I don't claim",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Let's talk this week",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Not a fit, here's why",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "\u20b9Every Rupee",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "rupakr2g@gmail.com",
+    "expected_destination": "mailto:rupakr2g@gmail.com",
+    "observed_destination": "mailto:rupakr2g@gmail.com",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Open the product",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/desk.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/desk.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Forward to a colleague",
+    "expected_destination": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+    "observed_destination": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Run the brand tests",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/desk.html?uat=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/desk.html?uat=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Sales \u2192 finance route",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Lender mode",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Full case study",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/case-study.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/case-study.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Deck (PDF)",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/Every_Rupee_Deck.pdf",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/Every_Rupee_Deck.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "BRD (PDF)",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/Cello_O2C_BRD.pdf",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/Cello_O2C_BRD.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "One-pager (PDF)",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/Cello_O2C_One_Pager.pdf",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/Cello_O2C_One_Pager.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Sources",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Privacy",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#privacy",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#privacy",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "GitHub",
+    "expected_destination": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+    "observed_destination": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Portfolio",
+    "expected_destination": "https://rupak-lemon.vercel.app/",
+    "observed_destination": "https://rupak-lemon.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Viraam",
+    "expected_destination": "https://lull-hr.vercel.app/",
+    "observed_destination": "https://lull-hr.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "source",
+    "trigger": "Ten Today",
+    "expected_destination": "https://tentoday.vercel.app/",
+    "observed_destination": "https://tentoday.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "How it works",
+    "expected_destination": "http://localhost:8080/#board",
+    "observed_destination": "http://localhost:8080/#board",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "The thinking",
+    "expected_destination": "http://localhost:8080/#thinking",
+    "observed_destination": "http://localhost:8080/#thinking",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Sources",
+    "expected_destination": "http://localhost:8080/sources.html",
+    "observed_destination": "http://localhost:8080/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "\u20b9Every Rupee",
+    "expected_destination": "http://localhost:8080/",
+    "observed_destination": "http://localhost:8080/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Quote to cash",
+    "expected_destination": "http://localhost:8080/route.html",
+    "observed_destination": "http://localhost:8080/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Lender",
+    "expected_destination": "http://localhost:8080/lender.html?tour=1",
+    "observed_destination": "http://localhost:8080/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Try the live desk",
+    "expected_destination": "http://localhost:8080/desk.html?tour=1",
+    "observed_destination": "http://localhost:8080/desk.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Talk to Rupak",
+    "expected_destination": "http://localhost:8080/#contact",
+    "observed_destination": "http://localhost:8080/#contact",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "New \u00b7 quote to cash, end to end\n  Follow one discount from the sales approval to closed books\n  Rahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.\n  Clean matchOver-deductionExpired approvalSee it end to end \u2192",
+    "expected_destination": "http://localhost:8080/route.html",
+    "observed_destination": "http://localhost:8080/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Do it in the product",
+    "expected_destination": "http://localhost:8080/desk.html",
+    "observed_destination": "http://localhost:8080/desk.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Where the deduction started: the sales promise \u2192",
+    "expected_destination": "http://localhost:8080/route.html",
+    "observed_destination": "http://localhost:8080/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Same discipline for a lender: NACH bounces \u2192",
+    "expected_destination": "http://localhost:8080/lender.html?tour=1",
+    "observed_destination": "http://localhost:8080/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "+14% vs +8.8%Cello's receivables vs revenue, FY26",
+    "expected_destination": "http://localhost:8080/#evidence",
+    "observed_destination": "http://localhost:8080/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "\u20b93.5\u20135distributor margin per \u20b9100",
+    "expected_destination": "http://localhost:8080/#evidence",
+    "observed_destination": "http://localhost:8080/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "23 daysto the credit-note deadline, 30 Nov",
+    "expected_destination": "http://localhost:8080/#evidence",
+    "observed_destination": "http://localhost:8080/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Answer it in one line",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Sources, and what I don't claim",
+    "expected_destination": "http://localhost:8080/sources.html",
+    "observed_destination": "http://localhost:8080/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Let's talk this week",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Not a fit, here's why",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "\u20b9Every Rupee",
+    "expected_destination": "http://localhost:8080/",
+    "observed_destination": "http://localhost:8080/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "rupakr2g@gmail.com",
+    "expected_destination": "mailto:rupakr2g@gmail.com",
+    "observed_destination": "mailto:rupakr2g@gmail.com",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Open the product",
+    "expected_destination": "http://localhost:8080/desk.html",
+    "observed_destination": "http://localhost:8080/desk.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Forward to a colleague",
+    "expected_destination": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+    "observed_destination": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Run the brand tests",
+    "expected_destination": "http://localhost:8080/desk.html?uat=1",
+    "observed_destination": "http://localhost:8080/desk.html?uat=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Sales \u2192 finance route",
+    "expected_destination": "http://localhost:8080/route.html",
+    "observed_destination": "http://localhost:8080/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Lender mode",
+    "expected_destination": "http://localhost:8080/lender.html?tour=1",
+    "observed_destination": "http://localhost:8080/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Full case study",
+    "expected_destination": "http://localhost:8080/case-study.html",
+    "observed_destination": "http://localhost:8080/case-study.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Deck (PDF)",
+    "expected_destination": "http://localhost:8080/Every_Rupee_Deck.pdf",
+    "observed_destination": "http://localhost:8080/Every_Rupee_Deck.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "BRD (PDF)",
+    "expected_destination": "http://localhost:8080/Cello_O2C_BRD.pdf",
+    "observed_destination": "http://localhost:8080/Cello_O2C_BRD.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "One-pager (PDF)",
+    "expected_destination": "http://localhost:8080/Cello_O2C_One_Pager.pdf",
+    "observed_destination": "http://localhost:8080/Cello_O2C_One_Pager.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Sources",
+    "expected_destination": "http://localhost:8080/sources.html",
+    "observed_destination": "http://localhost:8080/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Privacy",
+    "expected_destination": "http://localhost:8080/#privacy",
+    "observed_destination": "http://localhost:8080/#privacy",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "GitHub",
+    "expected_destination": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+    "observed_destination": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Portfolio",
+    "expected_destination": "https://rupak-lemon.vercel.app/",
+    "observed_destination": "https://rupak-lemon.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Viraam",
+    "expected_destination": "https://lull-hr.vercel.app/",
+    "observed_destination": "https://lull-hr.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "desktop",
+    "site": "preview",
+    "trigger": "Ten Today",
+    "expected_destination": "https://tentoday.vercel.app/",
+    "observed_destination": "https://tentoday.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "How it works",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#board",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#board",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "The thinking",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#thinking",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#thinking",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Sources",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "\u20b9Every Rupee",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Quote to cash",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Lender",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Try the live desk",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/desk.html?tour=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/desk.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Talk to Rupak",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#contact",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#contact",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "New \u00b7 quote to cash, end to end\n  Follow one discount from the sales approval to closed books\n  Rahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.\n  Clean matchOver-deductionExpired approvalSee it end to end \u2192",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Do it in the product",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/desk.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/desk.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Where the deduction started: the sales promise \u2192",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Same discipline for a lender: NACH bounces \u2192",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "+14% vs +8.8%Cello's receivables vs revenue, FY26",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "\u20b93.5\u20135distributor margin per \u20b9100",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "23 daysto the credit-note deadline, 30 Nov",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Answer it in one line",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Sources, and what I don't claim",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Let's talk this week",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Not a fit, here's why",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "\u20b9Every Rupee",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "rupakr2g@gmail.com",
+    "expected_destination": "mailto:rupakr2g@gmail.com",
+    "observed_destination": "mailto:rupakr2g@gmail.com",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Open the product",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/desk.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/desk.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Forward to a colleague",
+    "expected_destination": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+    "observed_destination": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Run the brand tests",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/desk.html?uat=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/desk.html?uat=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Sales \u2192 finance route",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Lender mode",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Full case study",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/case-study.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/case-study.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Deck (PDF)",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/Every_Rupee_Deck.pdf",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/Every_Rupee_Deck.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "BRD (PDF)",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/Cello_O2C_BRD.pdf",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/Cello_O2C_BRD.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "One-pager (PDF)",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/Cello_O2C_One_Pager.pdf",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/Cello_O2C_One_Pager.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Sources",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Privacy",
+    "expected_destination": "https://everyrupee-o2c.vercel.app/#privacy",
+    "observed_destination": "https://everyrupee-o2c.vercel.app/#privacy",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "GitHub",
+    "expected_destination": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+    "observed_destination": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Portfolio",
+    "expected_destination": "https://rupak-lemon.vercel.app/",
+    "observed_destination": "https://rupak-lemon.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Viraam",
+    "expected_destination": "https://lull-hr.vercel.app/",
+    "observed_destination": "https://lull-hr.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "source",
+    "trigger": "Ten Today",
+    "expected_destination": "https://tentoday.vercel.app/",
+    "observed_destination": "https://tentoday.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "How it works",
+    "expected_destination": "http://localhost:8080/#board",
+    "observed_destination": "http://localhost:8080/#board",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "The thinking",
+    "expected_destination": "http://localhost:8080/#thinking",
+    "observed_destination": "http://localhost:8080/#thinking",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Sources",
+    "expected_destination": "http://localhost:8080/sources.html",
+    "observed_destination": "http://localhost:8080/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "\u20b9Every Rupee",
+    "expected_destination": "http://localhost:8080/",
+    "observed_destination": "http://localhost:8080/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Quote to cash",
+    "expected_destination": "http://localhost:8080/route.html",
+    "observed_destination": "http://localhost:8080/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Lender",
+    "expected_destination": "http://localhost:8080/lender.html?tour=1",
+    "observed_destination": "http://localhost:8080/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Try the live desk",
+    "expected_destination": "http://localhost:8080/desk.html?tour=1",
+    "observed_destination": "http://localhost:8080/desk.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Talk to Rupak",
+    "expected_destination": "http://localhost:8080/#contact",
+    "observed_destination": "http://localhost:8080/#contact",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "New \u00b7 quote to cash, end to end\n  Follow one discount from the sales approval to closed books\n  Rahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.\n  Clean matchOver-deductionExpired approvalSee it end to end \u2192",
+    "expected_destination": "http://localhost:8080/route.html",
+    "observed_destination": "http://localhost:8080/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Do it in the product",
+    "expected_destination": "http://localhost:8080/desk.html",
+    "observed_destination": "http://localhost:8080/desk.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Where the deduction started: the sales promise \u2192",
+    "expected_destination": "http://localhost:8080/route.html",
+    "observed_destination": "http://localhost:8080/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Same discipline for a lender: NACH bounces \u2192",
+    "expected_destination": "http://localhost:8080/lender.html?tour=1",
+    "observed_destination": "http://localhost:8080/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "+14% vs +8.8%Cello's receivables vs revenue, FY26",
+    "expected_destination": "http://localhost:8080/#evidence",
+    "observed_destination": "http://localhost:8080/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "\u20b93.5\u20135distributor margin per \u20b9100",
+    "expected_destination": "http://localhost:8080/#evidence",
+    "observed_destination": "http://localhost:8080/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "23 daysto the credit-note deadline, 30 Nov",
+    "expected_destination": "http://localhost:8080/#evidence",
+    "observed_destination": "http://localhost:8080/#evidence",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Answer it in one line",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Sources, and what I don't claim",
+    "expected_destination": "http://localhost:8080/sources.html",
+    "observed_destination": "http://localhost:8080/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Let's talk this week",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Not a fit, here's why",
+    "expected_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+    "observed_destination": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "\u20b9Every Rupee",
+    "expected_destination": "http://localhost:8080/",
+    "observed_destination": "http://localhost:8080/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "rupakr2g@gmail.com",
+    "expected_destination": "mailto:rupakr2g@gmail.com",
+    "observed_destination": "mailto:rupakr2g@gmail.com",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Open the product",
+    "expected_destination": "http://localhost:8080/desk.html",
+    "observed_destination": "http://localhost:8080/desk.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Forward to a colleague",
+    "expected_destination": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+    "observed_destination": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Run the brand tests",
+    "expected_destination": "http://localhost:8080/desk.html?uat=1",
+    "observed_destination": "http://localhost:8080/desk.html?uat=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Sales \u2192 finance route",
+    "expected_destination": "http://localhost:8080/route.html",
+    "observed_destination": "http://localhost:8080/route.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Lender mode",
+    "expected_destination": "http://localhost:8080/lender.html?tour=1",
+    "observed_destination": "http://localhost:8080/lender.html?tour=1",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Full case study",
+    "expected_destination": "http://localhost:8080/case-study.html",
+    "observed_destination": "http://localhost:8080/case-study.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Deck (PDF)",
+    "expected_destination": "http://localhost:8080/Every_Rupee_Deck.pdf",
+    "observed_destination": "http://localhost:8080/Every_Rupee_Deck.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "BRD (PDF)",
+    "expected_destination": "http://localhost:8080/Cello_O2C_BRD.pdf",
+    "observed_destination": "http://localhost:8080/Cello_O2C_BRD.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "One-pager (PDF)",
+    "expected_destination": "http://localhost:8080/Cello_O2C_One_Pager.pdf",
+    "observed_destination": "http://localhost:8080/Cello_O2C_One_Pager.pdf",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Sources",
+    "expected_destination": "http://localhost:8080/sources.html",
+    "observed_destination": "http://localhost:8080/sources.html",
+    "status": "passed destination check; linked pages outside single-page import scope",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Privacy",
+    "expected_destination": "http://localhost:8080/#privacy",
+    "observed_destination": "http://localhost:8080/#privacy",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "GitHub",
+    "expected_destination": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+    "observed_destination": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Portfolio",
+    "expected_destination": "https://rupak-lemon.vercel.app/",
+    "observed_destination": "https://rupak-lemon.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Viraam",
+    "expected_destination": "https://lull-hr.vercel.app/",
+    "observed_destination": "https://lull-hr.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  },
+  {
+    "route": "/",
+    "layout": "phone",
+    "site": "preview",
+    "trigger": "Ten Today",
+    "expected_destination": "https://tentoday.vercel.app/",
+    "observed_destination": "https://tentoday.vercel.app/",
+    "status": "destination recorded",
+    "scroll_container": "window"
+  }
+]
