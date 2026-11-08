@@ -1,0 +1,964 @@
+{
+  "url": "https://everyrupee-o2c.vercel.app/",
+  "reviewed": "desktop 1280x1800 and phone 390x844",
+  "permission": "Copying permission granted; review only, no submissions or data changes.",
+  "views": {
+    "desktop": {
+      "viewport": [
+        1280,
+        1800
+      ],
+      "title": "Every Rupee · A distributor pays short. On day 31 it's still nobody's problem.",
+      "full_text": "How it works\nThe thinking\nSources\n₹\nEvery Rupee\nQuote to cash\nLender\nPortfolio case study by Rupak Ghanpathi · built solo · sample data\nA distributor pays short. On day 31 it's still nobody's problem.\n\nEvery Rupee is a short-payment reconciliation desk for FMCG finance teams, built from Cello World's public filings. Every gap gets one owner and ends in a credit note or a recovery.\n\nTry the live desk\nTalk to Rupak\n\nThe hard part of a deduction isn't matching it. It's owning it.\n\nThe call I made: control over speed. No auto write-offs, maker-checker above ₹10,000, strict matching at launch. Fewer auto-matches and more manual work, on purpose.\n\nNEW · QUOTE TO CASH, END TO END\nFollow one discount from the sales approval to closed books\nRahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.\nClean match\nOver-deduction\nExpired approval\nSee it end to end →\nToday's short-payments\nClick a gap: what, why, who, how it ends.\nSample data · 4 gaps · ₹17,590\n₹1,180\nScheme claim\nFestival discount, budget approved\nClosed\n₹12,400\nScheme claim\nNo approved budget: a verbal promise\n1 day left\n₹3,150\nDamage claim\nProof of delivery attached\nNeeds checker\n₹860\nTDS\nTax withheld under section 194Q\nMatched\n₹1,180 · Scheme claim\n\nFestival discount, budget approved\n\nWHAT\nPaid ₹10,620 on ₹11,800; took a 10% festival discount.\nWHY\nBudget approved, evidence attached: valid (BR-3).\nWHO\nAsha, finance ops. Under ₹10,000, no checker.\nHOW\nGST credit note ₹1,180 (₹1,000 + ₹180 GST). Distributor reverses; brand recovers ₹180.\n\nStep 1 of 5 · Payment arrives. ₹10,620 on a ₹11,800 bill.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23 days\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice.",
+      "sections_after_wheel_scroll": [
+        {
+          "scrollY": 0,
+          "height": 2772,
+          "heading": [
+            "A distributor pays short. On day 31 it's still nobody's problem.",
+            "₹1,180 · Scheme claim",
+            "Open what you care about",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "scrollY": 972,
+          "height": 2772,
+          "heading": [
+            "₹1,180 · Scheme claim",
+            "Open what you care about",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Building for finance ops or fintech?"
+          ]
+        }
+      ],
+      "assets": [
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        },
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        },
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        },
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        },
+        {
+          "tag": "IMG",
+          "src": "https://everyrupee-o2c.vercel.app/img/rupak.jpg",
+          "alt": "Rupak Ghanpathi",
+          "class": null
+        },
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        }
+      ],
+      "links": [
+        {
+          "text": "How it works",
+          "href": "https://everyrupee-o2c.vercel.app/#board",
+          "target": ""
+        },
+        {
+          "text": "The thinking",
+          "href": "https://everyrupee-o2c.vercel.app/#thinking",
+          "target": ""
+        },
+        {
+          "text": "Sources",
+          "href": "https://everyrupee-o2c.vercel.app/sources.html",
+          "target": ""
+        },
+        {
+          "text": "₹\nEvery Rupee",
+          "href": "https://everyrupee-o2c.vercel.app/",
+          "target": ""
+        },
+        {
+          "text": "Quote to cash",
+          "href": "https://everyrupee-o2c.vercel.app/route.html",
+          "target": ""
+        },
+        {
+          "text": "Lender",
+          "href": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+          "target": ""
+        },
+        {
+          "text": "Try the live desk",
+          "href": "https://everyrupee-o2c.vercel.app/desk.html?tour=1",
+          "target": ""
+        },
+        {
+          "text": "Talk to Rupak",
+          "href": "https://everyrupee-o2c.vercel.app/#contact",
+          "target": ""
+        },
+        {
+          "text": "NEW · QUOTE TO CASH, END TO END\nFollow one discount from the sales approval to closed books\nRahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.\nClean match\nOver-deduction\nExpired approval\nSee it end to end →",
+          "href": "https://everyrupee-o2c.vercel.app/route.html",
+          "target": ""
+        },
+        {
+          "text": "Do it in the product",
+          "href": "https://everyrupee-o2c.vercel.app/desk.html",
+          "target": ""
+        },
+        {
+          "text": "Where the deduction started: the sales promise →",
+          "href": "https://everyrupee-o2c.vercel.app/route.html",
+          "target": ""
+        },
+        {
+          "text": "Same discipline for a lender: NACH bounces →",
+          "href": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+          "target": ""
+        },
+        {
+          "text": "+14% vs +8.8%\nCello's receivables vs revenue, FY26",
+          "href": "https://everyrupee-o2c.vercel.app/#evidence",
+          "target": ""
+        },
+        {
+          "text": "₹3.5–5\ndistributor margin per ₹100",
+          "href": "https://everyrupee-o2c.vercel.app/#evidence",
+          "target": ""
+        },
+        {
+          "text": "23 days\nto the credit-note deadline, 30 Nov",
+          "href": "https://everyrupee-o2c.vercel.app/#evidence",
+          "target": ""
+        },
+        {
+          "text": "",
+          "href": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+          "target": ""
+        },
+        {
+          "text": "",
+          "href": "https://everyrupee-o2c.vercel.app/sources.html",
+          "target": ""
+        },
+        {
+          "text": "Let's talk this week",
+          "href": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+          "target": ""
+        },
+        {
+          "text": "Not a fit, here's why",
+          "href": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+          "target": ""
+        },
+        {
+          "text": "₹\nEvery Rupee",
+          "href": "https://everyrupee-o2c.vercel.app/",
+          "target": ""
+        },
+        {
+          "text": "rupakr2g@gmail.com",
+          "href": "mailto:rupakr2g@gmail.com",
+          "target": ""
+        },
+        {
+          "text": "Open the product",
+          "href": "https://everyrupee-o2c.vercel.app/desk.html",
+          "target": ""
+        },
+        {
+          "text": "Forward to a colleague",
+          "href": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+          "target": ""
+        },
+        {
+          "text": "Run the brand tests",
+          "href": "https://everyrupee-o2c.vercel.app/desk.html?uat=1",
+          "target": ""
+        },
+        {
+          "text": "Sales → finance route",
+          "href": "https://everyrupee-o2c.vercel.app/route.html",
+          "target": ""
+        },
+        {
+          "text": "Lender mode",
+          "href": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+          "target": ""
+        },
+        {
+          "text": "Full case study",
+          "href": "https://everyrupee-o2c.vercel.app/case-study.html",
+          "target": ""
+        },
+        {
+          "text": "Deck (PDF)",
+          "href": "https://everyrupee-o2c.vercel.app/Every_Rupee_Deck.pdf",
+          "target": ""
+        },
+        {
+          "text": "BRD (PDF)",
+          "href": "https://everyrupee-o2c.vercel.app/Cello_O2C_BRD.pdf",
+          "target": ""
+        },
+        {
+          "text": "One-pager (PDF)",
+          "href": "https://everyrupee-o2c.vercel.app/Cello_O2C_One_Pager.pdf",
+          "target": ""
+        },
+        {
+          "text": "Sources",
+          "href": "https://everyrupee-o2c.vercel.app/sources.html",
+          "target": ""
+        },
+        {
+          "text": "Privacy",
+          "href": "https://everyrupee-o2c.vercel.app/#privacy",
+          "target": ""
+        },
+        {
+          "text": "GitHub",
+          "href": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+          "target": ""
+        },
+        {
+          "text": "Portfolio",
+          "href": "https://rupak-lemon.vercel.app/",
+          "target": ""
+        },
+        {
+          "text": "Viraam",
+          "href": "https://lull-hr.vercel.app/",
+          "target": ""
+        },
+        {
+          "text": "Ten Today",
+          "href": "https://tentoday.vercel.app/",
+          "target": ""
+        }
+      ],
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "₹1,180\nScheme claim\nFestival discount, budget approved\nClosed",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "₹12,400\nScheme claim\nNo approved budget: a verbal promise\n1 day left",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "₹3,150\nDamage claim\nProof of delivery attached\nNeeds checker",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "₹860\nTDS\nTax withheld under section 194Q\nMatched",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Next step",
+          "type": "button",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Replay",
+          "type": "button",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "DETAILS",
+          "text": "The gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "The gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "DETAILS",
+          "text": "A deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "A deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "DETAILS",
+          "text": "What it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "What it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "500",
+          "type": "number",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "3",
+          "type": "number",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "60",
+          "type": "number",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "12",
+          "type": "number",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "DETAILS",
+          "text": "Costs, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "Costs, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "type": "text",
+          "aria": "Your question",
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ask",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        }
+      ]
+    },
+    "phone": {
+      "viewport": [
+        390,
+        844
+      ],
+      "title": "Every Rupee · A distributor pays short. On day 31 it's still nobody's problem.",
+      "full_text": "₹\nEvery Rupee\nQuote to cash\nLender\nPortfolio case study by Rupak Ghanpathi\nA distributor pays short. On day 31 it's still nobody's problem.\n\nEvery Rupee is a short-payment reconciliation desk for FMCG finance teams, built from Cello World's public filings.\n\nTry the live desk\nTalk to Rupak\n\nThe hard part of a deduction isn't matching it. It's owning it.\n\nThe call I made: control over speed. No auto write-offs, maker-checker above ₹10,000, strict matching at launch. Fewer auto-matches and more manual work, on purpose.\n\nNEW · QUOTE TO CASH, END TO END\nFollow one discount from the sales approval to closed books\nRahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.\nClean match\nOver-deduction\nExpired approval\nSee it end to end →\nToday's short-payments\nClick a gap: what, why, who, how it ends.\nSample data · 4 gaps · ₹17,590\n₹1,180\nScheme claim\nFestival discount, budget approved\nClosed\n₹12,400\nScheme claim\nNo approved budget: a verbal promise\n1 day left\n₹3,150\nDamage claim\nProof of delivery attached\nNeeds checker\n₹860\nTDS\nTax withheld under section 194Q\nMatched\n₹1,180 · Scheme claim\n\nFestival discount, budget approved\n\nWHAT\nPaid ₹10,620 on ₹11,800; took a 10% festival discount.\nWHY\nBudget approved, evidence attached: valid (BR-3).\nWHO\nAsha, finance ops. Under ₹10,000, no checker.\nHOW\nGST credit note ₹1,180 (₹1,000 + ₹180 GST). Distributor reverses; brand recovers ₹180.\n\nStep 1 of 5 · Payment arrives. ₹10,620 on a ₹11,800 bill.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23\ndays\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice.",
+      "sections_after_wheel_scroll": [
+        {
+          "scrollY": 0,
+          "height": 4216,
+          "heading": [
+            "A distributor pays short. On day 31 it's still nobody's problem.",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "scrollY": 658,
+          "height": 4216,
+          "heading": [
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "scrollY": 1316,
+          "height": 4216,
+          "heading": [
+            "₹1,180 · Scheme claim",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "scrollY": 1974,
+          "height": 4216,
+          "heading": [
+            "Open what you care about",
+            "",
+            "",
+            "",
+            ""
+          ]
+        },
+        {
+          "scrollY": 2632,
+          "height": 4216,
+          "heading": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Building for finance ops or fintech?"
+          ]
+        },
+        {
+          "scrollY": 3290,
+          "height": 4216,
+          "heading": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "Building for finance ops or fintech?"
+          ]
+        },
+        {
+          "scrollY": 3372,
+          "height": 4216,
+          "heading": [
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+          ]
+        }
+      ],
+      "assets": [
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        },
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        },
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        },
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        },
+        {
+          "tag": "IMG",
+          "src": "https://everyrupee-o2c.vercel.app/img/rupak.jpg",
+          "alt": "Rupak Ghanpathi",
+          "class": null
+        },
+        {
+          "tag": "svg",
+          "src": null,
+          "alt": null,
+          "class": null
+        }
+      ],
+      "links": [
+        {
+          "text": "How it works",
+          "href": "https://everyrupee-o2c.vercel.app/#board",
+          "target": ""
+        },
+        {
+          "text": "The thinking",
+          "href": "https://everyrupee-o2c.vercel.app/#thinking",
+          "target": ""
+        },
+        {
+          "text": "Sources",
+          "href": "https://everyrupee-o2c.vercel.app/sources.html",
+          "target": ""
+        },
+        {
+          "text": "₹\nEvery Rupee",
+          "href": "https://everyrupee-o2c.vercel.app/",
+          "target": ""
+        },
+        {
+          "text": "Quote to cash",
+          "href": "https://everyrupee-o2c.vercel.app/route.html",
+          "target": ""
+        },
+        {
+          "text": "Lender",
+          "href": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+          "target": ""
+        },
+        {
+          "text": "Try the live desk",
+          "href": "https://everyrupee-o2c.vercel.app/desk.html?tour=1",
+          "target": ""
+        },
+        {
+          "text": "Talk to Rupak",
+          "href": "https://everyrupee-o2c.vercel.app/#contact",
+          "target": ""
+        },
+        {
+          "text": "NEW · QUOTE TO CASH, END TO END\nFollow one discount from the sales approval to closed books\nRahul promises it, Kavita approves it, the distributor deducts it. Three outcomes, every date and ledger entry, until the invoice balances to the rupee.\nClean match\nOver-deduction\nExpired approval\nSee it end to end →",
+          "href": "https://everyrupee-o2c.vercel.app/route.html",
+          "target": ""
+        },
+        {
+          "text": "Do it in the product",
+          "href": "https://everyrupee-o2c.vercel.app/desk.html",
+          "target": ""
+        },
+        {
+          "text": "Where the deduction started: the sales promise →",
+          "href": "https://everyrupee-o2c.vercel.app/route.html",
+          "target": ""
+        },
+        {
+          "text": "Same discipline for a lender: NACH bounces →",
+          "href": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+          "target": ""
+        },
+        {
+          "text": "+14% vs +8.8%\nCello's receivables vs revenue, FY26",
+          "href": "https://everyrupee-o2c.vercel.app/#evidence",
+          "target": ""
+        },
+        {
+          "text": "₹3.5–5\ndistributor margin per ₹100",
+          "href": "https://everyrupee-o2c.vercel.app/#evidence",
+          "target": ""
+        },
+        {
+          "text": "23\ndays\nto the credit-note deadline, 30 Nov",
+          "href": "https://everyrupee-o2c.vercel.app/#evidence",
+          "target": ""
+        },
+        {
+          "text": "",
+          "href": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+          "target": ""
+        },
+        {
+          "text": "",
+          "href": "https://everyrupee-o2c.vercel.app/sources.html",
+          "target": ""
+        },
+        {
+          "text": "Let's talk this week",
+          "href": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20let%27s%20talk&body=Hi%20Rupak%2C%0A%0AYour%20question%3A%20Which%20deduction%20type%20creates%20the%20most%20tickets%20or%20manual%20work%20for%20your%20customers%20today%3F%0AShort%20answer%3A%20%0A%0AFree%20for%2020%20minutes%20on%3A%20",
+          "target": ""
+        },
+        {
+          "text": "Not a fit, here's why",
+          "href": "mailto:rupakr2g@gmail.com?subject=Every%20Rupee%3A%20not%20a%20fit&body=Hi%20Rupak%2C%0A%0ANot%20a%20fit%20right%20now%2C%20because%3A%20",
+          "target": ""
+        },
+        {
+          "text": "₹\nEvery Rupee",
+          "href": "https://everyrupee-o2c.vercel.app/",
+          "target": ""
+        },
+        {
+          "text": "rupakr2g@gmail.com",
+          "href": "mailto:rupakr2g@gmail.com",
+          "target": ""
+        },
+        {
+          "text": "Open the product",
+          "href": "https://everyrupee-o2c.vercel.app/desk.html",
+          "target": ""
+        },
+        {
+          "text": "Forward to a colleague",
+          "href": "mailto:?subject=Worth%2090%20seconds%3A%20Every%20Rupee&body=A%20BA%20built%20a%20working%20deduction%20workflow%2C%20with%20rules%2C%20tests%20and%20the%20new%20GST%20credit-note%20rule%3A%0Ahttps%3A%2F%2Feveryrupee-o2c.vercel.app%2F%0A",
+          "target": ""
+        },
+        {
+          "text": "Run the brand tests",
+          "href": "https://everyrupee-o2c.vercel.app/desk.html?uat=1",
+          "target": ""
+        },
+        {
+          "text": "Sales → finance route",
+          "href": "https://everyrupee-o2c.vercel.app/route.html",
+          "target": ""
+        },
+        {
+          "text": "Lender mode",
+          "href": "https://everyrupee-o2c.vercel.app/lender.html?tour=1",
+          "target": ""
+        },
+        {
+          "text": "Full case study",
+          "href": "https://everyrupee-o2c.vercel.app/case-study.html",
+          "target": ""
+        },
+        {
+          "text": "Deck (PDF)",
+          "href": "https://everyrupee-o2c.vercel.app/Every_Rupee_Deck.pdf",
+          "target": ""
+        },
+        {
+          "text": "BRD (PDF)",
+          "href": "https://everyrupee-o2c.vercel.app/Cello_O2C_BRD.pdf",
+          "target": ""
+        },
+        {
+          "text": "One-pager (PDF)",
+          "href": "https://everyrupee-o2c.vercel.app/Cello_O2C_One_Pager.pdf",
+          "target": ""
+        },
+        {
+          "text": "Sources",
+          "href": "https://everyrupee-o2c.vercel.app/sources.html",
+          "target": ""
+        },
+        {
+          "text": "Privacy",
+          "href": "https://everyrupee-o2c.vercel.app/#privacy",
+          "target": ""
+        },
+        {
+          "text": "GitHub",
+          "href": "https://github.com/RUPAK30/Cello-O2C-Deduction-Workflow-Case-Study",
+          "target": ""
+        },
+        {
+          "text": "Portfolio",
+          "href": "https://rupak-lemon.vercel.app/",
+          "target": ""
+        },
+        {
+          "text": "Viraam",
+          "href": "https://lull-hr.vercel.app/",
+          "target": ""
+        },
+        {
+          "text": "Ten Today",
+          "href": "https://tentoday.vercel.app/",
+          "target": ""
+        }
+      ],
+      "controls": [
+        {
+          "tag": "BUTTON",
+          "text": "₹1,180\nScheme claim\nFestival discount, budget approved\nClosed",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "₹12,400\nScheme claim\nNo approved budget: a verbal promise\n1 day left",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "₹3,150\nDamage claim\nProof of delivery attached\nNeeds checker",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "₹860\nTDS\nTax withheld under section 194Q\nMatched",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Next step",
+          "type": "button",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Replay",
+          "type": "button",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "DETAILS",
+          "text": "The gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "The gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "DETAILS",
+          "text": "A deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "A deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "DETAILS",
+          "text": "What it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "What it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "500",
+          "type": "number",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "3",
+          "type": "number",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "60",
+          "type": "number",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "12",
+          "type": "number",
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "DETAILS",
+          "text": "Costs, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "SUMMARY",
+          "text": "Costs, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+",
+          "type": null,
+          "aria": null,
+          "expanded": null
+        },
+        {
+          "tag": "INPUT",
+          "text": "",
+          "type": "text",
+          "aria": "Your question",
+          "expanded": null
+        },
+        {
+          "tag": "BUTTON",
+          "text": "Ask",
+          "type": "submit",
+          "aria": null,
+          "expanded": null
+        }
+      ]
+    }
+  },
+  "interactions": [
+    {
+      "viewport": "desktop",
+      "action": "select gap ₹1,180",
+      "visible_after": "o checker.\nHOW\nGST credit note ₹1,180 (₹1,000 + ₹180 GST). Distributor reverses; brand recovers ₹180.\n\nStep 1 of 5 · Payment arrives. ₹10,620 on a ₹11,800 bill.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23 days\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "desktop",
+      "action": "select gap ₹12,400",
+      "visible_after": "al sales head, within 3 days.\nHOW\nCharge to trade budget, or recover. Never left unallocated.\n\nStep 1 of 5 · Payment arrives. ₹12,400 short on the monthly bill.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23 days\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "desktop",
+      "action": "select gap ₹3,150",
+      "visible_after": "ops recommends, checker approves (BR-5).\nHOW\nCredit note if valid, recovery if not. Never auto written off (BR-4).\n\nStep 1 of 5 · Payment arrives. ₹3,150 short.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23 days\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "desktop",
+      "action": "select gap ₹860",
+      "visible_after": "ases.\nWHY\nIt's a tax credit, not a loss (BR-2).\nWHO\nFinance ops, automatically.\nHOW\nMatched to Form 26AS and closed.\n\nStep 1 of 5 · Payment arrives. ₹860 short.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23 days\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "desktop",
+      "action": "Next step",
+      "visible_after": "e: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "desktop",
+      "action": "Replay",
+      "visible_after": "e: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "desktop",
+      "action": "expand detail",
+      "text": "The gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\n\tHOW IT OFTEN RUNS TODAY\tON THE DESK\nExplained\tDay 31, if ever\tSame day, by rule\nWhere it lives\tEmail threads, no owner\tOne case, one owner, one deadline\nWho decides\tWhoever replies first\tRegional sales head, 3-day SLA (BR-8)\nHow it ends\tSilent write-off, or never\tCredit note or recovery, with a posting reference\nAudit trail\tRebuilt from inboxes\tEvery action logged by name and time\n\nIllustrative: one gap from the sample data, traced through the workflow. \"Today\" is the common manual pattern, not a measured baseline.\n\n0 auto write-offs · maker-checker above ₹10,000 · 16 rules, 31 tests across brand and lender modes, run in the browser\n\nTRACEABILITY · FROM A PUBLIC FILING TO A RUNNING CONTROL\n\nFILING\nReceivables +14.0% vs revenue +8.8%\nCello World, FY25→FY26\nASSUMPTION\nShort-payments sit unowned\nA reason to look, not a diagnosis\nREQUIREMENT\nUS-5: no self-approval above ₹10,000\nIn the BRD\nRULE\nBR-5 maker-checker\nBlocked, logged, routed\nTEST\nUAT-06 passes\nMaker tries to approve own case\nSCREEN\nVikram approves\nFinance controller, in the desk"
+    },
+    {
+      "viewport": "desktop",
+      "action": "expand detail",
+      "text": "A deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\n+14% vs +8.8%\nCello's receivables outgrew revenue\nAbout ₹34 Cr above revenue pace, FY25→FY26.\nAnnual reports · my estimate, a reason to look, not a diagnosis\n₹3.5–5\nDistributor margin per ₹100\nToo thin to wait on slow claims, so they deduct.\nAICPDF, Jun 2026\n\nTHE PART NOBODY OWNS\n\nA deduction can have a tax deadline.\n\nWhen a brand settles a scheme claim with a GST credit note, it gets back the GST already paid on the discount. That credit note must go out by 30 November after the financial year ends (or the annual return date, if earlier). For FY 2025-26 supplies, that's 30 November 2026.\n\nMany brands settle schemes with a plain financial credit note instead and keep the GST cost. From 1 Nov 2026 the GST route gets easier, so more claims will qualify. An undecided deduction quietly loses that choice after the deadline.\n\nThe brand's GST gain is the distributor's input-credit reversal. That's why the two sides negotiate which kind of credit note gets issued.\n\nCGST Act s.34(2); s.15(3)(b) as amended by Finance Act 2026; CBIC Circular 251/08/2025. Summarised from public sources, Oct 2026. Not tax advice.\n23\ndays to the FY 2025-26 credit-note deadline"
+    },
+    {
+      "viewport": "desktop",
+      "action": "expand detail",
+      "text": "What it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nMonthly billing to distributors (₹ lakh)\nShare short-paid (%)\nDays to settle\nCost of money (% a year)\n₹30 lakh\ncash stuck at any time\n₹3.6 lakh\nyearly interest cost\n\nBilling × share × days÷30 = cash stuck. Try your own numbers.\n\nTHE QUESTION I'D ASK YOU\n\nWhich deduction type creates the most tickets or manual work for your customers today?\n\nAnswer it in one line"
+    },
+    {
+      "viewport": "desktop",
+      "action": "expand detail",
+      "text": "Costs, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\nWhat this costs\nFewer auto-matches at launch: strict matching rejects fuzzy ones.\nMore manual review: anything above ₹10,000 needs a second person.\nA slower first close: Sales must enter scheme dates and budgets before rules can accept a claim.\n\nWhat I got wrong: v2 was a wall of text, so I rebuilt it as something you can run, because a spec nobody executes isn't a spec.\n\nHow I'd work from week one\nEvidence first. Every fact dated and sourced.\nOne owner per gap. One decision, one deadline.\nTestable rules. 16 rules, 31 tests, \"must block\" cases included.\nControls built in. Maker-checker, no auto write-offs. Zero SOX findings at HDFC.\nWhere it could fail, and the fix\nDistributors pay the old account. Keep it open a quarter; Sales gets a weekly list.\nSchemes change mid-quarter. No dates and budget from Sales, no valid scheme.\nSales overrides the credit flag. It never blocks an order; overrides are logged by name.\nRuns in your browser. Uploaded files never leave your device.\nNo sign-up, no tracking.\nSample data only.\nSources, and what I don't claim"
+    },
+    {
+      "viewport": "phone",
+      "action": "select gap ₹1,180",
+      "visible_after": "o checker.\nHOW\nGST credit note ₹1,180 (₹1,000 + ₹180 GST). Distributor reverses; brand recovers ₹180.\n\nStep 1 of 5 · Payment arrives. ₹10,620 on a ₹11,800 bill.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23\ndays\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "phone",
+      "action": "select gap ₹12,400",
+      "visible_after": "al sales head, within 3 days.\nHOW\nCharge to trade budget, or recover. Never left unallocated.\n\nStep 1 of 5 · Payment arrives. ₹12,400 short on the monthly bill.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23\ndays\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "phone",
+      "action": "select gap ₹3,150",
+      "visible_after": "ops recommends, checker approves (BR-5).\nHOW\nCredit note if valid, recovery if not. Never auto written off (BR-4).\n\nStep 1 of 5 · Payment arrives. ₹3,150 short.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23\ndays\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "phone",
+      "action": "select gap ₹860",
+      "visible_after": "ases.\nWHY\nIt's a tax credit, not a loss (BR-2).\nWHO\nFinance ops, automatically.\nHOW\nMatched to Form 26AS and closed.\n\nStep 1 of 5 · Payment arrives. ₹860 short.\n\nNext step\nReplay\nDo it in the product\nWhere the deduction started: the sales promise →\nSame discipline for a lender: NACH bounces →\n+14% vs +8.8%\nCello's receivables vs revenue, FY26\n₹3.5–5\ndistributor margin per ₹100\n23\ndays\nto the credit-note deadline, 30 Nov\n\nGO DEEPER\n\nOpen what you care about\nThe gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\nA deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "phone",
+      "action": "Next step",
+      "visible_after": "e: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "phone",
+      "action": "Replay",
+      "visible_after": "e: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\nWhat it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nCosts, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\n\nI'm Rupak. I spent 2.5 years as a Business Analyst at HDFC Bank: 25+ BRDs, 15+ releases on time, zero SOX findings. I built Every Rupee alone: from Cello's annual report to the rules, product and tests.\n\n— Rupak\n\nBuilding for finance ops or fintech?\n\nOne tap, email pre-filled.\n\nLet's talk this week\nNot a fit, here's why\nAsk\n\nOpen to BA and Product roles · fintech, BFSI, finance software · Bengaluru · immediate joiner\n\n₹\nEvery Rupee\n\nEvery short-paid rupee gets a reason, an owner and an ending.\n\nrupakr2g@gmail.com\nTHE WORK\nOpen the product\nForward to a colleague\nRun the brand tests\nSales → finance route\nLender mode\nFull case study\nDeck (PDF)\nBRD (PDF)\nOne-pager (PDF)\nTRUST\nSources\nPrivacy\nGitHub\nMORE BY RUPAK\nPortfolio\nViraam\nTen Today\n© 2026 Rupak Ghanpathi · Portfolio case study, not affiliated with Cello World. No brand uses it yet.\nTax rules summarised from public sources, Oct 2026. Not tax advice."
+    },
+    {
+      "viewport": "phone",
+      "action": "expand detail",
+      "text": "The gap, two ways\nThe same ₹12,400 gap two ways, and the chain from a public filing to a passing test.\n+\n\tHOW IT OFTEN RUNS TODAY\tON THE DESK\nExplained\tDay 31, if ever\tSame day, by rule\nWhere it lives\tEmail threads, no owner\tOne case, one owner, one deadline\nWho decides\tWhoever replies first\tRegional sales head, 3-day SLA (BR-8)\nHow it ends\tSilent write-off, or never\tCredit note or recovery, with a posting reference\nAudit trail\tRebuilt from inboxes\tEvery action logged by name and time\n\nIllustrative: one gap from the sample data, traced through the workflow. \"Today\" is the common manual pattern, not a measured baseline.\n\n0 auto write-offs · maker-checker above ₹10,000 · 16 rules, 31 tests across brand and lender modes, run in the browser\n\nTRACEABILITY · FROM A PUBLIC FILING TO A RUNNING CONTROL\n\nFILING\nReceivables +14.0% vs revenue +8.8%\nCello World, FY25→FY26\nASSUMPTION\nShort-payments sit unowned\nA reason to look, not a diagnosis\nREQUIREMENT\nUS-5: no self-approval above ₹10,000\nIn the BRD\nRULE\nBR-5 maker-checker\nBlocked, logged, routed\nTEST\nUAT-06 passes\nMaker tries to approve own case\nSCREEN\nVikram approves\nFinance controller, in the desk"
+    },
+    {
+      "viewport": "phone",
+      "action": "expand detail",
+      "text": "A deduction can have a tax deadline: 30 November\nReceivables vs revenue, distributor margins, and the credit-note deadline in detail.\n+\n+14% vs +8.8%\nCello's receivables outgrew revenue\nAbout ₹34 Cr above revenue pace, FY25→FY26.\nAnnual reports · my estimate, a reason to look, not a diagnosis\n₹3.5–5\nDistributor margin per ₹100\nToo thin to wait on slow claims, so they deduct.\nAICPDF, Jun 2026\n\nTHE PART NOBODY OWNS\n\nA deduction can have a tax deadline.\n\nWhen a brand settles a scheme claim with a GST credit note, it gets back the GST already paid on the discount. That credit note must go out by 30 November after the financial year ends (or the annual return date, if earlier). For FY 2025-26 supplies, that's 30 November 2026.\n\nMany brands settle schemes with a plain financial credit note instead and keep the GST cost. From 1 Nov 2026 the GST route gets easier, so more claims will qualify. An undecided deduction quietly loses that choice after the deadline.\n\nThe brand's GST gain is the distributor's input-credit reversal. That's why the two sides negotiate which kind of credit note gets issued.\n\nCGST Act s.34(2); s.15(3)(b) as amended by Finance Act 2026; CBIC Circular 251/08/2025. Summarised from public sources, Oct 2026. Not tax advice.\n23\ndays to the FY 2025-26 credit-note deadline"
+    },
+    {
+      "viewport": "phone",
+      "action": "expand detail",
+      "text": "What it's costing you\nPlug in your own numbers, plus the one question I'd ask your team.\n+\nMonthly billing to distributors (₹ lakh)\nShare short-paid (%)\nDays to settle\nCost of money (% a year)\n₹30 lakh\ncash stuck at any time\n₹3.6 lakh\nyearly interest cost\n\nBilling × share × days÷30 = cash stuck. Try your own numbers.\n\nTHE QUESTION I'D ASK YOU\n\nWhich deduction type creates the most tickets or manual work for your customers today?\n\nAnswer it in one line"
+    },
+    {
+      "viewport": "phone",
+      "action": "expand detail",
+      "text": "Costs, mistakes, risks\nWhat this design costs, what I got wrong, and where it could fail.\n+\nWhat this costs\nFewer auto-matches at launch: strict matching rejects fuzzy ones.\nMore manual review: anything above ₹10,000 needs a second person.\nA slower first close: Sales must enter scheme dates and budgets before rules can accept a claim.\n\nWhat I got wrong: v2 was a wall of text, so I rebuilt it as something you can run, because a spec nobody executes isn't a spec.\n\nHow I'd work from week one\nEvidence first. Every fact dated and sourced.\nOne owner per gap. One decision, one deadline.\nTestable rules. 16 rules, 31 tests, \"must block\" cases included.\nControls built in. Maker-checker, no auto write-offs. Zero SOX findings at HDFC.\nWhere it could fail, and the fix\nDistributors pay the old account. Keep it open a quarter; Sales gets a weekly list.\nSchemes change mid-quarter. No dates and budget from Sales, no valid scheme.\nSales overrides the credit flag. It never blocks an order; overrides are logged by name.\nRuns in your browser. Uploaded files never leave your device.\nNo sign-up, no tracking.\nSample data only.\nSources, and what I don't claim"
+    }
+  ]
+}
