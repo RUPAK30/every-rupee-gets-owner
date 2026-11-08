@@ -16,7 +16,7 @@ export function DemoRequest() {
     <label className="grid gap-1 text-sm">Work email<input name="email" type="email" required maxLength={254} className="er-input" autoComplete="email" /></label>
     <label className="grid gap-1 text-sm">Company<input name="company" required maxLength={150} className="er-input" autoComplete="organization" /></label>
     <label className="grid gap-1 text-sm">Which describes you?<select name="role" required className="er-input" defaultValue=""><option value="" disabled>Choose one</option><option>Hiring manager / TA</option><option>Product manager</option><option>Finance ops</option><option>CFO / finance leader</option><option>Other</option></select></label>
-    <label className="grid gap-1 text-sm">Anything you'd like to discuss? (optional) to reconcile?<textarea name="message" maxLength={2000} className="er-input" rows={3} /></label>
+    <label className="grid gap-1 text-sm">Anything you'd like to discuss? (optional)<textarea name="message" maxLength={2000} className="er-input" rows={3} /></label>
     <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     <Button type="submit" disabled={state === 'saving'}>{state === 'saving' ? 'Sending…' : "Let's talk"}</Button>
