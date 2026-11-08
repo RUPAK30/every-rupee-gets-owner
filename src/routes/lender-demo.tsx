@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { LenderDesk } from '@/components/reconciliation/lender-desk';
+export const Route = createFileRoute('/lender-demo')({ head: () => ({ meta: [{ title: 'Every Rupee · Lender desk demo' }, { name: 'description', content: 'See how bounced EMIs get a cause, an owner and a next step, with a 60-second guided tour.' }, { property: 'og:title', content: 'Every Rupee · Lender desk demo' }, { property: 'og:description', content: 'Interactive EMI bounce desk with illustrative records.' }, { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary_large_image' }] }), component: LenderDesk });
