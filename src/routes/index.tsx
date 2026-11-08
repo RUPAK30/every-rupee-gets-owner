@@ -197,6 +197,12 @@ function ImportedSectionADistributorPaysShort() {
       <div className="mt-3 flex flex-wrap justify-center gap-2">{['16 rules', '31/31 tests passing', '0 write-offs by rule'].map(label => <Button key={label} asChild variant="outline" size="sm" className="h-8 rounded-full text-xs no-underline!"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">{label}</a></Button>)}</div>
       <p className="mt-6 font-semibold">The hard part of a deduction isn't matching it. It's owning it.</p>
       <div className="mx-auto mt-5 max-w-[68ch] border-y border-border py-4 text-sm leading-6 text-muted-foreground">Maker-checker above ₹10,000 and zero write-offs by rule are enforced and tested in the <a className="font-semibold text-primary underline" href="https://everyrupee-o2c.vercel.app/desk.html">full desk</a> (16 rules, 31/31 tests). This lighter demo shows matching and exceptions.</div>
+      <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-8 block max-w-[720px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Reconciliation desk</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-(--money-ok)" />Live sample</span></div>
+        <div className="grid grid-cols-3 border-b border-border text-center">{[['Billed', '₹1,18,000'], ['Received', '₹1,05,600'], ['Short-paid', '₹12,400']].map(([l, v]) => <div key={l} className="px-2 py-3"><p className="text-[.7rem] text-muted-foreground">{l}</p><p className="mt-1 font-semibold tabular-nums text-foreground">{v}</p></div>)}</div>
+        {[['INV-1042', 'Paid in full', 'bg-money-ok/15 text-money-ok'], ['INV-1043', '₹3,150 short · Damage claim · Owner assigned', 'bg-money-wip/15 text-money-wip'], ['INV-1044', '₹9,250 short · Unexplained · Needs reason', 'bg-money-risk/10 text-money-risk']].map(([id, t, c]) => <div key={id} className="flex items-center justify-between gap-3 border-b border-border px-4 py-2.5 text-sm last:border-0"><span className="font-medium text-foreground">{id}</span><span className={'er-pill ' + c}>{t}</span></div>)}
+        <p className="px-4 py-2.5 text-center text-xs font-semibold text-primary">Open the live desk →</p>
+      </Link>
     </section>
   );
 }
