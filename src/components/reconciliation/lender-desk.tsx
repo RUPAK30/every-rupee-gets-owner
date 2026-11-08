@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { toast } from 'sonner';
-import { RotateCcw, ScanSearch, Check } from 'lucide-react';
+import { RotateCcw, ScanSearch, Check, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { money } from '@/lib/reconciliation/engine';
 import { useServerFn } from '@tanstack/react-start';
 import { RETURN_CODES } from '@/lib/reconciliation/lender-codes';
 import { explainReturnCode } from '@/lib/reconciliation/lender.functions';
-import { Sparkles } from 'lucide-react';
 import { Tour, DeskSwitch, type TourStep } from './tour';
 
 type Emi = { id: string; borrower: string; amount: number; status: 'cleared' | 'bounced'; code?: string; read?: boolean; owner?: string; outcome?: string };
