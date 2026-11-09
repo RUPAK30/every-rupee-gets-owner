@@ -19,7 +19,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [openDetails, setOpenDetails] = useState<Record<string, boolean>>({});
-  const [deadline, setDeadline] = useState<number | null>(null);
+  const [deadline, setDeadline] = useState<number | null | undefined>(undefined);
   const openHash = (hash: string) => {
     const target = document.getElementById(hash.slice(1));
     const detail = target?.closest('details');
@@ -31,7 +31,10 @@ function Index() {
     // Deadline: 30 November 2026, end of day IST (UTC+5:30). Computed in UTC so it is correct from any timezone.
     const end = Date.UTC(2026, 10, 30, 18, 29, 59); // 2026-11-30 23:59:59 IST
     const now = Date.now();
-    setDeadline(now > end ? null : Math.ceil((end - now) / 86400000));
+    // Whole calendar days left, by IST date (30 Nov counts as the last day, 0 = today).
+    const ist = new Date(now + 5.5 * 3600000);
+    const todayIst = Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate());
+    setDeadline(now > end ? null : Math.round((Date.UTC(2026, 10, 30) - todayIst) / 86400000));
   }, []);
   const followAnchor = (event: MouseEvent<HTMLDivElement>) => {
     if (!(event.target instanceof Element)) return;
@@ -177,7 +180,7 @@ function ImportedSectionADistributorPaysShort() {
   );
 }
 
-function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline }: { openDetails: Record<string, boolean>; setOpenDetails: React.Dispatch<React.SetStateAction<Record<string, boolean>>>; deadline: number | null }) {
+function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline }: { openDetails: Record<string, boolean>; setOpenDetails: React.Dispatch<React.SetStateAction<Record<string, boolean>>>; deadline: number | null | undefined }) {
   const [values, setValues] = useState({ bill: 500, pct: 3, days: 60, rate: 12 });
   const cash = values.bill * values.pct / 100 * values.days / 30;
   const money = (value: number) => value >= 100 ? '₹' + (value / 100).toFixed(2).replace(/\.00$/, '') + ' crore' : '₹' + value.toFixed(1).replace(/\.0$/, '') + ' lakh';
@@ -308,8 +311,8 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
                   <small className="text-(--mut) text-[.76rem]">CGST Act s.34(2); s.15(3)(b) as amended by Finance Act 2026; CBIC Circular 251/08/2025. Summarised from public sources, Oct 2026. Not tax advice.</small>
                 </div>
                 <div className="ex2 [background:linear-gradient(160deg,#F5F5F7,#F5F5F7)] border border-solid border-[#e8e8ed] rounded-[18px] py-[22px] px-[14px] text-center">
-                  <b className="text-[#0071e3] text-[3.4rem] tracking-[-.04em] leading-none [font-variant-numeric:tabular-nums]" id="xd">{deadline === null ? 'Passed' : deadline}</b>
-                  <span className="text-(--ink2) text-[.82rem] mt-[8px]" id="xl">{deadline === null ? 'Deadline passed: GST credit notes for FY 2025-26 are no longer allowed' : 'days to the FY 2025-26 credit-note deadline'}</span>
+                  <b className="text-[#0071e3] text-[3.4rem] tracking-[-.04em] leading-none [font-variant-numeric:tabular-nums]" id="xd">{deadline === undefined ? '--' : deadline === null ? 'Passed' : deadline === 0 ? 'Today' : deadline}</b>
+                  <span className="text-(--ink2) text-[.82rem] mt-[8px]" id="xl">{deadline === undefined ? 'days to the FY 2025-26 credit-note deadline' : deadline === null ? 'Deadline passed: GST credit notes for FY 2025-26 are no longer allowed' : deadline === 0 ? 'is the last day for FY 2025-26 GST credit notes' : (deadline === 1 ? 'day' : 'days') + ' to the FY 2025-26 credit-note deadline'}</span>
                 </div>
               </div>
             </div>
