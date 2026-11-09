@@ -57,7 +57,7 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
       </div>}
 
       <div className="grid gap-3">
-        <p className="m-0 text-sm font-semibold">Step 1 · Why is the money missing, and who owns it?</p>
+        <p className="m-0 text-sm font-semibold">Why is the money missing, and who owns it?</p>
         <label className="grid gap-1 text-sm">Reason
           <select className="er-input" value={reason} disabled={locked} onChange={ev => pickReason(ev.target.value)}>{reasonOptions.map(r => <option key={r}>{r}</option>)}</select></label>
         <label className="grid gap-1 text-sm">Owner <span className="text-xs text-muted-foreground">Only people who handle "{reason}" are listed.</span>
@@ -71,7 +71,7 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
       </div>
 
       <div className="grid gap-2 rounded-lg border border-border p-3 text-sm">
-        <p className="m-0 font-semibold">Step 2 · Close it</p>
+        <p className="m-0 font-semibold">Close it</p>
         {status === 'resolved' && <p className="m-0 text-[#0F766E]"><b>✓ Resolved</b>{e?.approvedBy ? ` · approved by ${personLabel(e.approvedBy)} after ${personLabel(e.submittedBy ?? '')} submitted it` : ''}.</p>}
         {status === 'open' && !big && <><p className="m-0 text-muted-foreground">Under ₹10,000: the AR executive can close it alone, once it has an owner and a note.</p>
           <Button type="button" disabled={actor !== 'Asha'} onClick={() => run(() => resolveSmall(saveFirst(w), caseId, actor), `${caseId} resolved by ${actor}.`)}>Resolve</Button>
