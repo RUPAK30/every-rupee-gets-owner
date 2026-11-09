@@ -205,7 +205,7 @@ export function sampleWorkspace(): Workspace {
 }
 
 // Tamper-evident case history: a SHA-256 hash chain kept by one company. Not signatures.
-export type LogEntry = { at: string; who: string; text: string; prevHash?: string; hash?: string };
+export type LogEntry = { at: string; who: string; text: string; prevHash?: string | undefined; hash?: string | undefined };
 async function sha256(s: string) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
 const entryHash = (invoiceId: string, l: LogEntry, prevHash: string) => sha256(JSON.stringify({ invoiceId, at: l.at, who: l.who, text: l.text, prevHash }));
 /** Seals only entries without a hash, so existing (possibly tampered) entries are never silently re-sealed. */
