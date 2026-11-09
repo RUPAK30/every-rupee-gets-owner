@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   APPROVAL_LIMIT, HANDBACKS, PEOPLE, financeOwns, handBack, REASONS, approvalCheck, approveCase, caseStatus, invoiceBalance, money, ownersFor, personLabel,
-  resolveSmall, saveCase, sealLog, verifyLog, tenTodayTaskLink, type SalesApproval, sendBack, submitForApproval, type Workspace as Data,
+  resolveSmall, saveCase, sealLog, verifyLog, tenTodayTaskLink, type SalesApproval, type LogEntry, sendBack, submitForApproval, type Workspace as Data,
 } from '@/lib/reconciliation/engine';
 
 type Props = { w: Data; caseId: string | null; approvals?: SalesApproval[]; demo?: boolean; focusHistory?: boolean; onClose: () => void; change: (next: Data, message?: string) => void };
@@ -13,7 +13,12 @@ const fmtTime = (d: string) => new Date(d).toLocaleTimeString('en-IN', { hour: '
 export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = false, onClose, change: rawChange }: Props) {
   const historyRef = useRef<HTMLDivElement>(null);
   const change = (next: Data, msg?: string) => { void Promise.all(next.exceptions.map(async x => x.log ? { ...x, log: await sealLog(x.invoiceId, x.log) } : x)).then(exceptions => rawChange({ ...next, exceptions }, msg)); };
-  const [check, setCheck] = useState<{ ok: boolean; text: string } | null>(null);
+  const [check, setCheck] = useState<{ ok: boolean; text: string; brokenAt?: number } | null>(null);
+  const [editingRow, setEditingRow] = useState(false);
+  const [entryIndex, setEntryIndex] = useState(0);
+  const [entryText, setEntryText] = useState('');
+  const [originalTexts, setOriginalTexts] = useState<Record<number, string>>({});
+  const [undoLog, setUndoLog] = useState<LogEntry[] | null>(null);
   const [actor, setActor] = useState('Asha');
   const [reason, setReason] = useState('Unexplained');
   const [owner, setOwner] = useState('');
@@ -25,8 +30,9 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const e = caseId ? w.exceptions.find(x => x.invoiceId === caseId) : undefined;
   useEffect(() => {
     if (!caseId) return;
-    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null);
+    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setEditingRow(false); setOriginalTexts({}); setUndoLog(null);
   }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { setCheck(null); }, [e?.log]);
   useEffect(() => { if (e?.log?.some(l => !l.hash)) change(w); }, [caseId, e?.log?.length]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!caseId || !focusHistory) return;
@@ -38,8 +44,26 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   }, [caseId, focusHistory]);
   if (!caseId) return null;
   const log = e?.log ?? [];
-  const verify = async () => { const r = await verifyLog(caseId, log); setCheck(r.ok ? { ok: true, text: `✓ All ${log.length} entries intact` } : { ok: false, text: `✗ Entry ${r.brokenAt + 1} was changed after it was recorded` }); };
-  const tamper = () => { if (!demo) return; const i = 0; rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? { ...x, log: (x.log ?? []).map((l, k) => k === i ? { ...l, text: `${l.text} (edited later)` } : l) } : x) }, 'Demo: one past entry was edited without re-sealing.'); setCheck(null); };
+  const verify = async () => { const r = await verifyLog(caseId, log); setCheck(r.ok ? { ok: true, text: `✓ All ${log.length} entries intact` } : { ok: false, brokenAt: r.brokenAt, text: `✗ Entry ${r.brokenAt + 1} was changed after it was recorded` }); };
+  const openTamper = () => {
+    if (!demo || !log.length) return;
+    setEntryIndex(0); setEntryText(log[0]?.text ?? ''); setEditingRow(true);
+  };
+  const tamper = () => {
+    const original = log[entryIndex];
+    if (!demo || !original || original.text === entryText) return;
+    setOriginalTexts(previous => ({ ...previous, [entryIndex]: previous[entryIndex] ?? original.text }));
+    setUndoLog(log);
+    rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? {
+      ...x, log: log.map((l, k) => k === entryIndex ? { ...l, text: entryText } : l),
+    } : x) }, 'Demo only: stored text changed without a new fingerprint.');
+    setEditingRow(false); setCheck(null);
+  };
+  const undoTamper = () => {
+    if (!demo || !undoLog) return;
+    rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? { ...x, log: undoLog } : x) });
+    setUndoLog(null); setCheck(null);
+  };
   const inv = w.invoices.find(i => i.id === caseId);
   const short = invoiceBalance(w, caseId);
   const big = short > APPROVAL_LIMIT;
@@ -49,7 +73,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const dirty = !e || e.reason !== reason || e.owner !== owner || e.notes !== notes;
   const run = (fn: () => Data, msg: string) => { try { setError(''); setDone(''); change(fn(), msg); } catch (err) { setError(err instanceof Error ? err.message : 'Action failed.'); } };
   const saveFirst = (base: Data) => (dirty ? saveCase(base, caseId, { reason, owner, notes }, actor) : base);
-  const pickReason = (r: string) => { setReason(r); const o = ownersFor(r); setOwner(o.length === 1 ? o[0]!.name : o.some(p => p.name === owner) ? owner : ''); };
+  const pickReason = (r: string) => { setReason(r); const o = ownersFor(r); setOwner(o.length === 1 ? (o[0]?.name ?? '') : o.some(p => p.name === owner) ? owner : ''); };
   const ap = approvalCheck(w, caseId, approvals);
   const fill = (r: string, o: string, n: string) => {
     setReason(r); setOwner(o); setNotes(n);
@@ -62,17 +86,6 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
     <DialogContent className="er-app max-h-[90vh] overflow-y-auto">
       <DialogTitle>{caseId} · {inv?.customer} · {money(short)} short</DialogTitle>
       <DialogDescription>Saving records why the money is missing and who owns it. It doesn't move any money.</DialogDescription>
-
-      <div ref={historyRef} className="border-y border-primary/25 bg-primary/5 p-3 text-sm">
-        <p className="m-0 mb-1 font-semibold">History · linked fingerprints</p>
-        <div className="grid gap-1"><span className="w-fit rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium">Tamper-evident · SHA-256</span>
-          <p className="m-0 text-xs leading-5 text-muted-foreground">Each entry's fingerprint includes the one before it, so editing or backdating any entry breaks every fingerprint after it. It proves the history wasn't altered; it doesn't prove a decision was right, and it isn't a blockchain: one company keeps this record.</p>
-          {log.length > 0 && <div className="flex flex-wrap items-center gap-3"><Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>{demo && <Button type="button" size="sm" variant="link" className="h-auto whitespace-normal p-0 text-xs text-muted-foreground" onClick={tamper}>Simulate tampering (demo only)</Button>}</div>}
-          {check && <p role="status" className={`m-0 text-sm font-medium ${check.ok ? 'text-money-ok' : 'text-destructive'}`}>{check.text}</p>}
-          <details className="mt-1 text-xs"><summary className="cursor-pointer font-medium text-primary">What happens behind the scenes?</summary><div className="mt-2 grid gap-2 leading-5 text-muted-foreground"><p className="m-0"><b className="text-foreground">1. Record.</b> Save the case ID, action text, person and time.</p><p className="m-0"><b className="text-foreground">2. Link.</b> SHA-256 turns that record plus the previous fingerprint into a new fingerprint. The first starts with GENESIS.</p><p className="m-0"><b className="text-foreground">3. Check.</b> Verify recalculates each fingerprint and checks every link against the stored values. Simulating an edit keeps the old fingerprint, so verification fails.</p><p className="m-0">This detects changes to the recorded history, not whether the decision was correct. There are no independent copies or signatures: someone able to replace the entire history and recalculate every fingerprint could make it pass.</p></div></details></div>
-        {log.length === 0 ? <p className="m-0 text-muted-foreground">No actions yet.</p> :
-          <ol className="m-0 mt-2 grid gap-2 pl-0">{log.map((l, k) => <li key={k} className="list-none border-l-2 border-primary/30 pl-2"><span className="text-xs text-muted-foreground">Action {k + 1} · {fmtTime(l.at)} · {personLabel(l.who)}</span><p className="m-0 break-words">{l.text}</p>{l.hash && <div className="mt-1 flex flex-wrap gap-x-2 text-xs text-muted-foreground"><span>Previous: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span><span aria-hidden="true">→</span><span>This fingerprint: <code className="text-primary">{l.hash.slice(0, 8)}</code></span></div>}</li>)}</ol>}
-      </div>
 
       <div className="flex flex-wrap items-center gap-2 rounded-lg bg-muted p-2 text-sm">
         <span className="text-muted-foreground">Acting as</span>
@@ -132,6 +145,44 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
             <Button type="button" variant="outline" onClick={() => run(() => sendBack(w, caseId, actor, why), `${caseId} sent back to Asha.`)}>Send back to Asha</Button>
           </div>}
         </>}
+      </div>
+
+      <div ref={historyRef} className="border-y border-primary/25 bg-primary/5 p-3 text-sm">
+        <p className="m-0 mb-1 font-semibold">History · linked fingerprints</p>
+        <div className="grid gap-1"><span className="w-fit rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium">Tamper-evident · SHA-256</span>
+          <p className="m-0 text-xs leading-5 text-muted-foreground">Each entry's fingerprint includes the one before it, so editing or backdating any entry breaks every fingerprint after it. It proves the history wasn't altered; it doesn't prove a decision was right, and it isn't a blockchain: one company keeps this record.</p>
+          {log.length > 0 && <div className="flex flex-wrap items-center gap-3"><Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>{demo && <Button type="button" size="sm" variant="link" className="h-auto whitespace-normal p-0 text-xs text-muted-foreground" onClick={openTamper}>Try tampering yourself</Button>}{demo && undoLog && <Button type="button" size="sm" variant="outline" onClick={undoTamper}>Undo</Button>}</div>}
+          {demo && editingRow && <section aria-label="Raw database row editor" className="mt-2 grid gap-3 rounded-md bg-foreground p-3 text-background">
+            <h3 className="m-0 text-sm font-semibold">⚠ Outside the app · raw database row</h3>
+            <p className="m-0 text-xs leading-5">The app has no edit button for history. An insider with database access could change a stored row directly. No new fingerprint is made.</p>
+            <label className="grid gap-1 text-xs">Entry
+              <select className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" value={entryIndex} onChange={ev => { const i = Number(ev.target.value); setEntryIndex(i); setEntryText(log[i]?.text ?? ''); }}>
+                {log.map((l, i) => <option key={i} value={i}>Entry {i + 1} · {l.who}</option>)}
+              </select>
+            </label>
+            <label className="grid gap-1 text-xs">Stored action text
+              <textarea className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" rows={3} maxLength={300} value={entryText} onChange={ev => setEntryText(ev.target.value)} />
+            </label>
+            <p className="m-0 text-xs">Demo only · this changes the sample in this session, not a real database.</p>
+            <div className="flex flex-wrap gap-2"><Button type="button" size="sm" variant="secondary" disabled={entryText === log[entryIndex]?.text} onClick={tamper}>Save to database</Button><Button type="button" size="sm" variant="ghost" className="text-background hover:bg-background/10 hover:text-background" onClick={() => setEditingRow(false)}>Cancel</Button></div>
+          </section>}
+          {check && <p role="status" className={`m-0 text-sm font-medium ${check.ok ? 'text-money-ok' : 'text-destructive'}`}>{check.text}</p>}
+          <details className="mt-1 text-xs"><summary className="cursor-pointer font-medium text-primary">What happens behind the scenes?</summary><div className="mt-2 grid gap-2 leading-5 text-muted-foreground"><p className="m-0"><b className="text-foreground">1. Record.</b> Save the case ID, action text, person and time.</p><p className="m-0"><b className="text-foreground">2. Link.</b> SHA-256 turns that record plus the previous fingerprint into a new fingerprint. The first starts with GENESIS.</p><p className="m-0"><b className="text-foreground">3. Check.</b> Verify recalculates each fingerprint and checks every link against the stored values. Simulating an edit keeps the old fingerprint, so verification fails.</p><p className="m-0">This detects changes to the recorded history, not whether the decision was correct. There are no independent copies or signatures: someone able to replace the entire history and recalculate every fingerprint could make it pass.</p></div></details></div>
+        {log.length === 0 ? <p className="m-0 text-muted-foreground">No actions yet.</p> :
+          <ol className="m-0 mt-2 grid gap-2 pl-0">{log.map((l, k) => {
+            const brokenAt = check && !check.ok ? check.brokenAt : undefined;
+            const edited = brokenAt !== undefined && k === brokenAt;
+            const later = brokenAt !== undefined && k > brokenAt;
+            const intact = check?.ok || (brokenAt !== undefined && k < brokenAt);
+            const color = edited ? 'border-destructive text-destructive' : later ? 'border-money-wip text-money-wip' : intact ? 'border-money-ok text-money-ok' : 'border-primary/30';
+            return <li key={k} className={`list-none border-l-2 pl-2 ${color}`}>
+              <span className="text-xs">Action {k + 1} · {fmtTime(l.at)} · {personLabel(l.who)}</span>
+              <p className="m-0 break-words">{l.text}</p>
+              {edited && originalTexts[k] !== undefined && <p className="m-0 break-words text-xs">was: {originalTexts[k]}</p>}
+              {later && <p className="m-0 text-xs">built on the edited entry, can't be trusted</p>}
+              {l.hash && <div className="mt-1 flex flex-wrap gap-x-2 text-xs"><span>Previous: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span><span aria-hidden="true">→</span><span>This fingerprint: <code>{l.hash.slice(0, 8)}</code></span></div>}
+            </li>;
+          })}</ol>}
       </div>
 
       {error && <p role="alert" className="m-0 rounded-md bg-destructive/10 p-2 text-sm text-destructive">{error}</p>}
