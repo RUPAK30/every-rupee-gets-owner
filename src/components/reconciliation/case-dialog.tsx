@@ -17,10 +17,11 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
   const [notes, setNotes] = useState('');
   const [why, setWhy] = useState('');
   const [error, setError] = useState('');
+  const [done, setDone] = useState('');
   const e = caseId ? w.exceptions.find(x => x.invoiceId === caseId) : undefined;
   useEffect(() => {
     if (!caseId) return;
-    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy('');
+    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone('');
   }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!caseId) return null;
   const inv = w.invoices.find(i => i.id === caseId);
@@ -30,11 +31,15 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
   const eligible = ownersFor(reason);
   const reasonOptions = REASONS.includes(reason as (typeof REASONS)[number]) ? [...REASONS] : [reason, ...REASONS];
   const dirty = !e || e.reason !== reason || e.owner !== owner || e.notes !== notes;
-  const run = (fn: () => Data, msg: string) => { try { setError(''); change(fn(), msg); } catch (err) { setError(err instanceof Error ? err.message : 'Action failed.'); } };
+  const run = (fn: () => Data, msg: string) => { try { setError(''); setDone(''); change(fn(), msg); } catch (err) { setError(err instanceof Error ? err.message : 'Action failed.'); } };
   const saveFirst = (base: Data) => (dirty ? saveCase(base, caseId, { reason, owner, notes }, actor) : base);
   const pickReason = (r: string) => { setReason(r); const o = ownersFor(r); setOwner(o.length === 1 ? o[0]!.name : o.some(p => p.name === owner) ? owner : ''); };
   const ap = approvalCheck(w, caseId);
-  const fill = (r: string, o: string, n: string) => { setReason(r); setOwner(o); setNotes(n); };
+  const fill = (r: string, o: string, n: string) => {
+    setReason(r); setOwner(o); setNotes(n);
+    try { setError(''); change(saveCase(w, caseId, { reason: r, owner: o, notes: n }, actor), `Saved: ${caseId} owned by ${personLabel(o)}.`); setDone(`✓ Saved. Owner is now ${personLabel(o)}. Next step: close it below.`); setTimeout(() => document.getElementById('er-close-it')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50); }
+    catch (err) { setError(err instanceof Error ? err.message : 'Action failed.'); }
+  };
   const locked = status !== 'open';
 
   return <Dialog open onOpenChange={open => { if (!open) onClose(); }}>
@@ -70,7 +75,8 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
         {!locked && <Button type="button" variant="outline" disabled={!dirty} onClick={() => run(() => saveCase(w, caseId, { reason, owner, notes }, actor), `Saved: ${caseId} owned by ${owner ? personLabel(owner) : 'nobody yet'}.`)}>Save</Button>}
       </div>
 
-      <div className="grid gap-2 rounded-lg border border-border p-3 text-sm">
+      <div id="er-close-it" className="grid gap-2 rounded-lg border border-border p-3 text-sm">
+        {done && <p role="status" className="m-0 rounded-md bg-[#ECFDF5] p-2 font-medium text-[#065F46]">{done}</p>}
         <p className="m-0 font-semibold">Close it</p>
         {status === 'resolved' && <p className="m-0 text-[#0F766E]"><b>✓ Resolved</b>{e?.approvedBy ? ` · approved by ${personLabel(e.approvedBy)} after ${personLabel(e.submittedBy ?? '')} submitted it` : ''}.</p>}
         {status === 'open' && !big && <><p className="m-0 text-muted-foreground">Under ₹10,000: the AR executive can close it alone, once it has an owner and a note.</p>
