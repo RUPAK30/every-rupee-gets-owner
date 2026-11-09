@@ -63,6 +63,17 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
       <DialogTitle>{caseId} · {inv?.customer} · {money(short)} short</DialogTitle>
       <DialogDescription>Saving records why the money is missing and who owns it. It doesn't move any money.</DialogDescription>
 
+      <div ref={historyRef} className="border-y border-primary/25 bg-primary/5 p-3 text-sm">
+        <p className="m-0 mb-1 font-semibold">History · linked fingerprints</p>
+        <div className="grid gap-1"><span className="w-fit rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium">Tamper-evident · SHA-256</span>
+          <p className="m-0 text-xs leading-5 text-muted-foreground">Each entry's fingerprint includes the one before it, so editing or backdating any entry breaks every fingerprint after it. It proves the history wasn't altered; it doesn't prove a decision was right, and it isn't a blockchain: one company keeps this record.</p>
+          {log.length > 0 && <div className="flex flex-wrap items-center gap-3"><Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>{demo && <Button type="button" size="sm" variant="link" className="h-auto whitespace-normal p-0 text-xs text-muted-foreground" onClick={tamper}>Simulate tampering (demo only)</Button>}</div>}
+          {check && <p role="status" className={`m-0 text-sm font-medium ${check.ok ? 'text-money-ok' : 'text-destructive'}`}>{check.text}</p>}
+          <details className="mt-1 text-xs"><summary className="cursor-pointer font-medium text-primary">What happens behind the scenes?</summary><div className="mt-2 grid gap-2 leading-5 text-muted-foreground"><p className="m-0"><b className="text-foreground">1. Record.</b> Save the case ID, action text, person and time.</p><p className="m-0"><b className="text-foreground">2. Link.</b> SHA-256 turns that record plus the previous fingerprint into a new fingerprint. The first starts with GENESIS.</p><p className="m-0"><b className="text-foreground">3. Check.</b> Verify recalculates each fingerprint and checks every link against the stored values. Simulating an edit keeps the old fingerprint, so verification fails.</p><p className="m-0">This detects changes to the recorded history, not whether the decision was correct. There are no independent copies or signatures: someone able to replace the entire history and recalculate every fingerprint could make it pass.</p></div></details></div>
+        {log.length === 0 ? <p className="m-0 text-muted-foreground">No actions yet.</p> :
+          <ol className="m-0 mt-2 grid gap-2 pl-0">{log.map((l, k) => <li key={k} className="list-none border-l-2 border-primary/30 pl-2"><span className="text-xs text-muted-foreground">Action {k + 1} · {fmtTime(l.at)} · {personLabel(l.who)}</span><p className="m-0 break-words">{l.text}</p>{l.hash && <div className="mt-1 flex flex-wrap gap-x-2 text-xs text-muted-foreground"><span>Previous: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span><span aria-hidden="true">→</span><span>This fingerprint: <code className="text-primary">{l.hash.slice(0, 8)}</code></span></div>}</li>)}</ol>}
+      </div>
+
       <div className="flex flex-wrap items-center gap-2 rounded-lg bg-muted p-2 text-sm">
         <span className="text-muted-foreground">Acting as</span>
         {['Asha', 'Vikram'].map(n => <button key={n} type="button" onClick={() => { setActor(n); setError(''); }} className={`rounded-md px-3 py-1.5 font-medium ${actor === n ? 'bg-foreground text-background' : 'bg-background text-foreground border border-border'}`}>{personLabel(n)}</button>)}
@@ -125,16 +136,6 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
 
       {error && <p role="alert" className="m-0 rounded-md bg-destructive/10 p-2 text-sm text-destructive">{error}</p>}
 
-      <div ref={historyRef} className="border-y border-primary/25 bg-primary/5 p-3 text-sm">
-        <p className="m-0 mb-1 font-semibold">History · linked fingerprints</p>
-        <div className="grid gap-1"><span className="w-fit rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium">Tamper-evident · SHA-256</span>
-          <p className="m-0 text-xs leading-5 text-muted-foreground">Each entry's fingerprint includes the one before it, so editing or backdating any entry breaks every fingerprint after it. It proves the history wasn't altered; it doesn't prove a decision was right, and it isn't a blockchain: one company keeps this record.</p>
-          {log.length > 0 && <div className="flex flex-wrap items-center gap-3"><Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>{demo && <Button type="button" size="sm" variant="link" className="h-auto whitespace-normal p-0 text-xs text-muted-foreground" onClick={tamper}>Simulate tampering (demo only)</Button>}</div>}
-          {check && <p role="status" className={`m-0 text-sm font-medium ${check.ok ? 'text-money-ok' : 'text-destructive'}`}>{check.text}</p>}
-          <details className="mt-1 text-xs"><summary className="cursor-pointer font-medium text-primary">What happens behind the scenes?</summary><div className="mt-2 grid gap-2 leading-5 text-muted-foreground"><p className="m-0"><b className="text-foreground">1. Record.</b> Save the case ID, action text, person and time.</p><p className="m-0"><b className="text-foreground">2. Link.</b> SHA-256 turns that record plus the previous fingerprint into a new fingerprint. The first starts with GENESIS.</p><p className="m-0"><b className="text-foreground">3. Check.</b> Verify recalculates each fingerprint and checks every link against the stored values. Simulating an edit keeps the old fingerprint, so verification fails.</p><p className="m-0">This detects changes to the recorded history, not whether the decision was correct. There are no independent copies or signatures: someone able to replace the entire history and recalculate every fingerprint could make it pass.</p></div></details></div>
-        {log.length === 0 ? <p className="m-0 text-muted-foreground">No actions yet.</p> :
-          <ol className="m-0 mt-2 grid gap-2 pl-0">{log.map((l, k) => <li key={k} className="list-none border-l-2 border-primary/30 pl-2"><span className="text-xs text-muted-foreground">Action {k + 1} · {fmtTime(l.at)} · {personLabel(l.who)}</span><p className="m-0 break-words">{l.text}</p>{l.hash && <div className="mt-1 flex flex-wrap gap-x-2 text-xs text-muted-foreground"><span>Previous: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span><span aria-hidden="true">→</span><span>This fingerprint: <code className="text-primary">{l.hash.slice(0, 8)}</code></span></div>}</li>)}</ol>}
-      </div>
       <p className="m-0 text-xs text-muted-foreground">Team: {PEOPLE.map(p => `${p.name} (${p.role})`).join(' · ')}</p>
     </DialogContent>
   </Dialog>;
