@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { allocate, approvalCheck, autoMatch, importCsv, invoiceBalance, receiptBalance, sampleWorkspace, validateWorkspace } from './engine';
+import { allocate, approvalCheck, approveCase, autoMatch, resolveSmall, saveCase, sendBack, submitForApproval, importCsv, invoiceBalance, receiptBalance, sampleWorkspace, validateWorkspace } from './engine';
 describe('reconciliation rules', () => {
   it('keeps demo totals aligned with the homepage and README sample', () => {
     const w = sampleWorkspace();
@@ -38,5 +38,25 @@ describe('reconciliation rules', () => {
     expect(r.status).toBe('excess');
     if (r.status === 'excess') { expect(r.limit).toBe(59000); expect(r.excess).toBe(59000); }
     expect(approvalCheck(w, 'INV-101', [{ ...small[0]!, validTo: '2026-09-30' }]).status).toBe('expired');
+  });
+  it('ownership: a case can only be owned by someone who handles that reason', () => {
+    const w = autoMatch(sampleWorkspace());
+    expect(() => saveCase(w, 'INV-102', { reason: 'Scheme claim · not approved', owner: 'Asha', notes: 'x' }, 'Asha')).toThrow(/doesn't handle/);
+    expect(saveCase(w, 'INV-102', { reason: 'Scheme claim · not approved', owner: 'Rahul', notes: 'x' }, 'Asha').exceptions.find(e => e.invoiceId === 'INV-102')?.owner).toBe('Rahul');
+  });
+  it('BR-5: above ₹10,000 the maker submits, cannot self-approve, and a different checker resolves', () => {
+    let w = saveCase(autoMatch(sampleWorkspace()), 'INV-102', { reason: 'Scheme claim · not approved', owner: 'Rahul', notes: 'Rep confirmed the promise' }, 'Asha');
+    expect(() => resolveSmall(w, 'INV-102', 'Asha')).toThrow(/second approval/);
+    w = submitForApproval(w, 'INV-102', 'Asha');
+    expect(() => approveCase(w, 'INV-102', 'Asha')).toThrow(/can't approve/);
+    const back = sendBack(w, 'INV-102', 'Vikram', 'Need the rep email');
+    expect(back.exceptions.find(e => e.invoiceId === 'INV-102')?.status).toBe('open');
+    w = approveCase(w, 'INV-102', 'Vikram');
+    const e = w.exceptions.find(x => x.invoiceId === 'INV-102')!;
+    expect(e.resolved).toBe(true); expect(e.approvedBy).toBe('Vikram'); expect(e.log!.length).toBe(3);
+  });
+  it('BR-5: up to ₹10,000 the maker resolves alone, with an owner and a note', () => {
+    const w = resolveSmall(autoMatch(sampleWorkspace()), 'INV-101', 'Asha');
+    expect(w.exceptions.find(e => e.invoiceId === 'INV-101')?.status).toBe('resolved');
   });
 });

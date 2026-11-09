@@ -91,7 +91,7 @@ function Index() {
 const steps = [
   ["1", "Import", "Upload invoices and receipts as CSV files."],
   ["2", "Auto-match", "Exact reference matches are paired. Unclear ones are never guessed."],
-  ["3", "Resolve", "Each gap gets an owner and a decision note. Accounting actions run in the canonical live desk."],
+  ["3", "Resolve", "Each gap gets an owner who handles that kind of problem. Above ₹10,000, a second person approves. Every action is logged."],
 ];
 
 function QuickTour() {
@@ -377,7 +377,7 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
                 <ol className="pts list-none m-0 p-0 [counter-reset:p]">
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Evidence first.</b> Every fact dated and sourced.</li>
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">One owner per gap.</b> One decision, one deadline.</li>
-                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Testable rules.</b> The full desk runs 16 rules with 31 passing tests, including every "must block" case. This demo enforces matching and exceptions only.</li>
+                  <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Testable rules.</b> The full desk runs 16 rules with 31 passing tests, including every "must block" case. This app enforces matching, owners by role, the Ten Today approval check and two-person approval above ₹10,000.</li>
                   <li className="pt-0 pr-0 pb-[12px] pl-[36px] [counter-increment:p]"><b className="text-(--ink)">Controls built in.</b> Maker-checker and no write-offs by rule: enforced and tested in the full desk. Product certifications are not claimed.</li>
                 </ol>
               </div>

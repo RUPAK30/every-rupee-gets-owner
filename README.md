@@ -27,7 +27,7 @@ Finance teams lose money in the gap between what was billed and what the bank re
 
 - **Money is integer paise** — no floating-point rounding, ever.
 - **One shared engine** (`src/lib/reconciliation/engine.ts`) — the same validation runs in the browser and on the server. Over-allocation is impossible.
-- **Tested here: 15 tests** — matching, no over-allocation, atomic CSV import, BR-4 (write-offs rejected), BR-5 (no resolution above ₹10,000 without a separate checker), and BR-10, the link to Ten Today: a discount claim is checked against the sales approval (covered, split at the cap, expired, or no approval).
+- **Tested here: 18 tests** — matching, no over-allocation, atomic CSV import, BR-4 (write-offs rejected), BR-5 (no resolution above ₹10,000 without a separate checker), BR-10, the link to Ten Today (covered, split at the cap, expired, or no approval), owners limited to the people who handle each reason, and the two-person approval above ₹10,000 (submit, no self-approval, approve or send back).
 - **The full tested desk** (16 business rules, 31 tests, brand and lender modes) runs at https://everyrupee-o2c.vercel.app — this app is its lighter, interactive front end.
 - **Lender return codes live in one module** (`lender-codes.ts`) — AI explanations may only reword the desk's rule, and suggestions must be one of the allowed outcomes, logged only after a person confirms.
 - **Honesty by design** — bank/ERP integrations and compliance certifications are labelled "planned", never claimed as live.
