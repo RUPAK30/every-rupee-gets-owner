@@ -99,3 +99,16 @@ describe('Ten Today handoff contract v1', () => {
     it('deleting a middle entry fails', async () => { const l = await sealLog('INV-1', raw); expect(await verifyLog('INV-1', [l[0]!, l[2]!])).toEqual({ ok: false, brokenAt: 1 }); });
   });
 });
+
+import { checkTenTodaySeal } from './engine';
+describe('Ten Today fingerprint', () => {
+  it('matches untouched fields and catches an edited cap', async () => {
+    const { createHash } = await import('node:crypto');
+    const o = { v: 1, id: 'APV-2026-034', customer: 'Aarav Distributors', rep: 'Rahul', approver: 'Kavita', capPct: 6, validTo: '2026-12-31' };
+    const seal = createHash('sha256').update(JSON.stringify([o.v, o.id, o.customer, o.rep, o.approver, o.capPct, o.validTo])).digest('hex');
+    const t = (x: object) => Buffer.from(JSON.stringify(x)).toString('base64url');
+    expect(await checkTenTodaySeal(t({ ...o, seal }))).toBe('match');
+    expect(await checkTenTodaySeal(t({ ...o, capPct: 10, seal }))).toBe('mismatch');
+    expect(await checkTenTodaySeal(t(o))).toBe('none');
+  });
+});

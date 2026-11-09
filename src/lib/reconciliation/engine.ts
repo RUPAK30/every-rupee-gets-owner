@@ -219,3 +219,13 @@ export async function verifyLog(invoiceId: string, log: LogEntry[]): Promise<{ o
   for (let i = 0; i < log.length; i++) { const l = log[i]!; if (l.prevHash !== prev || l.hash !== await entryHash(invoiceId, l, prev)) return { ok: false, brokenAt: i }; prev = l.hash!; }
   return { ok: true };
 }
+
+/* Ten Today sends a fingerprint of the approval fields. Recompute it here: a mismatch means the link was edited on the way. */
+export async function checkTenTodaySeal(token: string): Promise<'match' | 'mismatch' | 'none'> {
+  try {
+    const o = JSON.parse(b64(token)) as Record<string, unknown>;
+    if (typeof o['seal'] !== 'string') return 'none';
+    const mine = await sha256(JSON.stringify([o['v'], o['id'], o['customer'], o['rep'], o['approver'], o['capPct'], o['validTo']]));
+    return mine === o['seal'] ? 'match' : 'mismatch';
+  } catch { return 'none'; }
+}
