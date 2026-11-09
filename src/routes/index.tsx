@@ -167,7 +167,7 @@ function CanonicalWorkflows() {
 function ImportedSectionADistributorPaysShort() {
   return (
     <section className="er-app py-12 text-center sm:py-16" aria-labelledby="intro-title">
-      <p className="text-sm font-medium text-muted-foreground">Order-to-cash · Deduction management</p>
+      <p className="text-sm font-medium text-muted-foreground">Order-to-cash · Deduction management · <span className="font-semibold text-primary">Tamper-evident</span></p>
       <p className="mt-1 text-xs text-muted-foreground">Portfolio case study by Rupak Ghanpathi · sample data</p>
       <h1 id="intro-title" className="mx-auto mt-3 max-w-[24ch] text-3xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
       <p className="mx-auto mt-4 max-w-[60ch] text-sm leading-6 sm:text-base sm:leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
