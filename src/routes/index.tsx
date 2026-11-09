@@ -2,7 +2,6 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type MouseEvent } from "react";
 import { Button } from '@/components/ui/button';
 import { DemoRequest } from '@/components/reconciliation/demo-request';
-import { useAccount } from '@/lib/account-context';
 import capturedCSS from "../styles/site.css?raw";
 
 export const Route = createFileRoute("/")({
@@ -19,7 +18,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { signedIn } = useAccount();
   const [openDetails, setOpenDetails] = useState<Record<string, boolean>>({});
   const [deadline, setDeadline] = useState<number | null>(null);
   const openHash = (hash: string) => {
