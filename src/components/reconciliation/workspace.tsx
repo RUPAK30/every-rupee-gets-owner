@@ -1,6 +1,6 @@
 import { toast } from 'sonner';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, Download, Upload, RotateCcw, Save, Check, Search, Trash2, Wallet, GitMerge, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tour, DeskSwitch, type TourStep } from './tour';
@@ -11,6 +11,7 @@ import { readTenTodayApproval, salesApprovals, type SalesApproval, allocate, app
 type Props = { initial: Data; demo?: boolean; onSave?: (data: Data) => Promise<void>; onSignOut?: () => Promise<void> };
 function download(filename: string, text: string) { const url = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
 export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
+  const routeSearch = useSearch({ strict: false });
   const [handoff, setHandoff] = useState<{ approval?: SalesApproval; error?: string } | null>(null);
   useEffect(() => { const t = new URLSearchParams(window.location.search).get('apv'); if (!t) return; try { setHandoff({ approval: readTenTodayApproval(t) }); } catch (err) { setHandoff({ error: err instanceof Error ? err.message : 'Invalid approval link.' }); } }, []);
   const approvals = handoff?.approval ? [handoff.approval, ...salesApprovals().filter(a => a.customer !== handoff.approval!.customer)] : salesApprovals();
@@ -25,10 +26,10 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [tour, setTour] = useState<number | null>(null);
   const openedHistoryLink = useRef(false);
   useEffect(() => {
-    if (!demo || openedHistoryLink.current || new URLSearchParams(window.location.search).get('history') !== '1') return;
+    if (!demo || openedHistoryLink.current || routeSearch.history !== '1') return;
     openedHistoryLink.current = true;
     void openSampleHistory();
-  }, [demo]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [demo, routeSearch.history]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (demo && new URLSearchParams(window.location.search).get('tour') === '1') setTour(0); }, [demo]);
   const tourSteps: TourStep[] = [
     { target: 'receipts', title: 'Meet a small business', text: 'It sent 4 bills totalling ₹1,91,300 and received 4 payments totalling ₹1,73,710. The difference is ₹17,590. Our job: check which bills were paid.' },
