@@ -52,7 +52,21 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
         reason: entry?.reason ?? 'Scheme claim · approved in Ten Today', owner: entry?.owner || 'Asha',
         notes: entry?.notes ?? 'Sample action for the hash-chain history check.',
       }, 'Asha');
-      const exceptions = await Promise.all(next.exceptions.map(async e => e.invoiceId === 'INV-101' ? { ...e, log: await sealLog(e.invoiceId, e.log ?? []) } : e));
+      const exceptions = await Promise.all(next.exceptions.map(async e => {
+        if (e.invoiceId !== 'INV-101') return e;
+        let log = await sealLog(e.invoiceId, e.log ?? []);
+        const sampleActions = [
+          { who: 'Asha', text: 'Set the scheme-claim reason and assigned Asha as owner.' },
+          { who: 'Asha', text: 'Added evidence note: approval APV-2026-031 covers the ₹1,180 scheme claim.' },
+          { who: 'Asha', text: 'Submitted the sample decision to Vikram for review.' },
+          { who: 'Vikram', text: 'Approved the sample decision after reviewing the evidence.' },
+        ];
+        for (let i = log.length; i < sampleActions.length; i++) {
+          const action = sampleActions[i];
+          if (action) log = await sealLog(e.invoiceId, [...log, { ...action, at: new Date().toISOString() }]);
+        }
+        return { ...e, log };
+      }));
       change({ ...next, exceptions }); setTab('exceptions'); setFocusHistory(true); setCaseId('INV-101');
     } catch (err) { setError(err instanceof Error ? err.message : 'Could not open sample history.'); }
     finally { setOpeningHistory(false); }

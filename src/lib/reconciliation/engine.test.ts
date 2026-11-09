@@ -95,6 +95,24 @@ describe('Ten Today handoff contract v1', () => {
     const raw = [1, 2, 3].map(n => ({ at: `2026-11-0${n}T10:00:00Z`, who: 'Asha', text: `Step ${n}` }));
     it('a sealed log verifies', async () => { expect(await verifyLog('INV-1', await sealLog('INV-1', raw))).toEqual({ ok: true }); });
     it('editing one entry fails at that entry', async () => { const l = await sealLog('INV-1', raw); l[1] = { ...l[1]!, text: 'Edited' }; expect(await verifyLog('INV-1', l)).toEqual({ ok: false, brokenAt: 1 }); });
+    it('with four sealed entries, editing entry 2 returns brokenAt 1', async () => {
+      const actions = [
+        { who: 'Asha', text: 'Set reason and owner' },
+        { who: 'Asha', text: 'Added evidence note' },
+        { who: 'Asha', text: 'Submitted for review' },
+        { who: 'Vikram', text: 'Approved' },
+      ];
+      let log: import('./engine').LogEntry[] = [];
+      for (const action of actions) log = await sealLog('INV-101', [...log, { ...action, at: '2026-11-09T19:49:00Z' }]);
+      expect(log).toHaveLength(4);
+      expect(log[0]?.prevHash).toBe('GENESIS');
+      for (let i = 1; i < log.length; i++) expect(log[i]?.prevHash).toBe(log[i - 1]?.hash);
+      expect(await verifyLog('INV-101', log)).toEqual({ ok: true });
+      const second = log[1];
+      if (!second) throw new Error('Missing entry 2');
+      log[1] = { ...second, text: 'Changed the stored evidence note' };
+      expect(await verifyLog('INV-101', log)).toEqual({ ok: false, brokenAt: 1 });
+    });
     it('reordering entries fails', async () => { const l = await sealLog('INV-1', raw); expect((await verifyLog('INV-1', [l[1]!, l[0]!, l[2]!])).ok).toBe(false); });
     it('deleting a middle entry fails', async () => { const l = await sealLog('INV-1', raw); expect(await verifyLog('INV-1', [l[0]!, l[2]!])).toEqual({ ok: false, brokenAt: 1 }); });
   });
