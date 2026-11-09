@@ -67,6 +67,28 @@ export function importCsv(w: Workspace, kind: 'invoices' | 'receipts', csv: stri
   return validateWorkspace({ ...w, [kind]: [...w[kind], ...rows] });
 }
 export const money = (cents: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(cents / 100);
+/* BR-10: the link to Ten Today. A scheme deduction is checked against the discount approval saved in Ten Today, the sales app.
+   The cap is approved before GST, so it covers cap + 18% GST. Within the cap: clears by rule. Above it: only the excess goes back to the rep.
+   Invoice after the approval window: goes to the approver who signed it. No approval: goes back to the sales rep, not finance. */
+export type SalesApproval = { id: string; customer: string; rep: string; approver: string; capBeforeGst: number; validTo: string };
+export const salesApprovals = (): SalesApproval[] => [
+  { id: 'APV-2026-031', customer: 'Aarav Distributors', rep: 'Rahul', approver: 'Kavita', capBeforeGst: 100000, validTo: '2026-10-31' },
+];
+export type ApprovalCheck =
+  | { status: 'unpaid' } | { status: 'none'; short: number }
+  | { status: 'expired'; approval: SalesApproval; short: number }
+  | { status: 'covered'; approval: SalesApproval; short: number; limit: number }
+  | { status: 'excess'; approval: SalesApproval; short: number; limit: number; excess: number };
+export function approvalCheck(w: Workspace, invoiceId: string, approvals: SalesApproval[] = salesApprovals()): ApprovalCheck {
+  const inv = w.invoices.find(i => i.id === invoiceId);
+  if (!inv || !w.allocations.some(a => a.invoiceId === invoiceId)) return { status: 'unpaid' };
+  const short = invoiceBalance(w, invoiceId);
+  const approval = approvals.find(a => a.customer === inv.customer);
+  if (!approval) return { status: 'none', short };
+  if (inv.date > approval.validTo) return { status: 'expired', approval, short };
+  const limit = Math.round(approval.capBeforeGst * 1.18);
+  return short <= limit ? { status: 'covered', approval, short, limit } : { status: 'excess', approval, short, limit, excess: short - limit };
+}
 export function sampleWorkspace(): Workspace {
   return { invoices: [
     { id: 'INV-101', customer: 'Aarav Distributors', amount: 1180000, date: '2026-10-01' },
