@@ -27,6 +27,15 @@ export const PEOPLE: Person[] = [
   { name: 'Vikram', role: 'Finance controller', handles: [], checker: true },
 ];
 export const MAKERS = ['Asha'];
+/* Finance can close a gap only while finance owns it. Anyone else must act first and hand it back. */
+export const HANDBACKS: Record<string, { label: string; reason: string; owner: string }[]> = {
+  'Scheme claim · not approved': [{ label: 'Got it approved in Ten Today', reason: 'Scheme claim · approved in Ten Today', owner: 'Asha' }, { label: 'Customer must pay it back', reason: 'Recovery pending', owner: 'Rohan' }],
+  'Scheme claim · approval expired': [{ label: 'Approval renewed in Ten Today', reason: 'Scheme claim · approved in Ten Today', owner: 'Asha' }, { label: 'Customer must pay it back', reason: 'Recovery pending', owner: 'Rohan' }],
+  'Damage claim': [{ label: 'Damage confirmed: credit note due', reason: 'Pending credit note', owner: 'Asha' }, { label: 'Damage rejected: customer must pay', reason: 'Recovery pending', owner: 'Rohan' }],
+  'Recovery pending': [],
+};
+export const financeOwns = (owner?: string) => !!owner && MAKERS.includes(owner);
+const needFinance = (owner?: string) => { if (owner && !financeOwns(owner)) throw new Error(`${personLabel(owner)} owns this. Finance can close it only after ${owner} acts and hands it back.`); };
 export const personLabel = (name: string) => { const p = PEOPLE.find(x => x.name === name); return p ? `${p.name} · ${p.role}` : name; };
 export const ownersFor = (reason: string) => PEOPLE.filter(p => p.handles.includes(reason));
 type Exc = Workspace['exceptions'][number];
@@ -43,16 +52,25 @@ export function saveCase(w: Workspace, invoiceId: string, f: { reason: string; o
   if (f.owner && !ownersFor(f.reason).some(p => p.name === f.owner)) throw new Error(`${personLabel(f.owner)} doesn't handle "${f.reason}". Pick ${ownersFor(f.reason).map(p => p.name).join(' or ') || 'another reason'}.`);
   return upsert(w, invoiceId, e => { if (statusOf(e) === 'resolved') throw new Error('This case is already resolved.'); return { ...e, ...f, log: [...e.log!, { at: stamp(), who: actor, text: `Set reason "${f.reason}", owner ${f.owner ? personLabel(f.owner) : 'none'}` }] }; });
 }
+/* The current owner records what they did; the case moves to the next owner. */
+export function handBack(w: Workspace, invoiceId: string, choice: number, note: string): Workspace {
+  return upsert(w, invoiceId, e => {
+    if (statusOf(e) !== 'open') throw new Error('Only open cases can be handed on.');
+    const o = (HANDBACKS[e.reason] ?? [])[choice]; if (!o || !e.owner) throw new Error('Nothing to hand back here.');
+    if (!note.trim()) throw new Error(`Add what ${e.owner} did first.`);
+    return { ...e, reason: o.reason, owner: o.owner, notes: `${e.notes}\n${e.owner}: ${note.trim()}`.trim(), log: [...e.log!, { at: stamp(), who: e.owner, text: `${o.label}. Handed to ${personLabel(o.owner)}. Note: ${note.trim()}` }] };
+  });
+}
 /* Up to ₹10,000: the maker can resolve it alone, with a note. */
 export function resolveSmall(w: Workspace, invoiceId: string, actor: string): Workspace {
   if (invoiceBalance(w, invoiceId) > APPROVAL_LIMIT) throw new Error('Above ₹10,000: submit it for a second approval instead.');
-  return upsert(w, invoiceId, e => { if (!e.owner) throw new Error('Pick an owner first.'); if (!e.notes.trim()) throw new Error('Add a note on the evidence first.'); return { ...e, resolved: true, status: 'resolved', log: [...e.log!, { at: stamp(), who: actor, text: 'Resolved (under ₹10,000, no second approval needed)' }] }; });
+  return upsert(w, invoiceId, e => { if (!e.owner) throw new Error('Pick an owner first.'); needFinance(e.owner); if (!e.notes.trim()) throw new Error('Add a note on the evidence first.'); return { ...e, resolved: true, status: 'resolved', log: [...e.log!, { at: stamp(), who: actor, text: 'Resolved (under ₹10,000, no second approval needed)' }] }; });
 }
 /* BR-5, above ₹10,000: maker submits, a different checker approves. */
 export function submitForApproval(w: Workspace, invoiceId: string, actor: string): Workspace {
   if (!MAKERS.includes(actor)) throw new Error('Only the AR executive submits cases for approval.');
   if (invoiceBalance(w, invoiceId) <= APPROVAL_LIMIT) throw new Error('Under ₹10,000 no second approval is needed.');
-  return upsert(w, invoiceId, e => { if (!e.owner) throw new Error('Pick an owner first.'); if (!e.notes.trim()) throw new Error('Add a note on the evidence first.'); if (statusOf(e) !== 'open') throw new Error('Already submitted.'); return { ...e, status: 'pending', submittedBy: actor, log: [...e.log!, { at: stamp(), who: actor, text: 'Submitted for approval (gap above ₹10,000)' }] }; });
+  return upsert(w, invoiceId, e => { if (!e.owner) throw new Error('Pick an owner first.'); needFinance(e.owner); if (!e.notes.trim()) throw new Error('Add a note on the evidence first.'); if (statusOf(e) !== 'open') throw new Error('Already submitted.'); return { ...e, status: 'pending', submittedBy: actor, log: [...e.log!, { at: stamp(), who: actor, text: 'Submitted for approval (gap above ₹10,000)' }] }; });
 }
 export function approveCase(w: Workspace, invoiceId: string, actor: string): Workspace {
   return upsert(w, invoiceId, e => {

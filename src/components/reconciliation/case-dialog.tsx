@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
-  APPROVAL_LIMIT, PEOPLE, REASONS, approvalCheck, approveCase, caseStatus, invoiceBalance, money, ownersFor, personLabel,
+  APPROVAL_LIMIT, HANDBACKS, PEOPLE, financeOwns, handBack, REASONS, approvalCheck, approveCase, caseStatus, invoiceBalance, money, ownersFor, personLabel,
   resolveSmall, saveCase, sendBack, submitForApproval, type Workspace as Data,
 } from '@/lib/reconciliation/engine';
 
@@ -18,6 +18,7 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
   const [why, setWhy] = useState('');
   const [error, setError] = useState('');
   const [done, setDone] = useState('');
+  const [did, setDid] = useState('');
   const e = caseId ? w.exceptions.find(x => x.invoiceId === caseId) : undefined;
   useEffect(() => {
     if (!caseId) return;
@@ -37,7 +38,7 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
   const ap = approvalCheck(w, caseId);
   const fill = (r: string, o: string, n: string) => {
     setReason(r); setOwner(o); setNotes(n);
-    try { setError(''); change(saveCase(w, caseId, { reason: r, owner: o, notes: n }, actor), `Saved: ${caseId} owned by ${personLabel(o)}.`); setDone(`✓ Saved. Owner is now ${personLabel(o)}. Next step: close it below.`); setTimeout(() => document.getElementById('er-close-it')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50); }
+    try { setError(''); change(saveCase(w, caseId, { reason: r, owner: o, notes: n }, actor), `Saved: ${caseId} owned by ${personLabel(o)}.`); setDone(financeOwns(o) ? `✓ Saved. Owner is now ${personLabel(o)}. Next step: close it below.` : `✓ Saved. It's now with ${personLabel(o)}. Finance can't close it until ${o} acts (below).`); setTimeout(() => document.getElementById('er-close-it')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50); }
     catch (err) { setError(err instanceof Error ? err.message : 'Action failed.'); }
   };
   const locked = status !== 'open';
@@ -79,10 +80,18 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
         {done && <p role="status" className="m-0 rounded-md bg-[#ECFDF5] p-2 font-medium text-[#065F46]">{done}</p>}
         <p className="m-0 font-semibold">Close it</p>
         {status === 'resolved' && <p className="m-0 text-[#0F766E]"><b>✓ Resolved</b>{e?.approvedBy ? ` · approved by ${personLabel(e.approvedBy)} after ${personLabel(e.submittedBy ?? '')} submitted it` : ''}.</p>}
-        {status === 'open' && !big && <><p className="m-0 text-muted-foreground">Under ₹10,000: the AR executive can close it alone, once it has an owner and a note.</p>
+        {status === 'open' && owner && !financeOwns(owner) && <>
+          <p className="m-0 rounded-md bg-[#FFFBEB] p-2 text-[#92400E]">With <b>{personLabel(owner)}</b>. Finance can't close this until {owner} acts and hands it back.</p>
+          {(HANDBACKS[reason] ?? []).length === 0 ? <p className="m-0 text-muted-foreground">{owner} is collecting from the customer. The gap closes when the money lands in the bank and is matched.</p> : <>
+            <p className="m-0 font-medium">Record what {owner} did:</p>
+            <input className="er-input" value={did} onChange={ev => setDid(ev.target.value)} maxLength={200} placeholder={`e.g. ${owner} confirmed by email on 10 Nov`} />
+            {(HANDBACKS[reason] ?? []).map((o, k) => <Button key={k} type="button" variant={k === 0 ? 'default' : 'outline'} onClick={() => { run(() => handBack(saveFirst(w), caseId, k, did), `${caseId}: ${o.label}. Now with ${personLabel(o.owner)}.`); if (did.trim()) { setNotes(n => `${n}\n${owner}: ${did.trim()}`.trim()); setReason(o.reason); setOwner(o.owner); setDid(''); setDone(`✓ ${o.label}. Now with ${personLabel(o.owner)}.`); } }}>{o.label} → {o.owner}</Button>)}
+          </>}
+        </>}
+        {status === 'open' && (!owner || financeOwns(owner)) && !big && <><p className="m-0 text-muted-foreground">Under ₹10,000: the AR executive can close it alone, once it has an owner and a note.</p>
           <Button type="button" disabled={actor !== 'Asha'} onClick={() => run(() => resolveSmall(saveFirst(w), caseId, actor), `${caseId} resolved by ${actor}.`)}>Resolve</Button>
           {actor !== 'Asha' && <p className="m-0 text-xs text-muted-foreground">Switch to Asha: she owns the day-to-day closing.</p>}</>}
-        {big && status !== 'resolved' && <>
+        {big && (status === 'pending' || (status === 'open' && (!owner || financeOwns(owner)))) && <>
           <p className="m-0 text-muted-foreground">Over ₹10,000, so two people are needed: <b>Asha submits</b> it, then <b>Vikram approves</b> it. Nobody approves their own submission.</p>
           <ol className="m-0 grid gap-1 pl-5">
             <li className={status === 'open' ? 'font-semibold' : 'text-muted-foreground'}>Asha submits for approval {status !== 'open' && '✓'}</li>

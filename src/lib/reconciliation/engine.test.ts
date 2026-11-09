@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { allocate, approvalCheck, approveCase, autoMatch, resolveSmall, saveCase, sendBack, submitForApproval, importCsv, invoiceBalance, receiptBalance, sampleWorkspace, validateWorkspace } from './engine';
+import { allocate, approvalCheck, approveCase, autoMatch, handBack, resolveSmall, saveCase, sendBack, submitForApproval, importCsv, invoiceBalance, receiptBalance, sampleWorkspace, validateWorkspace } from './engine';
 describe('reconciliation rules', () => {
   it('keeps demo totals aligned with the homepage and README sample', () => {
     const w = sampleWorkspace();
@@ -45,7 +45,7 @@ describe('reconciliation rules', () => {
     expect(saveCase(w, 'INV-102', { reason: 'Scheme claim · not approved', owner: 'Rahul', notes: 'x' }, 'Asha').exceptions.find(e => e.invoiceId === 'INV-102')?.owner).toBe('Rahul');
   });
   it('BR-5: above ₹10,000 the maker submits, cannot self-approve, and a different checker resolves', () => {
-    let w = saveCase(autoMatch(sampleWorkspace()), 'INV-102', { reason: 'Scheme claim · not approved', owner: 'Rahul', notes: 'Rep confirmed the promise' }, 'Asha');
+    let w = saveCase(autoMatch(sampleWorkspace()), 'INV-102', { reason: 'Scheme claim · approved in Ten Today', owner: 'Asha', notes: 'APV attached' }, 'Asha');
     expect(() => resolveSmall(w, 'INV-102', 'Asha')).toThrow(/second approval/);
     w = submitForApproval(w, 'INV-102', 'Asha');
     expect(() => approveCase(w, 'INV-102', 'Asha')).toThrow(/can't approve/);
@@ -54,6 +54,18 @@ describe('reconciliation rules', () => {
     w = approveCase(w, 'INV-102', 'Vikram');
     const e = w.exceptions.find(x => x.invoiceId === 'INV-102')!;
     expect(e.resolved).toBe(true); expect(e.approvedBy).toBe('Vikram'); expect(e.log!.length).toBe(3);
+  });
+  it('a gap owned by sales cannot be closed by finance until the rep hands it back', () => {
+    let w = saveCase(autoMatch(sampleWorkspace()), 'INV-102', { reason: 'Scheme claim · not approved', owner: 'Rahul', notes: 'No approval' }, 'Asha');
+    expect(() => submitForApproval(w, 'INV-102', 'Asha')).toThrow(/Rahul acts/);
+    expect(() => handBack(w, 'INV-102', 0, ' ')).toThrow(/what Rahul did/);
+    w = handBack(w, 'INV-102', 0, 'Kavita approved APV in Ten Today');
+    const e = w.exceptions.find(x => x.invoiceId === 'INV-102')!;
+    expect(e.owner).toBe('Asha'); expect(e.reason).toBe('Scheme claim · approved in Ten Today');
+    w = approveCase(submitForApproval(w, 'INV-102', 'Asha'), 'INV-102', 'Vikram');
+    expect(w.exceptions.find(x => x.invoiceId === 'INV-102')!.status).toBe('resolved');
+    const r = handBack(saveCase(autoMatch(sampleWorkspace()), 'INV-102', { reason: 'Scheme claim · not approved', owner: 'Rahul', notes: 'x' }, 'Asha'), 'INV-102', 1, 'Customer agreed to pay');
+    expect(r.exceptions.find(x => x.invoiceId === 'INV-102')!.owner).toBe('Rohan');
   });
   it('BR-5: up to ₹10,000 the maker resolves alone, with an owner and a note', () => {
     const w = resolveSmall(autoMatch(sampleWorkspace()), 'INV-101', 'Asha');
