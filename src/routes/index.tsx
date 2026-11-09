@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type MouseEvent } from "react";
 import { Button } from '@/components/ui/button';
+import { ShieldCheck } from 'lucide-react';
 import { DemoRequest } from '@/components/reconciliation/demo-request';
 import capturedCSS from "../styles/site.css?raw";
 
@@ -172,7 +173,7 @@ function ImportedSectionADistributorPaysShort() {
       <p className="mx-auto mt-4 max-w-[60ch] text-sm leading-6 sm:text-base sm:leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button><Button asChild variant="outline" className="min-h-11 no-underline!"><Link to="/demo">Explore on my own</Link></Button></div>
       <div className="mt-3 flex flex-wrap justify-center gap-2">{['16 rules', '31/31 tests passing', '0 write-offs by rule'].map(label => <Button key={label} asChild variant="outline" size="sm" className="h-8 rounded-full text-xs no-underline!"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">{label}</a></Button>)}</div>
-      <p className="mt-6 font-semibold">The hard part of a deduction isn't matching it. It's owning it.</p>
+      <div className="mx-auto mt-3 flex max-w-[720px] flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs"><ShieldCheck className="size-4 shrink-0 text-primary" /><span><b>Past action edited? The history check flags it.</b> Linked SHA-256 fingerprints—not tamper-proof.</span><Button asChild variant="link" size="sm" className="h-auto p-0 text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}>Try the hash-chain check →</Link></Button></div>
       
       <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-6 block max-w-[720px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
         <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Reconciliation desk</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-(--money-ok)" />Live sample</span></div>
