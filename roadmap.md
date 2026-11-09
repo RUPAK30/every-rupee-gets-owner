@@ -11,3 +11,4 @@
 - [x] Verify focused rule tests, calculator, links and desktop/mobile presentation.
 - [x] Apply exactly six homepage changes: full-desk callout, before/after caption, controls copy, proof chips, immediate quote-to-cash card, and two section deletions; verify presentation.
 - [x] Add and verify the direct sample hash-chain history shortcut, then request publishing.
+- [x] Make hash-chain history prominent and explain the actual fingerprint links and limitations; verify desktop and phone.
