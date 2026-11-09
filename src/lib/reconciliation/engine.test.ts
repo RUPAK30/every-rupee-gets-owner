@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { allocate, approvalCheck, approveCase, autoMatch, handBack, resolveSmall, saveCase, sendBack, submitForApproval, importCsv, invoiceBalance, receiptBalance, sampleWorkspace, validateWorkspace } from './engine';
+import { allocate, approvalCheck, approveCase, autoMatch, handBack, resolveSmall, saveCase, sendBack, submitForApproval, importCsv, invoiceBalance, receiptBalance, sampleWorkspace, validateWorkspace, sealLog, verifyLog } from './engine';
 describe('reconciliation rules', () => {
   it('keeps demo totals aligned with the homepage and README sample', () => {
     const w = sampleWorkspace();
@@ -90,5 +90,12 @@ describe('Ten Today handoff contract v1', () => {
     expect(() => readTenTodayApproval(tok({ ...good, approver: 'Rahul' }))).toThrow(/same person/);
     expect(() => readTenTodayApproval(tok({ ...good, capPct: 45 }))).toThrow(/between/);
     expect(() => readTenTodayApproval(tok({ ...good, id: 'X' }))).toThrow(/ID/);
+  });
+  describe('tamper-evident history', () => {
+    const raw = [1, 2, 3].map(n => ({ at: `2026-11-0${n}T10:00:00Z`, who: 'Asha', text: `Step ${n}` }));
+    it('a sealed log verifies', async () => { expect(await verifyLog('INV-1', await sealLog('INV-1', raw))).toEqual({ ok: true }); });
+    it('editing one entry fails at that entry', async () => { const l = await sealLog('INV-1', raw); l[1] = { ...l[1]!, text: 'Edited' }; expect(await verifyLog('INV-1', l)).toEqual({ ok: false, brokenAt: 1 }); });
+    it('reordering entries fails', async () => { const l = await sealLog('INV-1', raw); expect((await verifyLog('INV-1', [l[1]!, l[0]!, l[2]!])).ok).toBe(false); });
+    it('deleting a middle entry fails', async () => { const l = await sealLog('INV-1', raw); expect(await verifyLog('INV-1', [l[0]!, l[2]!])).toEqual({ ok: false, brokenAt: 1 }); });
   });
 });

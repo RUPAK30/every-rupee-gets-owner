@@ -3,14 +3,16 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   APPROVAL_LIMIT, HANDBACKS, PEOPLE, financeOwns, handBack, REASONS, approvalCheck, approveCase, caseStatus, invoiceBalance, money, ownersFor, personLabel,
-  resolveSmall, saveCase, tenTodayTaskLink, type SalesApproval, sendBack, submitForApproval, type Workspace as Data,
+  resolveSmall, saveCase, sealLog, verifyLog, tenTodayTaskLink, type SalesApproval, sendBack, submitForApproval, type Workspace as Data,
 } from '@/lib/reconciliation/engine';
 
 type Props = { w: Data; caseId: string | null; approvals?: SalesApproval[]; onClose: () => void; change: (next: Data, message?: string) => void };
 const fmtDate = (d: string) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 const fmtTime = (d: string) => new Date(d).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-export function CaseDialog({ w, caseId, approvals, onClose, change }: Props) {
+export function CaseDialog({ w, caseId, approvals, onClose, change: rawChange }: Props) {
+  const change = (next: Data, msg?: string) => { void Promise.all(next.exceptions.map(async x => x.log ? { ...x, log: await sealLog(x.invoiceId, x.log) } : x)).then(exceptions => rawChange({ ...next, exceptions }, msg)); };
+  const [check, setCheck] = useState<{ ok: boolean; text: string } | null>(null);
   const [actor, setActor] = useState('Asha');
   const [reason, setReason] = useState('Unexplained');
   const [owner, setOwner] = useState('');
@@ -22,9 +24,13 @@ export function CaseDialog({ w, caseId, approvals, onClose, change }: Props) {
   const e = caseId ? w.exceptions.find(x => x.invoiceId === caseId) : undefined;
   useEffect(() => {
     if (!caseId) return;
-    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone('');
+    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null);
   }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (e?.log?.some(l => !l.hash)) change(w); }, [caseId, e?.log?.length]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!caseId) return null;
+  const log = e?.log ?? [];
+  const verify = async () => { const r = await verifyLog(caseId, log); setCheck(r.ok ? { ok: true, text: `✓ All ${log.length} entries intact` } : { ok: false, text: `✗ Entry ${r.brokenAt + 1} was changed after it was recorded` }); };
+  const tamper = () => { const i = 0; rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? { ...x, log: x.log!.map((l, k) => k === i ? { ...l, text: `${l.text} (edited later)` } : l) } : x) }, 'Demo: one past entry was edited without re-sealing.'); setCheck(null); };
   const inv = w.invoices.find(i => i.id === caseId);
   const short = invoiceBalance(w, caseId);
   const big = short > APPROVAL_LIMIT;
@@ -112,8 +118,12 @@ export function CaseDialog({ w, caseId, approvals, onClose, change }: Props) {
 
       <div className="text-sm">
         <p className="m-0 mb-1 font-semibold">History</p>
-        {(e?.log ?? []).length === 0 ? <p className="m-0 text-muted-foreground">No actions yet.</p> :
-          <ol className="m-0 grid gap-1 pl-0">{[...(e?.log ?? [])].reverse().map((l, k) => <li key={k} className="list-none border-l-2 border-border pl-2"><span className="text-xs text-muted-foreground">{fmtTime(l.at)} · {personLabel(l.who)}</span><br />{l.text}</li>)}</ol>}
+        <div className="grid gap-1"><span className="w-fit rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium">Tamper-evident · SHA-256</span>
+          <p className="m-0 text-xs leading-5 text-muted-foreground">Each entry's fingerprint includes the one before it, so editing or backdating any entry breaks every fingerprint after it. It proves the history wasn't altered; it doesn't prove a decision was right, and it isn't a blockchain: one company keeps this record.</p>
+          {log.length > 0 && <div className="flex flex-wrap items-center gap-3"><Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button><button type="button" className="text-xs text-muted-foreground underline" onClick={tamper}>Simulate tampering (demo only)</button></div>}
+          {check && <p role="status" className={`m-0 text-sm font-medium ${check.ok ? 'text-[#0F766E]' : 'text-destructive'}`}>{check.text}</p>}</div>
+        {log.length === 0 ? <p className="m-0 text-muted-foreground">No actions yet.</p> :
+          <ol className="m-0 grid gap-1 pl-0">{[...(e?.log ?? [])].reverse().map((l, k) => <li key={k} className="list-none border-l-2 border-border pl-2"><span className="text-xs text-muted-foreground">{fmtTime(l.at)} · {personLabel(l.who)}{l.hash && <> · <code>{l.hash.slice(0, 8)}</code></>}</span><br />{l.text}</li>)}</ol>}
       </div>
       <p className="m-0 text-xs text-muted-foreground">Team: {PEOPLE.map(p => `${p.name} (${p.role})`).join(' · ')}</p>
     </DialogContent>
