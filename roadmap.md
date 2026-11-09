@@ -13,4 +13,4 @@
 - [x] Add and verify the direct sample hash-chain history shortcut, then request publishing.
 - [x] Make hash-chain history prominent and explain the actual fingerprint links and limitations; verify desktop and phone.
 - [x] Move case history to the top and add a compact homepage link opening the check directly; verify both placements.
-- [ ] Add four sealed sample actions, a demo-only raw-row editor with verification colors and Undo, and move History below Close it; run tests and browser checks.
+- [x] Add four sealed sample actions, a demo-only raw-row editor with verification colors and Undo, and move History below Close it; all 27 tests and desktop/phone interaction checks pass.
