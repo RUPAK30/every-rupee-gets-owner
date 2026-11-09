@@ -40,3 +40,4 @@ use the editor.
 - This single-account workspace cannot approve high-value exceptions without a separate checker; reject such resolutions in shared validation and attribute full maker-checker workflows to the canonical desk.
 
 - Lender return-code rules live in one shared module; AI explanations may only reword them and suggestions must be one of the allowed outcomes, logged only after a person confirms.
+- Demo history shortcuts create and seal a sample action only on request, preserve existing fingerprints, and focus the case History section; tampering controls are demo-only so private records cannot be edited through the simulator.

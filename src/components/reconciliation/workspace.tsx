@@ -1,12 +1,12 @@
 import { toast } from 'sonner';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from '@tanstack/react-router';
-import { ArrowLeft, ArrowRight, Download, Upload, RotateCcw, Save, Check, Search, Trash2, Wallet, GitMerge } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Download, Upload, RotateCcw, Save, Check, Search, Trash2, Wallet, GitMerge, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tour, DeskSwitch, type TourStep } from './tour';
 import { CaseDialog } from './case-dialog';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { readTenTodayApproval, salesApprovals, type SalesApproval, allocate, approvalCheck, autoMatch, caseStatus, emptyWorkspace, personLabel, importCsv, invoiceBalance, money, parseMoney, receiptBalance, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
+import { readTenTodayApproval, salesApprovals, type SalesApproval, allocate, approvalCheck, autoMatch, caseStatus, emptyWorkspace, personLabel, importCsv, invoiceBalance, money, parseMoney, receiptBalance, saveCase, sealLog, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
 
 type Props = { initial: Data; demo?: boolean; onSave?: (data: Data) => Promise<void>; onSignOut?: () => Promise<void> };
 function download(filename: string, text: string) { const url = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
@@ -20,6 +20,8 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [receipt, setReceipt] = useState(''); const [invoice, setInvoice] = useState(''); const [amount, setAmount] = useState(''); const [manual, setManual] = useState(false);
   const [caseId, setCaseId] = useState<string | null>(null); const [reason, setReason] = useState(''); const [owner, setOwner] = useState(''); const [notes, setNotes] = useState(''); const [resolved, setResolved] = useState(false);
   const [reset, setReset] = useState(false);
+  const [focusHistory, setFocusHistory] = useState(false);
+  const [openingHistory, setOpeningHistory] = useState(false);
   const [tour, setTour] = useState<number | null>(null);
   useEffect(() => { if (demo && new URLSearchParams(window.location.search).get('tour') === '1') setTour(0); }, [demo]);
   const tourSteps: TourStep[] = [
@@ -32,7 +34,22 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   ];
   function change(next: Data, message?: string) { const checked = validateWorkspace(next); const prev = w; setW(checked); setDirty(true); setError(''); setNotice(''); if (message) toast.success(message, { action: { label: 'Undo', onClick: () => setW(prev) } }); }
   function action(fn: () => void) { try { setError(''); fn(); } catch (e) { setError(e instanceof Error ? e.message : 'Action failed.'); } }
-  function openCase(id: string) { const e = w.exceptions.find(e => e.invoiceId === id); setCaseId(id); setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setResolved(e?.resolved ?? false); setError(''); }
+  function openCase(id: string) { setFocusHistory(false); const e = w.exceptions.find(e => e.invoiceId === id); setCaseId(id); setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setResolved(e?.resolved ?? false); setError(''); }
+  async function openSampleHistory() {
+    if (!demo || openingHistory) return;
+    setOpeningHistory(true); setTour(null);
+    try {
+      let next = autoMatch(w);
+      const entry = next.exceptions.find(e => e.invoiceId === 'INV-101');
+      if (!entry?.log?.length) next = saveCase(next, 'INV-101', {
+        reason: entry?.reason ?? 'Scheme claim · approved in Ten Today', owner: entry?.owner || 'Asha',
+        notes: entry?.notes ?? 'Sample action for the hash-chain history check.',
+      }, 'Asha');
+      const exceptions = await Promise.all(next.exceptions.map(async e => e.invoiceId === 'INV-101' ? { ...e, log: await sealLog(e.invoiceId, e.log ?? []) } : e));
+      change({ ...next, exceptions }); setTab('exceptions'); setFocusHistory(true); setCaseId('INV-101');
+    } catch (err) { setError(err instanceof Error ? err.message : 'Could not open sample history.'); }
+    finally { setOpeningHistory(false); }
+  }
   const billed = w.invoices.reduce((s, i) => s + i.amount, 0); const received = w.receipts.reduce((s, r) => s + r.amount, 0); const matched = w.allocations.reduce((s, a) => s + a.amount, 0);
   const invoices = w.invoices.filter(i => `${i.id} ${i.customer}`.toLowerCase().includes(search.toLowerCase())).filter(i => filter === 'all' || (filter === 'outstanding' ? invoiceBalance(w, i.id) > 0 : invoiceBalance(w, i.id) === 0));
   const cases = invoices.filter(i => invoiceBalance(w, i.id) > 0);
@@ -50,6 +67,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           {inv ? <Button size="sm" className="mt-2" onClick={() => { const base = w.allocations.length ? w : autoMatch(w); if (base !== w) change(base, 'Payments matched to bills.'); setTab('exceptions'); setCaseId(inv.id); }}>Check {inv.id} against this approval</Button> : <p className="m-0 mt-1 text-muted-foreground">No bill for {a.customer} in this sample, so there is nothing to check yet.</p>}</>; })()}
       </div>}
       <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase text-muted-foreground">Receivables / reconciliation</p><h1 className="mt-2 text-3xl font-semibold">Reconciliation desk</h1><p className="mt-2 max-w-[60ch] text-sm leading-6 text-muted-foreground">Customers often pay less than the bill. This desk pairs each bank payment with its bill, then makes sure every missing rupee gets a reason and an owner.</p></div><div className="flex flex-wrap gap-2">{demo && <Button onClick={() => { setTour(0); setW(initial); }}>▶ 60-second guided tour</Button>}<Button variant="outline" onClick={() => setReset(true)} title="Replace current records"><RotateCcw />{demo ? 'Reset sample' : 'Clear workspace'}</Button>{!demo && <Button disabled={!dirty || saving} onClick={async () => { if (!onSave) return; setSaving(true); setError(''); try { await onSave(w); setDirty(false); toast.success('Saved. Your records are up to date.'); } catch (e) { setError(e instanceof Error ? e.message : 'Save failed.'); } finally { setSaving(false); } }}><Save />{saving ? 'Saving…' : dirty ? 'Save changes' : 'Saved'}</Button>}</div></div>
+      {demo && <Button variant="outline" className="mt-4 h-auto max-w-full whitespace-normal text-left" disabled={openingHistory} onClick={() => void openSampleHistory()}><History className="shrink-0" />{openingHistory ? 'Opening sample history…' : 'Try tamper-evident history · hash chain'}</Button>}
       {(() => { const owned = cases.length === 0 || cases.every(i => w.exceptions.find(e => e.invoiceId === i.id)?.owner); const closed = cases.every(i => caseStatus(w, i.id) === 'resolved'); const s1 = w.allocations.length > 0; const cur = !s1 ? 1 : !owned ? 2 : !closed ? 3 : 0;
   const steps: [number, string, string, string, boolean][] = [
     [1, 'Match payments to bills', s1 ? `${w.allocations.length} payments paired with their bills. Any payment without a bill number is held, not guessed.` : 'Each bank payment names the bill it pays. One click pairs them.', 'Auto-match payments', s1],
@@ -77,7 +95,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     <Tour steps={tourSteps} step={tour} setStep={setTour} />
     <Dialog open={importKind !== null} onOpenChange={open => { if (!open) setImportKind(null); }}><DialogContent className="er-app max-h-[90vh] overflow-y-auto"><DialogTitle>Import {importKind}</DialogTitle><DialogDescription>CSV · amounts in rupees · dates YYYY-MM-DD · up to 1,000 records per type. Imports append; duplicate IDs are rejected.</DialogDescription><Button variant="outline" onClick={() => download(`${importKind}-template.csv`, importKind === 'invoices' ? 'id,customer,amount,date\nINV-NEW,Example Distributors,11800.00,2026-10-01' : 'id,reference,amount,date\nUTR-NEW,INV-NEW,10620.00,2026-10-15')}><Download />Download template</Button><input ref={fileRef} type="file" accept=".csv,text/csv" aria-label="Choose CSV" className="er-input" onChange={async e => { const file = e.target.files?.[0]; if (!file || !importKind) return; if (file.size > 2_000_000) { setError('CSV must be smaller than 2 MB.'); return; } try { const next = importCsv(w, importKind, await file.text()); change(next, `${next[importKind].length - w[importKind].length} ${importKind} imported.`); setImportKind(null); } catch (e) { setError(e instanceof Error ? e.message : 'Import failed.'); } }} />{error && <p role="alert" className="text-sm text-destructive">{error}</p>}</DialogContent></Dialog>
     <Dialog open={manual} onOpenChange={setManual}><DialogContent className="er-app"><DialogTitle>Allocate a receipt</DialogTitle><DialogDescription>Only available cash can be applied to an outstanding invoice.</DialogDescription><form className="grid gap-4" onSubmit={e => { e.preventDefault(); action(() => { change(allocate(w, receipt, invoice, parseMoney(amount)), 'Receipt allocated.'); setManual(false); }); }}><label className="grid gap-1 text-sm">Receipt<select required className="er-input" value={receipt} onChange={e => setReceipt(e.target.value)}><option value="">Select receipt</option>{receiptOptions.map(r => <option key={r.id} value={r.id}>{r.id} · {money(receiptBalance(w, r.id))}</option>)}</select></label><label className="grid gap-1 text-sm">Invoice<select required className="er-input" value={invoice} onChange={e => setInvoice(e.target.value)}><option value="">Select invoice</option>{w.invoices.filter(i => invoiceBalance(w, i.id) > 0).map(i => <option key={i.id} value={i.id}>{i.id} · {money(invoiceBalance(w, i.id))}</option>)}</select></label><label className="grid gap-1 text-sm">Amount (₹)<input required className="er-input" value={amount} onChange={e => setAmount(e.target.value)} inputMode="decimal" /></label>{error && <p className="text-sm text-destructive" role="alert">{error}</p>}<Button type="submit"><Check />Apply allocation</Button></form></DialogContent></Dialog>
-    <CaseDialog w={w} caseId={caseId} approvals={approvals} onClose={() => setCaseId(null)} change={change} />
+    <CaseDialog w={w} caseId={caseId} approvals={approvals} demo={demo} focusHistory={focusHistory} onClose={() => { setCaseId(null); setFocusHistory(false); }} change={change} />
     <Dialog open={reset} onOpenChange={setReset}><DialogContent className="er-app"><DialogTitle>{demo ? 'Reset sample records?' : 'Clear current records?'}</DialogTitle><DialogDescription>{demo ? 'Restore the original illustrative dataset.' : 'All invoices, receipts, allocations and cases will be removed from the current workspace. Save to make this permanent.'}</DialogDescription><Button variant="destructive" onClick={() => { change(demo ? initial : emptyWorkspace(), 'Workspace reset.'); setReset(false); }}>Confirm reset</Button></DialogContent></Dialog>
   </div>;
 }

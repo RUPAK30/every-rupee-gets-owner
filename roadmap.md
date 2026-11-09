@@ -10,3 +10,4 @@
 - [x] Block unsupported high-value self-resolution in the shared engine and desk; retain no write-off actions.
 - [x] Verify focused rule tests, calculator, links and desktop/mobile presentation.
 - [x] Apply exactly six homepage changes: full-desk callout, before/after caption, controls copy, proof chips, immediate quote-to-cash card, and two section deletions; verify presentation.
+- [ ] Add and verify the direct sample hash-chain history shortcut, then request publishing.
