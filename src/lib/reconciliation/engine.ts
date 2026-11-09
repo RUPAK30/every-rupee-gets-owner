@@ -10,7 +10,7 @@ export const workspaceSchema = z.object({
   allocations: z.array(z.object({ id, invoiceId: id, receiptId: id, amount })).max(5000),
   exceptions: z.array(z.object({ invoiceId: id, reason: z.string().max(150), owner: z.string().max(150), notes: z.string().max(2000), resolved: z.boolean(),
     status: z.enum(['open', 'pending', 'resolved']).optional(), submittedBy: z.string().max(60).optional(), approvedBy: z.string().max(60).optional(),
-    log: z.array(z.object({ at: z.string().max(40), who: z.string().max(60), text: z.string().max(300) })).max(200).optional() })).max(1000),
+    log: z.array(z.object({ at: z.string().max(40), who: z.string().max(60), text: z.string().max(300), prevHash: z.string().max(64).optional(), hash: z.string().max(64).optional() })).max(200).optional() })).max(1000),
 }).strict();
 export type Workspace = z.infer<typeof workspaceSchema>;
 export const emptyWorkspace = (): Workspace => ({ invoices: [], receipts: [], allocations: [], exceptions: [] });
@@ -202,4 +202,20 @@ export function sampleWorkspace(): Workspace {
     { invoiceId: 'INV-101', reason: 'Scheme claim · approved in Ten Today', owner: 'Asha', notes: 'Festival discount claimed; check the Ten Today approval.', resolved: false, status: 'open', log: [] },
     { invoiceId: 'INV-102', reason: 'Scheme claim · not approved', owner: '', notes: 'Verbal sales promise; no approved budget attached.', resolved: false, status: 'open', log: [] },
   ] };
+}
+
+// Tamper-evident case history: a SHA-256 hash chain kept by one company. Not signatures.
+export type LogEntry = { at: string; who: string; text: string; prevHash?: string | undefined; hash?: string | undefined };
+async function sha256(s: string) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+const entryHash = (invoiceId: string, l: LogEntry, prevHash: string) => sha256(JSON.stringify({ invoiceId, at: l.at, who: l.who, text: l.text, prevHash }));
+/** Seals only entries without a hash, so existing (possibly tampered) entries are never silently re-sealed. */
+export async function sealLog(invoiceId: string, log: LogEntry[]): Promise<LogEntry[]> {
+  const out: LogEntry[] = []; let prev = 'GENESIS';
+  for (const l of log) { const e = l.hash ? l : { ...l, prevHash: prev, hash: await entryHash(invoiceId, l, prev) }; out.push(e); prev = e.hash!; }
+  return out;
+}
+export async function verifyLog(invoiceId: string, log: LogEntry[]): Promise<{ ok: true } | { ok: false; brokenAt: number }> {
+  let prev = 'GENESIS';
+  for (let i = 0; i < log.length; i++) { const l = log[i]!; if (l.prevHash !== prev || l.hash !== await entryHash(invoiceId, l, prev)) return { ok: false, brokenAt: i }; prev = l.hash!; }
+  return { ok: true };
 }
