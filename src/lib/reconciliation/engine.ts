@@ -145,7 +145,28 @@ export const money = (cents: number) => new Intl.NumberFormat('en-IN', { style: 
 /* BR-10: the link to Ten Today. A scheme deduction is checked against the discount approval saved in Ten Today, the sales app.
    The cap is approved before GST, so it covers cap + 18% GST. Within the cap: clears by rule. Above it: only the excess goes back to the rep.
    Invoice after the approval window: goes to the approver who signed it. No approval: goes back to the sales rep, not finance. */
-export type SalesApproval = { id: string; customer: string; rep: string; approver: string; capBeforeGst: number; validTo: string };
+export type SalesApproval = { id: string; customer: string; rep: string; approver: string; capBeforeGst: number; validTo: string; capPct?: number; source?: 'ten-today' };
+/* Handoff contract v1, shared with Ten Today (tentoday.vercel.app). Travels base64url-encoded in the link.
+   { v: 1, id: "APV-2026-033", customer, rep, approver, capPct (before GST, 0-30], validTo: "yyyy-mm-dd" } */
+const b64 = (s: string) => decodeURIComponent(escape(atob(s.replace(/-/g, '+').replace(/_/g, '/'))));
+export function readTenTodayApproval(token: string): SalesApproval {
+  let o: Record<string, unknown>;
+  try { o = JSON.parse(b64(token)); } catch { throw new Error('The approval link is damaged. Send it again from Ten Today.'); }
+  if (o['v'] !== 1) throw new Error('This approval comes from an unsupported version of Ten Today.');
+  const str = (k: string, max = 80) => { const x = o[k]; if (typeof x !== 'string' || !x.trim() || x.length > max) throw new Error(`The approval is missing a valid ${k}.`); return x.trim(); };
+  const id = str('id', 20); if (!/^APV-\d{4}-\d{3}$/.test(id)) throw new Error('The approval ID is not valid.');
+  const rep = str('rep'), approver = str('approver');
+  if (rep === approver) throw new Error('Rejected: the same person asked for and approved this discount.');
+  const capPct = Number(o['capPct']); if (!(capPct > 0 && capPct <= 30)) throw new Error('The approved discount must be between 0% and 30%.');
+  const validTo = str('validTo', 10); if (!/^\d{4}-\d{2}-\d{2}$/.test(validTo)) throw new Error('The approval has no valid expiry date.');
+  return { id, customer: str('customer'), rep, approver, capPct, capBeforeGst: 0, validTo, source: 'ten-today' };
+}
+/* Contract v1 the other way: an unapproved gap handed to the rep as a Ten Today task. */
+export function tenTodayTaskLink(invoiceId: string, customer: string, shortPaise: number, rep: string): string {
+  const json = JSON.stringify({ v: 1, kind: 'recovery', invoiceId, customer, short: Math.round(shortPaise / 100), rep });
+  const t = btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return `https://tentoday.vercel.app/app.html?task=${t}`;
+}
 export const salesApprovals = (): SalesApproval[] => [
   { id: 'APV-2026-031', customer: 'Aarav Distributors', rep: 'Rahul', approver: 'Kavita', capBeforeGst: 100000, validTo: '2026-10-31' },
 ];
@@ -158,10 +179,12 @@ export function approvalCheck(w: Workspace, invoiceId: string, approvals: SalesA
   const inv = w.invoices.find(i => i.id === invoiceId);
   if (!inv || !w.allocations.some(a => a.invoiceId === invoiceId)) return { status: 'unpaid' };
   const short = invoiceBalance(w, invoiceId);
-  const approval = approvals.find(a => a.customer === inv.customer);
+  let approval = approvals.find(a => a.customer === inv.customer);
   if (!approval) return { status: 'none', short };
   if (inv.date > approval.validTo) return { status: 'expired', approval, short };
-  const limit = Math.round(approval.capBeforeGst * 1.18);
+  const cap = approval.capPct ? Math.round((inv.amount / 1.18) * approval.capPct / 100) : approval.capBeforeGst;
+  approval = { ...approval, capBeforeGst: cap };
+  const limit = Math.round(cap * 1.18);
   return short <= limit ? { status: 'covered', approval, short, limit } : { status: 'excess', approval, short, limit, excess: short - limit };
 }
 export function sampleWorkspace(): Workspace {

@@ -3,14 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   APPROVAL_LIMIT, HANDBACKS, PEOPLE, financeOwns, handBack, REASONS, approvalCheck, approveCase, caseStatus, invoiceBalance, money, ownersFor, personLabel,
-  resolveSmall, saveCase, sendBack, submitForApproval, type Workspace as Data,
+  resolveSmall, saveCase, tenTodayTaskLink, type SalesApproval, sendBack, submitForApproval, type Workspace as Data,
 } from '@/lib/reconciliation/engine';
 
-type Props = { w: Data; caseId: string | null; onClose: () => void; change: (next: Data, message?: string) => void };
+type Props = { w: Data; caseId: string | null; approvals?: SalesApproval[]; onClose: () => void; change: (next: Data, message?: string) => void };
 const fmtDate = (d: string) => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 const fmtTime = (d: string) => new Date(d).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-export function CaseDialog({ w, caseId, onClose, change }: Props) {
+export function CaseDialog({ w, caseId, approvals, onClose, change }: Props) {
   const [actor, setActor] = useState('Asha');
   const [reason, setReason] = useState('Unexplained');
   const [owner, setOwner] = useState('');
@@ -35,7 +35,7 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
   const run = (fn: () => Data, msg: string) => { try { setError(''); setDone(''); change(fn(), msg); } catch (err) { setError(err instanceof Error ? err.message : 'Action failed.'); } };
   const saveFirst = (base: Data) => (dirty ? saveCase(base, caseId, { reason, owner, notes }, actor) : base);
   const pickReason = (r: string) => { setReason(r); const o = ownersFor(r); setOwner(o.length === 1 ? o[0]!.name : o.some(p => p.name === owner) ? owner : ''); };
-  const ap = approvalCheck(w, caseId);
+  const ap = approvalCheck(w, caseId, approvals);
   const fill = (r: string, o: string, n: string) => {
     setReason(r); setOwner(o); setNotes(n);
     try { setError(''); change(saveCase(w, caseId, { reason: r, owner: o, notes: n }, actor), `Saved: ${caseId} owned by ${personLabel(o)}.`); setDone(financeOwns(o) ? `✓ Saved. Owner is now ${personLabel(o)}. Next step: close it below.` : `✓ Saved. It's now with ${personLabel(o)}. Finance can't close it until ${o} acts (below).`); setTimeout(() => document.getElementById('er-close-it')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50); }
@@ -83,6 +83,7 @@ export function CaseDialog({ w, caseId, onClose, change }: Props) {
         {status === 'open' && owner && !financeOwns(owner) && <>
           <p className="m-0 rounded-md bg-[#FFFBEB] p-2 text-[#92400E]">With <b>{personLabel(owner)}</b>. Finance can't close this until {owner} acts and hands it back.</p>
           {(HANDBACKS[reason] ?? []).length === 0 ? <p className="m-0 text-muted-foreground">{owner} is collecting from the customer. The gap closes when the money lands in the bank and is matched.</p> : <>
+            {owner === 'Rahul' && <a className="text-sm font-medium text-[#C2410C] underline" href={tenTodayTaskLink(caseId, inv?.customer ?? '', short, owner)} target="_blank" rel="noopener">Send it to {owner}'s Today in Ten Today ↗</a>}
             <p className="m-0 font-medium">Record what {owner} did:</p>
             <input className="er-input" value={did} onChange={ev => setDid(ev.target.value)} maxLength={200} placeholder={`e.g. ${owner} confirmed by email on 10 Nov`} />
             {(HANDBACKS[reason] ?? []).map((o, k) => <Button key={k} type="button" variant={k === 0 ? 'default' : 'outline'} onClick={() => { run(() => handBack(saveFirst(w), caseId, k, did), `${caseId}: ${o.label}. Now with ${personLabel(o.owner)}.`); if (did.trim()) { setNotes(n => `${n}\n${owner}: ${did.trim()}`.trim()); setReason(o.reason); setOwner(o.owner); setDid(''); setDone(`✓ ${o.label}. Now with ${personLabel(o.owner)}.`); } }}>{o.label} → {o.owner}</Button>)}

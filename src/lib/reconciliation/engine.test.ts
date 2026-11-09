@@ -72,3 +72,23 @@ describe('reconciliation rules', () => {
     expect(w.exceptions.find(e => e.invoiceId === 'INV-101')?.status).toBe('resolved');
   });
 });
+
+import { readTenTodayApproval, approvalCheck as check2, autoMatch as am2, sampleWorkspace as sw2 } from './engine';
+const tok = (o: object) => btoa(JSON.stringify(o)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+describe('Ten Today handoff contract v1', () => {
+  const good = { v: 1, id: 'APV-2026-033', customer: 'Aarav Distributors', rep: 'Rahul', approver: 'Kavita', capPct: 6, validTo: '2026-12-31' };
+  it('accepts a valid approval and checks the short payment against its own cap', () => {
+    const a = readTenTodayApproval(tok(good));
+    const r = check2(am2(sw2()), 'INV-101', [a]);
+    expect(['covered', 'excess']).toContain(r.status);
+    const loose = check2(am2(sw2()), 'INV-101', [readTenTodayApproval(tok({ ...good, capPct: 30 }))]);
+    expect(loose.status).toBe('covered');
+  });
+  it('rejects damaged, wrong-version, self-approved or out-of-range approvals', () => {
+    expect(() => readTenTodayApproval('%%%')).toThrow(/damaged/);
+    expect(() => readTenTodayApproval(tok({ ...good, v: 2 }))).toThrow(/version/);
+    expect(() => readTenTodayApproval(tok({ ...good, approver: 'Rahul' }))).toThrow(/same person/);
+    expect(() => readTenTodayApproval(tok({ ...good, capPct: 45 }))).toThrow(/between/);
+    expect(() => readTenTodayApproval(tok({ ...good, id: 'X' }))).toThrow(/ID/);
+  });
+});
