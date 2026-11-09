@@ -1,6 +1,6 @@
 import { toast } from 'sonner';
 import { useEffect, useRef, useState } from 'react';
-import { Link } from '@tanstack/react-router';
+import { Link, useSearch } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, Download, Upload, RotateCcw, Save, Check, Search, Trash2, Wallet, GitMerge, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tour, DeskSwitch, type TourStep } from './tour';
@@ -11,6 +11,7 @@ import { readTenTodayApproval, salesApprovals, type SalesApproval, allocate, app
 type Props = { initial: Data; demo?: boolean; onSave?: (data: Data) => Promise<void>; onSignOut?: () => Promise<void> };
 function download(filename: string, text: string) { const url = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
 export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
+  const routeSearch = useSearch({ strict: false });
   const [handoff, setHandoff] = useState<{ approval?: SalesApproval; error?: string } | null>(null);
   useEffect(() => { const t = new URLSearchParams(window.location.search).get('apv'); if (!t) return; try { setHandoff({ approval: readTenTodayApproval(t) }); } catch (err) { setHandoff({ error: err instanceof Error ? err.message : 'Invalid approval link.' }); } }, []);
   const approvals = handoff?.approval ? [handoff.approval, ...salesApprovals().filter(a => a.customer !== handoff.approval!.customer)] : salesApprovals();
@@ -23,6 +24,12 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [focusHistory, setFocusHistory] = useState(false);
   const [openingHistory, setOpeningHistory] = useState(false);
   const [tour, setTour] = useState<number | null>(null);
+  const openedHistoryLink = useRef(false);
+  useEffect(() => {
+    if (!demo || openedHistoryLink.current || routeSearch.history !== '1') return;
+    openedHistoryLink.current = true;
+    void openSampleHistory();
+  }, [demo, routeSearch.history]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (demo && new URLSearchParams(window.location.search).get('tour') === '1') setTour(0); }, [demo]);
   const tourSteps: TourStep[] = [
     { target: 'receipts', title: 'Meet a small business', text: 'It sent 4 bills totalling ₹1,91,300 and received 4 payments totalling ₹1,73,710. The difference is ₹17,590. Our job: check which bills were paid.' },
@@ -67,7 +74,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           {inv ? <Button size="sm" className="mt-2" onClick={() => { const base = w.allocations.length ? w : autoMatch(w); if (base !== w) change(base, 'Payments matched to bills.'); setTab('exceptions'); setCaseId(inv.id); }}>Check {inv.id} against this approval</Button> : <p className="m-0 mt-1 text-muted-foreground">No bill for {a.customer} in this sample, so there is nothing to check yet.</p>}</>; })()}
       </div>}
       <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase text-muted-foreground">Receivables / reconciliation</p><h1 className="mt-2 text-3xl font-semibold">Reconciliation desk</h1><p className="mt-2 max-w-[60ch] text-sm leading-6 text-muted-foreground">Customers often pay less than the bill. This desk pairs each bank payment with its bill, then makes sure every missing rupee gets a reason and an owner.</p></div><div className="flex flex-wrap gap-2">{demo && <Button onClick={() => { setTour(0); setW(initial); }}>▶ 60-second guided tour</Button>}<Button variant="outline" onClick={() => setReset(true)} title="Replace current records"><RotateCcw />{demo ? 'Reset sample' : 'Clear workspace'}</Button>{!demo && <Button disabled={!dirty || saving} onClick={async () => { if (!onSave) return; setSaving(true); setError(''); try { await onSave(w); setDirty(false); toast.success('Saved. Your records are up to date.'); } catch (e) { setError(e instanceof Error ? e.message : 'Save failed.'); } finally { setSaving(false); } }}><Save />{saving ? 'Saving…' : dirty ? 'Save changes' : 'Saved'}</Button>}</div></div>
-      {demo && <section aria-label="Tamper-evident case history" className="mt-4 flex flex-wrap items-center justify-between gap-3 border-y border-primary/25 bg-primary/5 px-3 py-3"><div className="min-w-0"><h2 className="flex items-center gap-2 text-sm font-semibold"><History className="size-4 shrink-0 text-primary" />Can a past decision be changed unnoticed?</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">Case actions get linked fingerprints. Change an old action and the history check detects it.</p><span className="text-xs font-medium text-primary">Hash chain · SHA-256 · no signatures</span></div><Button className="h-auto max-w-full whitespace-normal text-left" disabled={openingHistory} onClick={() => void openSampleHistory()}><History className="shrink-0" />{openingHistory ? 'Opening sample history…' : 'Try tamper-evident history · hash chain'}</Button></section>}
+      {demo && <section aria-label="Tamper-evident case history" className="mt-3 flex flex-wrap items-center justify-between gap-2 border-y border-primary/25 bg-primary/5 px-3 py-2"><div className="min-w-0"><h2 className="flex items-center gap-2 text-sm font-semibold"><History className="size-4 shrink-0 text-primary" />Past action edited? The history check flags it.</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">Linked SHA-256 fingerprints make case history tamper-evident—not tamper-proof.</p></div><Button className="h-auto max-w-full whitespace-normal text-left" disabled={openingHistory} onClick={() => void openSampleHistory()}><History className="shrink-0" />{openingHistory ? 'Opening sample history…' : 'Try tamper-evident history · hash chain'}</Button></section>}
       {(() => { const owned = cases.length === 0 || cases.every(i => w.exceptions.find(e => e.invoiceId === i.id)?.owner); const closed = cases.every(i => caseStatus(w, i.id) === 'resolved'); const s1 = w.allocations.length > 0; const cur = !s1 ? 1 : !owned ? 2 : !closed ? 3 : 0;
   const steps: [number, string, string, string, boolean][] = [
     [1, 'Match payments to bills', s1 ? `${w.allocations.length} payments paired with their bills. Any payment without a bill number is held, not guessed.` : 'Each bank payment names the bill it pays. One click pairs them.', 'Auto-match payments', s1],
