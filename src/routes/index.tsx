@@ -96,134 +96,87 @@ const steps = [
 ];
 
 function QuickTour() {
-  const metrics = [
-    ['7–14 days → Day 0', 'Short-payment detection', 'Splits paid cash from shortfall in <5 ms at UTR import vs. 7–14d manual ERP lag (The Hackett Group CPG baseline).'],
-    ['22 min → <2 min', 'Manual 4-way check per bill', 'Auto-verifies UTR, bill, Ten Today discount cap & GST split (BR-10); saves ~7.3 hrs per 25-bill batch (APQC benchmark).'],
-    ['30–45d → 3–7d SLA', 'Dispute resolution cycle', 'Routes each gap to one role-locked owner on Day 0, preventing >180d Ind AS ECL provisions (Cello World FY25 AR notes).'],
-    ['₹0 write-offs', 'Silent leakage blocked', 'Blocks unapproved/expired claims (BR-4), enforces 2-person approval >₹10k (BR-5), and seals history with SHA-256.'],
-  ];
   return (
-    <section className="er-app my-8 grid gap-6" aria-labelledby="tour-h">
+    <section className="er-app my-6 grid gap-4" aria-labelledby="tour-h">
       <div>
         <p className="text-xs font-semibold uppercase text-muted-foreground">How it works</p>
         <h2 id="tour-h" className="mt-1 text-xl font-bold sm:text-2xl">From messy payments to owned gaps in 3 steps</h2>
-        <ol className="mt-4 list-none p-0 grid gap-2 sm:gap-4 sm:grid-cols-3">
+        <ol className="mt-3 list-none p-0 grid gap-2 sm:gap-4 sm:grid-cols-3">
           {steps.map(([n, t, d]) => (
-            <li key={n} className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 rounded-lg border border-border bg-card p-3 sm:block sm:p-5">
+            <li key={n} className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 rounded-lg border border-border bg-card p-3 sm:block sm:p-4">
               <span className="row-span-2 grid h-7 w-7 place-items-center rounded-full bg-primary text-sm font-bold text-primary-foreground sm:h-8 sm:w-8">{n}</span>
-              <h3 className="font-semibold sm:mt-3">{t}</h3><p className="mt-0.5 text-sm text-muted-foreground sm:mt-1">{d}</p>
+              <h3 className="font-semibold sm:mt-2.5">{t}</h3><p className="mt-0.5 text-sm text-muted-foreground sm:mt-1">{d}</p>
             </li>
           ))}
         </ol>
       </div>
-      <div className="rounded-xl border border-border bg-card p-4">
-        <div className="flex flex-wrap items-baseline justify-between gap-2">
-          <p className="text-xs font-semibold uppercase tracking-wide text-primary">Measured operational outcomes · public CPG benchmarks vs. live engine</p>
-          <Link to="/demo" className="text-xs font-semibold text-primary underline">Run the 25-bill benchmark batch in the desk →</Link>
-        </div>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {metrics.map(([stat, title, desc]) => (
-            <div key={title} className="rounded-lg border border-border/70 bg-background p-3">
-              <p className="text-base font-bold tracking-tight text-foreground">{stat}</p>
-              <p className="mt-0.5 text-xs font-semibold text-foreground">{title}</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-4 text-sm">
-        <p><b>Working today:</b> CSV import, auto-match, manual allocation, exceptions, private saved workspaces. <b>Planned:</b> bank and ERP connections.</p>
-        <Link to="/capabilities" className="font-semibold underline">Full status →</Link>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-3 text-xs sm:text-sm text-muted-foreground">
+        <p><b className="text-foreground">Working today:</b> CSV import, auto-match, manual allocation, exceptions, private saved workspaces. <b className="text-foreground">Planned:</b> bank &amp; ERP connections.</p>
+        <Link to="/capabilities" className="font-semibold text-foreground underline">Full status →</Link>
       </div>
     </section>
   );
 }
 
 function CanonicalWorkflows() {
-  const brandRules = [
-    ['BR-1', 'Identify', 'Virtual account per distributor.'],
-    ['BR-2', 'Split', 'TDS u/s 194Q.'],
-    ['BR-3', 'Validate', 'Auto-accept only with evidence, within budget, under tolerance.'],
-    ['BR-4', 'No write-off by rule', 'No rule can ever write money off.'],
-    ['BR-5', 'Maker-checker above ₹10,000', 'Self-approval blocked.'],
-    ['BR-6', 'Credit notes', 'Reported to IRP within 30 days.'],
-    ['BR-7', 'Credit flag', 'On the next order.'],
-    ['BR-8', 'Verbal-promise scheme', 'Goes to Regional sales head within 3 days.'],
-    ['BR-9', 'Balanced vouchers', 'Every movement posts a balanced voucher.'],
-    ['BR-10', 'Sales approval and cap', 'Match a deduction to its sales approval and split at the cap; a pre-tax cap clears up to cap + 18% GST.'],
-    ['BR-11', 'Rep-owned claims', "Only the rep's own claims older than 15 days block the next discount; Finance backlog never does."],
-  ];
-  const lenderRules = [
-    ['LR-1', 'Match', ''], ['LR-2', 'Read the NACH return code', ''],
-    ['LR-3', 'Charge fairly', 'RBI Aug 2023 penal charges: no capitalisation, no interest on penal.'],
-    ['LR-4', 'Own the overdue', 'SMA-0/1/2 buckets.'], ['LR-5', 'Control', ''],
-  ];
-  return <div className="er-app my-10">
-    <section className="border-y border-border py-7" aria-labelledby="canonical-rules">
-      <p className="text-xs font-semibold uppercase text-muted-foreground">Use it, then see it proven</p>
-      <h2 id="canonical-rules" className="mt-2 text-xl font-semibold sm:text-2xl">The product, and the case study behind it.</h2>
-      <p className="mt-2 max-w-[62ch] text-sm leading-6 text-muted-foreground">Use the desk yourself. Then follow one discount from a sales approval to closed books, and run the 31 tests that prove every rule.</p>
-      <div className="mt-5 grid gap-3 sm:grid-cols-2">
-        <a href="/demo" className="flex flex-col gap-1 rounded-xl border border-border border-t-4 border-t-[#0071e3] bg-background p-4 no-underline hover:border-foreground/30"><span className="text-[.7rem] font-semibold uppercase tracking-[.06em] text-muted-foreground">Product · you're here</span><b className="text-foreground">Run the desk yourself</b><span className="text-sm text-muted-foreground">Match payments, explain each gap, give it an owner. No sign-up.</span><span className="mt-auto pt-2 text-sm font-semibold text-[#0071e3]">Open the demo →</span></a>
-        <a href="https://everyrupee-o2c.vercel.app/" className="flex flex-col gap-1 rounded-xl border border-border border-t-4 border-t-[#C2410C] bg-background p-4 no-underline hover:border-foreground/30"><span className="text-[.7rem] font-semibold uppercase tracking-[.06em] text-muted-foreground">Case study · One Rupee's Route</span><b className="text-foreground">The story, and the proof</b><span className="text-sm text-muted-foreground">One discount from Ten Today's approval to Every Rupee's ledger, three outcomes, then 16 rules and 31/31 tests you can run.</span><span className="mt-auto pt-2 text-sm font-semibold text-[#C2410C]">Read the case study ↗</span></a>
-      </div>
-      <details className="mt-5 border-t border-border pt-4"><summary className="cursor-pointer font-semibold">All 16 business rules</summary><div className="mt-4 grid gap-8 sm:grid-cols-2">{[['Brand mode', brandRules], ['Lender mode', lenderRules]].map(([title, rules]) => <div key={String(title)}><h3 className="font-semibold">{String(title)}</h3><dl className="mt-3 divide-y divide-border">{(rules as string[][]).map(([id, title, text]) => <div key={id} className="py-3"><dt className="text-sm font-semibold">{id} · {title}</dt>{text && <dd className="mt-1 text-sm leading-6 text-muted-foreground">{text}</dd>}</div>)}</dl></div>)}</div></details>
-    </section>
-    <section className="border-b border-border py-7 sm:py-10" aria-labelledby="lender-mode">
-      <p className="text-xs font-semibold uppercase text-muted-foreground">Same engine · second desk</p>
-      <h2 id="lender-mode" className="mt-2 text-xl font-semibold sm:text-2xl">Lender desk: when an EMI bounces</h2>
-      <p className="mt-2 max-w-[62ch] text-sm leading-6 text-muted-foreground">For lenders, the "short payment" is a loan instalment that fails. The bank sends a return code; Every Rupee turns it into a reason, an owner and a next step, the same way it handles a short-paid invoice.</p>
-      <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
-        <ol className="m-0! hidden list-none gap-2 p-0! text-sm lg:grid">{[['Bank returns the EMI', 'with a NACH code'], ['Desk reads the code', 'and names the cause'], ['One owner, one next step', 'logged with a deadline']].map(([t, d], i) => <li key={t} className="flex gap-3 rounded-xl border border-border bg-card p-3"><span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-semibold">{i + 1}</span><span><b className="block">{t}</b><span className="text-muted-foreground">{d}</span></span></li>)}</ol>
-        <div className="overflow-hidden rounded-2xl border border-border bg-card">
-          <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Bounce queue · sample</span><span>3 open</span></div>
-          {[['Code 04', 'Not enough balance', 'Collections · call, then re-present', 'bg-money-wip/15 text-money-wip'], ['Code 61', 'Mandate cancelled', 'Ops · request a fresh mandate', 'bg-money-risk/10 text-money-risk'], ['Code 06', 'Stopped by customer', 'Relationship · talk first, may be a dispute', 'bg-money-risk/10 text-money-risk']].map(([c, m, n, k]) => <div key={c} className="grid gap-1 border-b border-border px-4 py-3 text-sm last:border-0 sm:grid-cols-[5.5rem_1fr_auto] sm:items-center"><span className="font-semibold">{c}</span><span>{m}</span><span className={'er-pill ' + k}>{n}</span></div>)}
+  return <div className="er-app my-6">
+    <section className="border-b border-border pb-6" aria-labelledby="lender-mode">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <p className="text-xs font-semibold uppercase text-muted-foreground">Same engine · second desk</p>
+          <h2 id="lender-mode" className="mt-1 text-xl font-semibold sm:text-2xl">Lender desk: when an EMI bounces</h2>
         </div>
+        <Button asChild size="sm" className="text-primary-foreground! no-underline!"><a href="/lender-demo?tour=1">▶ Try the lender desk · 60-second tour</a></Button>
       </div>
-      <Button asChild className="mt-5 text-primary-foreground! no-underline!"><a href="/lender-demo?tour=1">▶ Try the lender desk · 60-second tour</a></Button>
+      <p className="mt-1.5 max-w-[65ch] text-sm leading-6 text-muted-foreground">For lenders, the "short payment" is a loan instalment that fails. The bank sends a NACH return code; Every Rupee turns it into a reason, an owner and a next step.</p>
+      <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-card">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Bounce queue · sample</span><span>3 open · RBI Aug 2023 penal rules enforced</span></div>
+        {[['Code 04', 'Not enough balance', 'Collections · call, then re-present', 'bg-money-wip/15 text-money-wip'], ['Code 61', 'Mandate cancelled', 'Ops · request a fresh mandate', 'bg-money-risk/10 text-money-risk'], ['Code 06', 'Stopped by customer', 'Relationship · talk first, may be a dispute', 'bg-money-risk/10 text-money-risk']].map(([c, m, n, k]) => <div key={c} className="grid gap-1 border-b border-border px-4 py-2.5 text-sm last:border-0 sm:grid-cols-[5.5rem_1fr_auto] sm:items-center"><span className="font-semibold">{c}</span><span>{m}</span><span className={'er-pill ' + k}>{n}</span></div>)}
+      </div>
     </section>
   </div>;
 }
 
 function ImportedSectionADistributorPaysShort() {
   const heroOutcomes = [
-    ['Day 0 (<5 ms)', 'Short-Payment Detection', 'vs. 7–14 day manual bank-to-ERP lag', 'The Hackett Group CPG baseline'],
-    ['~8.0 hrs saved', 'Manual Checks Eliminated / 25 Bills', '24/25 bills rule-checked (22m → <2m/bill)', 'APQC O2C process benchmark'],
-    ['3–7 day SLA', 'Faster Dispute Resolution', 'Down from 30–45d CPG average; prevents >180d ECL', 'Cello World FY25 AR filings'],
-    ['₹18,544 caught', 'Invalid & Excess Claims Blocked', 'Expired & over-cap claims routed to Sales · ₹0 write-offs', 'Live 25-bill batch (BR-4, BR-10)'],
+    ['7–14d → Day 0', 'Short-Payment Detection (<5 ms)', 'Splits cash from shortfall at UTR import vs. 7–14d manual ERP lag', 'The Hackett Group CPG baseline'],
+    ['22m → <2m / bill', '~8.0 Hrs Saved per 25 Bills', '24/25 bills rule-checked across UTR, invoice, Ten Today cap & GST split', 'APQC O2C process benchmark'],
+    ['30–45d → 3–7d', 'Dispute Resolution SLA', 'Routes each gap to one role-locked owner on Day 0; prevents >180d ECL', 'Cello World FY25 AR filings'],
+    ['₹18,544 caught', '₹0 Silent Write-Offs', 'Blocks expired/over-cap claims (BR-4), 2-person >₹10k (BR-5) & SHA-256 chain', 'Live 25-bill batch (BR-4, BR-10)'],
   ];
   return (
-    <section className="er-app py-12 text-center sm:py-16" aria-labelledby="intro-title">
-      <p className="text-sm font-medium text-muted-foreground">Order-to-cash · Deduction management · <span className="font-semibold text-primary">Tamper-evident</span></p>
-      <p className="mt-1 text-xs text-muted-foreground">Portfolio case study by Rupak Ghanpathi · sample data</p>
-      <h1 id="intro-title" className="mx-auto mt-3 max-w-[24ch] text-3xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-3 block text-xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
-      <p className="mx-auto mt-4 max-w-[60ch] text-sm leading-6 sm:text-base sm:leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
-      <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button><Button asChild variant="outline" className="min-h-11 no-underline!"><Link to="/demo">Explore on my own</Link></Button></div>
-      <div className="mt-3 flex flex-wrap justify-center gap-2">{['16 rules', '31/31 tests passing', '0 write-offs by rule'].map(label => <Button key={label} asChild variant="outline" size="sm" className="h-8 rounded-full text-xs no-underline!"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">{label}</a></Button>)}</div>
-      <div className="mx-auto mt-3 flex max-w-[720px] flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs"><ShieldCheck className="size-4 shrink-0 text-primary" /><span><b>Past action edited? The history check flags it.</b> Linked SHA-256 fingerprints—not tamper-proof.</span><Button asChild variant="link" size="sm" className="h-auto p-0 text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}>Try the live SHA-256 tamper sandbox →</Link></Button></div>
-      
-      <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-6 block max-w-[720px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
-        <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Reconciliation desk</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-(--money-ok)" />Live sample</span></div>
-        <div className="grid grid-cols-2 sm:grid-cols-4">{[['INV-101', 'Aarav Distributors', '₹1,180 short', 'Scheme claim · Asha', 'text-money-wip'], ['INV-102', 'Meera Trading', '₹12,400 short', 'Scheme claim · Unowned', 'text-money-risk'], ['INV-103', 'Southern Stores', '₹31,500 unpaid', '₹28,350 unreferenced receipt held in suspense', 'text-money-risk'], ['INV-104', 'Eastern Wholesale', '₹860 short', 'No reason yet', 'text-money-risk']].map(([id, n, amt, why, c]) => <div key={id} className="min-w-0 border-b border-r border-border px-3 py-2.5 text-xs even:border-r-0 sm:border-b-0 sm:even:border-r sm:last:border-r-0"><p className="truncate font-medium text-foreground">{id} · {n}</p><p className={'mt-0.5 text-sm font-semibold ' + c}>{amt}</p><p className="text-muted-foreground">{why}</p></div>)}</div>
-        <p className="border-t border-border px-4 py-2 text-center text-xs text-muted-foreground">Billed ₹1,91,300 · Received ₹1,73,710 · <span className="font-semibold text-money-wip">Gap ₹17,590</span> · <span className="font-semibold text-primary">Open the live desk →</span></p>
-      </Link>
+    <section className="er-app pt-8 pb-6 text-center sm:pt-12 sm:pb-8" aria-labelledby="intro-title">
+      <p className="text-xs font-medium text-muted-foreground sm:text-sm">Order-to-cash · Deduction management · <span className="font-semibold text-primary">Tamper-evident</span> · Portfolio case study by Rupak Ghanpathi</p>
+      <h1 id="intro-title" className="mx-auto mt-2.5 max-w-[24ch] text-3xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-2 block text-xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
+      <p className="mx-auto mt-3 max-w-[58ch] text-sm leading-6 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
+        <Button asChild className="min-h-10 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button>
+        <Button asChild variant="outline" className="min-h-10 no-underline!"><Link to="/demo">Explore on my own</Link></Button>
+        <Button asChild variant="outline" size="sm" className="h-10 rounded-md text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}><ShieldCheck className="mr-1.5 size-3.5 text-primary" />Live SHA-256 tamper sandbox →</Link></Button>
+        <Button asChild variant="ghost" size="sm" className="h-10 text-xs text-muted-foreground no-underline! hover:text-foreground"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">16 rules · 31/31 tests ↗</a></Button>
+      </div>
 
       <div aria-label="Measured business outcomes" className="mx-auto mt-6 max-w-[920px] overflow-hidden rounded-2xl border-2 border-primary/25 bg-card text-left shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-primary/5 px-4 py-2.5">
-          <span className="text-xs font-bold uppercase tracking-wider text-primary">Measured Business Outcomes · Public CPG Data + Live Engine</span>
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-primary/5 px-4 py-2">
+          <span className="text-[.72rem] font-bold uppercase tracking-wider text-primary">Measured Business Outcomes · Public CPG Benchmarks + Live 25-Bill Engine</span>
           <Link to="/demo" className="text-xs font-semibold text-primary hover:underline">Verify on 25-bill batch in the desk →</Link>
         </div>
         <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
           {heroOutcomes.map(([stat, label, sub, src]) => (
-            <div key={label} className="p-4">
-              <p className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">{stat}</p>
-              <p className="mt-1 text-xs font-semibold text-foreground">{label}</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">{sub}</p>
-              <p className="mt-1.5 text-[.68rem] font-medium text-primary/80">Source: {src}</p>
+            <div key={label} className="p-3.5">
+              <p className="text-lg font-bold tracking-tight text-foreground sm:text-xl">{stat}</p>
+              <p className="mt-0.5 text-xs font-semibold text-foreground">{label}</p>
+              <p className="mt-1 text-xs leading-4.5 text-muted-foreground">{sub}</p>
+              <p className="mt-1 text-[.66rem] font-medium text-primary/80">Source: {src}</p>
             </div>
           ))}
         </div>
       </div>
+
+      <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-4 block max-w-[920px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Live reconciliation desk preview</span><span className="flex items-center gap-1.5">Billed ₹1,91,300 · Received ₹1,73,710 · <b className="text-money-wip">Gap ₹17,590</b> · <b className="text-primary">Open desk →</b></span></div>
+        <div className="grid grid-cols-2 sm:grid-cols-4">{[['INV-101', 'Aarav Distributors', '₹1,180 short', 'Scheme claim · Asha', 'text-money-wip'], ['INV-102', 'Meera Trading', '₹12,400 short', 'Scheme claim · Unowned', 'text-money-risk'], ['INV-103', 'Southern Stores', '₹31,500 unpaid', '₹28,350 unreferenced receipt held in suspense', 'text-money-risk'], ['INV-104', 'Eastern Wholesale', '₹860 short', 'No reason yet', 'text-money-risk']].map(([id, n, amt, why, c]) => <div key={id} className="min-w-0 border-b border-r border-border px-3 py-2 text-xs even:border-r-0 sm:border-b-0 sm:even:border-r sm:last:border-r-0"><p className="truncate font-medium text-foreground">{id} · {n}</p><p className={'mt-0.5 text-sm font-semibold ' + c}>{amt}</p><p className="truncate text-muted-foreground">{why}</p></div>)}</div>
+      </Link>
     </section>
   );
 }
