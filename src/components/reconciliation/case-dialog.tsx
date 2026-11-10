@@ -34,12 +34,47 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
     if (!caseId) return;
     setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setChainNodes([]); setAnchorHash(undefined); setEditingRow(false); setOriginalTexts({}); setUndoLog(null);
   }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
-  useEffect(() => { setCheck(null); }, [e?.log]);
+  useEffect(() => {
+    if (!caseId || !demo) return;
+    const cur = w.exceptions.find(x => x.invoiceId === caseId);
+    if (cur && cur.log && cur.log.length > 0) return;
+    const invObj = w.invoices.find(i => i.id === caseId);
+    const shortAmt = invoiceBalance(w, caseId);
+    const r = cur?.reason ?? 'Unexplained';
+    const o = cur?.owner || (ownersFor(r)[0]?.name ?? 'Asha');
+    const n = cur?.notes || `Initial triage for ${caseId}`;
+    const seedEntries: LogEntry[] = [
+      { at: '2026-10-26T09:15:00.000Z', who: 'Asha', text: `Detected ${money(shortAmt)} short-payment on ${caseId} (${invObj?.customer ?? 'Distributor'}).` },
+      { at: '2026-10-26T09:18:00.000Z', who: 'Asha', text: `Classified reason as "${r}" and routed to ${personLabel(o)}.` },
+      { at: '2026-10-26T09:22:00.000Z', who: o, text: `Recorded evidence note: ${n}` },
+    ];
+    void sealLog(caseId, seedEntries).then(sealed => {
+      const nextExc = cur
+        ? w.exceptions.map(x => x.invoiceId === caseId ? { ...x, log: sealed } : x)
+        : [...w.exceptions, { invoiceId: caseId, reason: r, owner: o, notes: n, resolved: false, status: 'open' as const, log: sealed }];
+      rawChange({ ...w, exceptions: nextExc });
+    });
+  }, [caseId, demo]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (e?.log?.some(l => !l.hash)) { change(w); return; }
     const head = e?.log?.at(-1)?.hash;
     if (head && !undoLog) setAnchorHash(head);
-    if (caseId && e?.log?.length) void inspectLogChain(caseId, e.log).then(setChainNodes);
+    if (caseId && e?.log?.length) {
+      void Promise.all([verifyLogWithAnchor(caseId, e.log, anchorHash ?? head), inspectLogChain(caseId, e.log)]).then(([r, nodes]) => {
+        setChainNodes(nodes);
+        if (!r.ok) {
+          if (r.reason === 'anchor_mismatch') {
+            setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, expectedAnchor: r.expectedAnchor, actualAnchor: r.actualAnchor, text: `✗ Chain rewrite detected: internal links were re-sealed, but head hash (${r.actualAnchor?.slice(0, 8)}…) ≠ pinned Controller Anchor (${r.expectedAnchor?.slice(0, 8)}…)` });
+          } else if (r.reason === 'link_broken') {
+            setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, text: `✗ Missing entry detected before Entry ${r.brokenAt + 1}: stored prevHash does not match previous entry's fingerprint` });
+          } else {
+            setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, text: `✗ Entry ${r.brokenAt + 1} was changed after it was recorded (stored seal ≠ live recomputed SHA-256)` });
+          }
+        } else if (undoLog) {
+          setCheck({ ok: true, text: `✓ All ${e.log!.length} entries & controller anchor (${r.headHash.slice(0, 8)}…) verified intact` });
+        }
+      });
+    }
   }, [caseId, e?.log]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!caseId || !focusHistory) return;
@@ -105,6 +140,16 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
     rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? { ...x, log: undoLog } : x) });
     setUndoLog(null); setOriginalTexts({}); setCheck(null);
   };
+  const liveEditEntry = (idx: number, newText: string) => {
+    const original = log[idx];
+    if (!demo || !original) return;
+    if (!anchorHash && log.at(-1)?.hash) setAnchorHash(log.at(-1)!.hash);
+    setOriginalTexts(previous => ({ ...previous, [idx]: previous[idx] ?? original.text }));
+    if (!undoLog) setUndoLog(log);
+    rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? {
+      ...x, log: log.map((l, k) => k === idx ? { ...l, text: newText } : l),
+    } : x) });
+  };
   const inv = w.invoices.find(i => i.id === caseId);
   const short = invoiceBalance(w, caseId);
   const big = short > APPROVAL_LIMIT;
@@ -122,25 +167,121 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
     catch (err) { setError(err instanceof Error ? err.message : 'Action failed.'); }
   };
   const locked = status !== 'open';
+  const isSchemeReason = reason.startsWith('Scheme claim') || reason === 'Unexplained';
+  const brokenIndex = check && !check.ok ? check.brokenAt : chainNodes.findIndex(n => n.status === 'tampered' || n.status === 'deleted_before');
+  const activeBrokenAt = brokenIndex !== undefined && brokenIndex >= 0 ? brokenIndex : undefined;
 
   return <Dialog open onOpenChange={open => { if (!open) onClose(); }}>
-    <DialogContent className="er-app max-h-[90vh] overflow-y-auto">
+    <DialogContent className="er-app max-h-[92vh] sm:max-w-2xl overflow-y-auto">
       <DialogTitle>{caseId} · {inv?.customer} · {money(short)} short</DialogTitle>
-      <DialogDescription>Saving records why the money is missing and who owns it. It doesn't move any money.</DialogDescription>
+      <DialogDescription>Every short-payment gets a reason, a role-locked owner, and a SHA-256 sealed audit trail.</DialogDescription>
+
+      <div className="rounded-xl border border-border bg-muted/40 p-3 text-xs leading-5">
+        <p className="m-0 font-semibold text-foreground">How this workflow works (why Asha, Rahul, Kavita &amp; Vikram exist):</p>
+        <ol className="m-0 mt-1.5 grid gap-1.5 pl-4 text-muted-foreground sm:grid-cols-3 sm:pl-0 sm:list-none">
+          <li className="rounded-md border border-border/70 bg-background p-2"><b className="text-foreground">1. Domain Owner by Reason:</b><br />• <b>Asha (AR Exec):</b> Tax (TDS) &amp; approved schemes<br />• <b>Rahul (Sales Rep):</b> Unapproved discounts<br />• <b>Kavita (Sales Mgr):</b> Expired approvals<br />• <b>Priya (Warehouse):</b> Damage claims</li>
+          <li className="rounded-md border border-border/70 bg-background p-2"><b className="text-foreground">2. Finance Maker (Asha):</b><br />Once the domain owner verifies &amp; hands back to Finance, <b>Asha</b> resolves gaps <b>≤ ₹10,000</b> alone, or submits <b>&gt; ₹10,000</b> for 2nd sign-off.</li>
+          <li className="rounded-md border border-border/70 bg-background p-2"><b className="text-foreground">3. Controller Checker (Vikram):</b><br />Gaps <b>&gt; ₹10,000 (BR-5)</b> require <b>Vikram</b> to approve. Asha is blocked from approving her own submission.</li>
+        </ol>
+        <p className="m-0 mt-2 rounded-md bg-primary/10 px-2.5 py-1.5 font-medium text-foreground">
+          <b>Right now on {caseId} ({money(short)}):</b> {status === 'resolved' ? 'This case is resolved and locked.' : status === 'pending' ? 'Submitted by Asha (>₹10,000). Switch "Acting as" to Vikram below to approve or send back.' : owner && !financeOwns(owner) ? `Owned by ${personLabel(owner)}. Finance (Asha) is locked out until ${owner} records their action and hands it back below.` : big ? 'Owned by Finance (Asha) and >₹10,000: Asha must submit it first, then switch to Vikram to approve.' : 'Under ₹10,000 and with Finance: Asha can resolve this directly once a reason, owner, and note are set.'}
+        </p>
+      </div>
+
+      <div ref={historyRef} className="rounded-xl border-2 border-primary/35 bg-primary/5 p-3.5 text-sm shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="m-0 font-bold text-foreground">🔒 Live SHA-256 Audit Chain &amp; Front-End Tamper Sandbox</p>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${activeBrokenAt !== undefined ? 'bg-destructive text-white' : 'bg-[#ECFDF5] text-[#065F46] border border-[#065F46]/30'}`}>
+              {activeBrokenAt !== undefined ? `✗ TAMPER DETECTED AT ENTRY #${activeBrokenAt + 1}` : `✓ CHAIN INTACT (${log.length}/${log.length} SEALED)`}
+            </span>
+            {anchorHash && <span className="rounded-full border border-primary/30 bg-background px-2 py-0.5 text-[.7rem] font-medium text-foreground">Controller Anchor: <code>{anchorHash.slice(0, 10)}…</code></span>}
+          </div>
+        </div>
+        <p className="m-0 mt-1 text-xs leading-5 text-muted-foreground">
+          <b className="text-foreground">Try it right here:</b> Type inside any entry's text box below to simulate someone altering a stored record in the database. Watch its live recomputed SHA-256 hash diverge from the stored seal and cascade-break every entry after it.
+        </p>
+        {log.length > 0 && <div className="mt-2 flex flex-wrap items-center gap-2">
+          <Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>
+          {demo && <Button type="button" size="sm" variant="outline" onClick={openTamper}>Try tampering yourself (advanced DB modes)</Button>}
+          {demo && undoLog && <Button type="button" size="sm" variant="default" onClick={undoTamper}>↺ Restore original intact log</Button>}
+        </div>}
+        {demo && editingRow && <section aria-label="Raw database row editor" className="mt-2 grid gap-3 rounded-md bg-foreground p-3 text-background">
+          <h3 className="m-0 text-sm font-semibold">⚠ Outside the app · raw database tamper simulator</h3>
+          <p className="m-0 text-xs leading-5">Test 3 database-level attacks: (1) raw row edit, (2) deleting a middle row, or (3) editing a row AND recalculating every SHA-256 hash (caught by the pinned Controller Anchor Root).</p>
+          <label className="grid gap-1 text-xs">Target Entry
+            <select className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" value={entryIndex} onChange={ev => { const i = Number(ev.target.value); setEntryIndex(i); setEntryText(log[i]?.text ?? ''); }}>
+              {log.map((l, i) => <option key={i} value={i}>Entry {i + 1} · {l.who}</option>)}
+            </select>
+          </label>
+          <label className="grid gap-1 text-xs">Stored action text
+            <textarea className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" rows={2} maxLength={300} value={entryText} onChange={ev => setEntryText(ev.target.value)} />
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" size="sm" variant="secondary" disabled={entryText === log[entryIndex]?.text} onClick={tamper}>Save to database</Button>
+            {log.length >= 2 && <Button type="button" size="sm" variant="secondary" onClick={tamperDeleteMiddle}>Delete Entry 2</Button>}
+            <Button type="button" size="sm" variant="secondary" onClick={() => void tamperAndResealAll()}>DBA edit + re-hash all rows</Button>
+            <Button type="button" size="sm" variant="ghost" className="text-background hover:bg-background/10 hover:text-background" onClick={() => setEditingRow(false)}>Cancel</Button>
+          </div>
+        </section>}
+        {check && <p role="status" className={`m-0 mt-2 rounded-md p-2 text-xs font-semibold ${check.ok ? 'bg-[#ECFDF5] text-[#065F46]' : 'bg-destructive/10 text-destructive'}`}>{check.text}</p>}
+        {log.length === 0 ? <p className="m-0 mt-2 text-muted-foreground">No actions yet.</p> :
+          <ol className="m-0 mt-2.5 grid gap-2.5 pl-0">{log.map((l, k) => {
+            const node = chainNodes[k];
+            const edited = activeBrokenAt !== undefined && k === activeBrokenAt;
+            const later = activeBrokenAt !== undefined && k > activeBrokenAt;
+            const bgCard = edited ? 'border-destructive bg-destructive/5' : later ? 'border-money-wip bg-[#FFFBEB]' : 'border-border bg-background';
+            return <li key={k} className={`list-none rounded-lg border border-l-4 p-2.5 ${bgCard}`}>
+              <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
+                <span className="font-semibold text-foreground">Entry #{k + 1} · {fmtTime(l.at)} · {personLabel(l.who)}</span>
+                <span className={`font-semibold ${edited ? 'text-destructive' : later ? 'text-[#92400E]' : 'text-[#065F46]'}`}>
+                  {edited ? (check?.reason === 'anchor_mismatch' ? '✗ RE-HASHED (CAUGHT BY ANCHOR)' : '✗ PAYLOAD TAMPERED') : later ? '⚠ CASCADE INVALIDATED' : '✓ SEAL INTACT'}
+                </span>
+              </div>
+              {demo ? (
+                <label className="mt-1.5 block text-[.7rem] font-medium text-muted-foreground">
+                  Stored database text (edit live to test tamper detection):
+                  <input
+                    type="text"
+                    aria-label={`Edit stored text for Entry ${k + 1}`}
+                    className={`er-input mt-0.5 w-full text-xs font-medium ${edited ? 'border-destructive text-destructive' : 'text-foreground'}`}
+                    value={l.text}
+                    onChange={ev => liveEditEntry(k, ev.target.value)}
+                  />
+                </label>
+              ) : <p className="m-0 mt-1 break-words text-xs">{l.text}</p>}
+              {edited && originalTexts[k] !== undefined && <p className="m-0 mt-1 break-words text-xs font-medium text-destructive">Original sealed text was: "{originalTexts[k]}"</p>}
+              {edited && check?.reason === 'anchor_mismatch' && <p className="m-0 mt-1 text-xs font-medium text-destructive">Attacker re-computed all hashes, but head ({check.actualAnchor?.slice(0, 8)}…) ≠ Pinned Controller Anchor ({check.expectedAnchor?.slice(0, 8)}…)</p>}
+              {later && <p className="m-0 mt-1 text-xs font-medium text-[#92400E]">Built on tampered Entry #{activeBrokenAt! + 1}: its prevHash no longer matches the real upstream chain.</p>}
+              {l.hash && <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 rounded bg-muted/60 px-2 py-1 text-[.72rem]">
+                <span>prevHash: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span>
+                <span aria-hidden="true">→</span>
+                <span>Stored seal: <code>{l.hash.slice(0, 8)}</code></span>
+                {node && (
+                  <span className={node.payloadOk ? 'text-[#065F46]' : 'font-bold text-destructive'}>
+                    {node.payloadOk ? `= Live SHA-256: ${node.recomputedHash.slice(0, 8)} ✓` : `≠ Live SHA-256: ${node.recomputedHash.slice(0, 8)} ✗`}
+                  </span>
+                )}
+              </div>}
+            </li>;
+          })}</ol>}
+      </div>
 
       <div className="flex flex-wrap items-center gap-2 rounded-lg bg-muted p-2 text-sm">
         <span className="text-muted-foreground">Acting as</span>
         {['Asha', 'Vikram'].map(n => <button key={n} type="button" onClick={() => { setActor(n); setError(''); }} className={`rounded-md px-3 py-1.5 font-medium ${actor === n ? 'bg-foreground text-background' : 'bg-background text-foreground border border-border'}`}>{personLabel(n)}</button>)}
       </div>
 
-      {ap.status !== 'unpaid' && status === 'open' && <div className="rounded-lg border border-border border-l-4 border-l-[#C2410C] bg-[#FFF8F2] p-3 text-sm leading-6">
+      {ap.status !== 'unpaid' && status === 'open' && (isSchemeReason ? <div className="rounded-lg border border-border border-l-4 border-l-[#C2410C] bg-[#FFF8F2] p-3 text-sm leading-6">
         <p className="m-0 text-[.7rem] font-semibold uppercase tracking-[.06em] text-[#C2410C]">Linked from Ten Today · sales approval check</p>
         {ap.status === 'covered' && <><p className="m-0 mt-1"><b>✓ {ap.approval.id}</b>: {ap.approval.approver} approved a {money(ap.approval.capBeforeGst)} discount before GST, valid to {fmtDate(ap.approval.validTo)}. With 18% GST it covers up to {money(ap.limit)}, so all {money(ap.short)} is approved.</p><Button type="button" size="sm" className="mt-2" onClick={() => fill('Scheme claim · approved in Ten Today', 'Asha', `Matched to ${ap.approval.id} in Ten Today: ${money(ap.approval.capBeforeGst)} + GST approved by ${ap.approval.approver}.`)}>Use this approval</Button></>}
         {ap.status === 'excess' && <><p className="m-0 mt-1"><b>{ap.approval.id}</b> covers {money(ap.limit)}. The extra {money(ap.excess)} was never approved, so it goes back to {ap.approval.rep}.</p><Button type="button" size="sm" variant="outline" className="mt-2" onClick={() => fill('Scheme claim · not approved', 'Rahul', `${money(ap.limit)} covered by ${ap.approval.id}; ${money(ap.excess)} above the cap goes back to the rep.`)}>Send the extra to {ap.approval.rep}</Button></>}
         {ap.status === 'expired' && <><p className="m-0 mt-1"><b>{ap.approval.id}</b> expired on {fmtDate(ap.approval.validTo)}. Nothing clears; it goes to {ap.approval.approver}, who signed it.</p><Button type="button" size="sm" variant="outline" className="mt-2" onClick={() => fill('Scheme claim · approval expired', 'Kavita', `Approval ${ap.approval.id} expired; sent to the approver.`)}>Send to {ap.approval.approver}</Button></>}
         {ap.status === 'none' && <><p className="m-0 mt-1"><b>✗ No approval in Ten Today</b> for {inv?.customer}. If this is a discount, nobody approved it, so it belongs to the sales rep who promised it, not finance.</p><Button type="button" size="sm" variant="outline" className="mt-2" onClick={() => fill('Scheme claim · not approved', 'Rahul', 'No sales approval in Ten Today (verbal promise). Owned by the rep who made it.')}>Give it to the sales rep</Button></>}
         <a className="mt-2 block text-xs text-muted-foreground underline" href="https://tentoday.vercel.app/cockpit.html?km=1">See how an approval is made in Ten Today ↗</a>
-      </div>}
+      </div> : <div className="rounded-lg border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+        <b>Ten Today sales-approval check skipped:</b> This gap is classified as <b>{reason}</b> (handled by <b>{personLabel(owner || (eligible[0]?.name ?? 'Asha'))}</b>), not a sales discount claim.
+      </div>)}
 
       <div className="grid gap-3">
         <p className="m-0 text-sm font-semibold">Why is the money missing, and who owns it?</p>
@@ -186,55 +327,6 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
             <Button type="button" variant="outline" onClick={() => run(() => sendBack(w, caseId, actor, why), `${caseId} sent back to Asha.`)}>Send back to Asha</Button>
           </div>}
         </>}
-      </div>
-
-      <div ref={historyRef} className="border-y border-primary/25 bg-primary/5 p-3 text-sm">
-        <p className="m-0 mb-1 font-semibold">History · linked SHA-256 fingerprints &amp; controller anchor</p>
-        <div className="grid gap-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="w-fit rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium">Tamper-evident · SHA-256 chain</span>
-            {anchorHash && <span className="w-fit rounded-full border border-primary/30 bg-background px-2 py-0.5 text-[.7rem] font-medium text-foreground">Pinned Anchor Root: <code>{anchorHash.slice(0, 12)}…</code></span>}
-          </div>
-          <p className="m-0 text-xs leading-5 text-muted-foreground">Each entry hashes <code>{`{invoiceId, at, who, text, prevHash}`}</code> via Web Crypto SHA-256. Editing any field or deleting a row breaks every downstream fingerprint—and pinning the Controller Anchor Root catches even a DBA who rewrites the table and recalculates every hash.</p>
-          {log.length > 0 && <div className="flex flex-wrap items-center gap-3"><Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>{demo && <Button type="button" size="sm" variant="link" className="h-auto whitespace-normal p-0 text-xs text-muted-foreground" onClick={openTamper}>Try tampering yourself (3 attack modes)</Button>}{demo && undoLog && <Button type="button" size="sm" variant="outline" onClick={undoTamper}>Undo</Button>}</div>}
-          {demo && editingRow && <section aria-label="Raw database row editor" className="mt-2 grid gap-3 rounded-md bg-foreground p-3 text-background">
-            <h3 className="m-0 text-sm font-semibold">⚠ Outside the app · raw database tamper simulator</h3>
-            <p className="m-0 text-xs leading-5">The UI has no edit or delete button for audit history. Test what happens when someone with direct Postgres access attacks the table:</p>
-            <label className="grid gap-1 text-xs">Target Entry
-              <select className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" value={entryIndex} onChange={ev => { const i = Number(ev.target.value); setEntryIndex(i); setEntryText(log[i]?.text ?? ''); }}>
-                {log.map((l, i) => <option key={i} value={i}>Entry {i + 1} · {l.who}</option>)}
-              </select>
-            </label>
-            <label className="grid gap-1 text-xs">Stored action text
-              <textarea className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" rows={2} maxLength={300} value={entryText} onChange={ev => setEntryText(ev.target.value)} />
-            </label>
-            <div className="flex flex-wrap gap-2">
-              <Button type="button" size="sm" variant="secondary" disabled={entryText === log[entryIndex]?.text} onClick={tamper}>1. Save raw edit (no re-hash)</Button>
-              {log.length >= 2 && <Button type="button" size="sm" variant="secondary" onClick={tamperDeleteMiddle}>2. Delete Entry 2</Button>}
-              <Button type="button" size="sm" variant="secondary" onClick={() => void tamperAndResealAll()}>3. DBA edit + re-hash all rows</Button>
-              <Button type="button" size="sm" variant="ghost" className="text-background hover:bg-background/10 hover:text-background" onClick={() => setEditingRow(false)}>Cancel</Button>
-            </div>
-            <p className="m-0 text-[.7rem] opacity-80">Demo only · modifies in-memory session state, then run "Verify history" to see which check catches each attack.</p>
-          </section>}
-          {check && <p role="status" className={`m-0 text-sm font-medium ${check.ok ? 'text-money-ok' : 'text-destructive'}`}>{check.text}</p>}
-          <details className="mt-1 text-xs"><summary className="cursor-pointer font-medium text-primary">How the 3-layer SHA-256 verification works</summary><div className="mt-2 grid gap-2 leading-5 text-muted-foreground"><p className="m-0"><b className="text-foreground">1. Payload check (catches raw edits).</b> Recomputes <code>sha256(JSON.stringify({`{invoiceId, at, who, text, prevHash}`}))</code> and compares against stored <code>hash</code>.</p><p className="m-0"><b className="text-foreground">2. Chain link check (catches deleted/reordered rows).</b> Verifies <code>entry[k].prevHash === entry[k-1].hash</code> starting from <code>GENESIS</code>.</p><p className="m-0"><b className="text-foreground">3. Pinned Controller Anchor check (catches full DBA re-seal).</b> Compares the final chain head against the 64-hex digest pinned when the controller sealed the case (exported to external audit mail/webhook).</p></div></details></div>
-        {log.length === 0 ? <p className="m-0 text-muted-foreground">No actions yet.</p> :
-          <ol className="m-0 mt-2 grid gap-2 pl-0">{log.map((l, k) => {
-            const node = chainNodes[k];
-            const brokenAt = check && !check.ok ? check.brokenAt : undefined;
-            const edited = brokenAt !== undefined && k === brokenAt;
-            const later = brokenAt !== undefined && k > brokenAt;
-            const intact = check?.ok || (brokenAt !== undefined && k < brokenAt);
-            const color = edited ? 'border-destructive text-destructive' : later ? 'border-money-wip text-money-wip' : intact ? 'border-money-ok text-money-ok' : 'border-primary/30';
-            return <li key={k} className={`list-none border-l-2 pl-2 ${color}`}>
-              <span className="text-xs">Action {k + 1} · {fmtTime(l.at)} · {personLabel(l.who)}</span>
-              <p className="m-0 break-words">{l.text}</p>
-              {edited && originalTexts[k] !== undefined && <p className="m-0 break-words text-xs">was: {originalTexts[k]}</p>}
-              {edited && check?.reason === 'anchor_mismatch' && <p className="m-0 text-xs">re-hashed by attacker; caught by Controller Anchor mismatch ({check.actualAnchor?.slice(0, 8)} ≠ {check.expectedAnchor?.slice(0, 8)})</p>}
-              {later && <p className="m-0 text-xs">built on the edited entry, cascade-invalidated</p>}
-              {l.hash && <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs"><span>Previous: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span><span aria-hidden="true">→</span><span>Stored: <code>{l.hash.slice(0, 8)}</code></span>{node && !node.payloadOk && <span className="font-semibold text-destructive">≠ Recomputed: <code>{node.recomputedHash.slice(0, 8)}</code></span>}{node && <details className="w-full text-[.7rem] text-muted-foreground"><summary className="cursor-pointer underline">Inspect SHA-256 payload</summary><code className="mt-1 block break-all rounded bg-muted p-1.5 text-foreground">{node.canonical}</code></details>}</div>}
-            </li>;
-          })}</ol>}
       </div>
 
       {error && <p role="alert" className="m-0 rounded-md bg-destructive/10 p-2 text-sm text-destructive">{error}</p>}

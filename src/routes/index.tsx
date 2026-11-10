@@ -186,6 +186,12 @@ function CanonicalWorkflows() {
 }
 
 function ImportedSectionADistributorPaysShort() {
+  const heroOutcomes = [
+    ['Day 0 (<5 ms)', 'Short-Payment Detection', 'vs. 7–14 day manual bank-to-ERP lag', 'The Hackett Group CPG baseline'],
+    ['~8.0 hrs saved', 'Manual Checks Eliminated / 25 Bills', '24/25 bills rule-checked (22m → <2m/bill)', 'APQC O2C process benchmark'],
+    ['3–7 day SLA', 'Faster Dispute Resolution', 'Down from 30–45d CPG average; prevents >180d ECL', 'Cello World FY25 AR filings'],
+    ['₹18,544 caught', 'Invalid & Excess Claims Blocked', 'Expired & over-cap claims routed to Sales · ₹0 write-offs', 'Live 25-bill batch (BR-4, BR-10)'],
+  ];
   return (
     <section className="er-app py-12 text-center sm:py-16" aria-labelledby="intro-title">
       <p className="text-sm font-medium text-muted-foreground">Order-to-cash · Deduction management · <span className="font-semibold text-primary">Tamper-evident</span></p>
@@ -194,13 +200,30 @@ function ImportedSectionADistributorPaysShort() {
       <p className="mx-auto mt-4 max-w-[60ch] text-sm leading-6 sm:text-base sm:leading-7 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3"><Button asChild className="min-h-11 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button><Button asChild variant="outline" className="min-h-11 no-underline!"><Link to="/demo">Explore on my own</Link></Button></div>
       <div className="mt-3 flex flex-wrap justify-center gap-2">{['16 rules', '31/31 tests passing', '0 write-offs by rule'].map(label => <Button key={label} asChild variant="outline" size="sm" className="h-8 rounded-full text-xs no-underline!"><a href="https://everyrupee-o2c.vercel.app/desk.html?uat=1">{label}</a></Button>)}</div>
-      <div className="mx-auto mt-3 flex max-w-[720px] flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs"><ShieldCheck className="size-4 shrink-0 text-primary" /><span><b>Past action edited? The history check flags it.</b> Linked SHA-256 fingerprints—not tamper-proof.</span><Button asChild variant="link" size="sm" className="h-auto p-0 text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}>Try the hash-chain check →</Link></Button></div>
+      <div className="mx-auto mt-3 flex max-w-[720px] flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs"><ShieldCheck className="size-4 shrink-0 text-primary" /><span><b>Past action edited? The history check flags it.</b> Linked SHA-256 fingerprints—not tamper-proof.</span><Button asChild variant="link" size="sm" className="h-auto p-0 text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}>Try the live SHA-256 tamper sandbox →</Link></Button></div>
       
       <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-6 block max-w-[720px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
         <div className="flex items-center justify-between border-b border-border px-4 py-2.5 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Reconciliation desk</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-(--money-ok)" />Live sample</span></div>
         <div className="grid grid-cols-2 sm:grid-cols-4">{[['INV-101', 'Aarav Distributors', '₹1,180 short', 'Scheme claim · Asha', 'text-money-wip'], ['INV-102', 'Meera Trading', '₹12,400 short', 'Scheme claim · Unowned', 'text-money-risk'], ['INV-103', 'Southern Stores', '₹31,500 unpaid', '₹28,350 unreferenced receipt held in suspense', 'text-money-risk'], ['INV-104', 'Eastern Wholesale', '₹860 short', 'No reason yet', 'text-money-risk']].map(([id, n, amt, why, c]) => <div key={id} className="min-w-0 border-b border-r border-border px-3 py-2.5 text-xs even:border-r-0 sm:border-b-0 sm:even:border-r sm:last:border-r-0"><p className="truncate font-medium text-foreground">{id} · {n}</p><p className={'mt-0.5 text-sm font-semibold ' + c}>{amt}</p><p className="text-muted-foreground">{why}</p></div>)}</div>
         <p className="border-t border-border px-4 py-2 text-center text-xs text-muted-foreground">Billed ₹1,91,300 · Received ₹1,73,710 · <span className="font-semibold text-money-wip">Gap ₹17,590</span> · <span className="font-semibold text-primary">Open the live desk →</span></p>
       </Link>
+
+      <div aria-label="Measured business outcomes" className="mx-auto mt-6 max-w-[920px] overflow-hidden rounded-2xl border-2 border-primary/25 bg-card text-left shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-primary/5 px-4 py-2.5">
+          <span className="text-xs font-bold uppercase tracking-wider text-primary">Measured Business Outcomes · Public CPG Data + Live Engine</span>
+          <Link to="/demo" className="text-xs font-semibold text-primary hover:underline">Verify on 25-bill batch in the desk →</Link>
+        </div>
+        <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
+          {heroOutcomes.map(([stat, label, sub, src]) => (
+            <div key={label} className="p-4">
+              <p className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">{stat}</p>
+              <p className="mt-1 text-xs font-semibold text-foreground">{label}</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">{sub}</p>
+              <p className="mt-1.5 text-[.68rem] font-medium text-primary/80">Source: {src}</p>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
