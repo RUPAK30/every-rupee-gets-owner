@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight, Download, Upload, RotateCcw, Save, Check, Search
 import { Button } from '@/components/ui/button';
 import { Tour, DeskSwitch, type TourStep } from './tour';
 import { CaseDialog } from './case-dialog';
+import { ServiceNowModal, type ServiceNowTicket } from './servicenow-modal';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { checkTenTodaySeal, readTenTodayApproval, salesApprovals, benchmarkApprovals, benchmarkWorkspace, computeDeskImpact, type SalesApproval, type LogEntry, type ChainNodeCheck, allocate, approvalCheck, autoMatch, caseStatus, emptyWorkspace, personLabel, importCsv, invoiceBalance, money, parseMoney, receiptBalance, saveCase, sealLog, inspectLogChain, verifyLogWithAnchor, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
 
@@ -21,7 +22,8 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [search, setSearch] = useState(''); const [filter, setFilter] = useState('all'); const [notice, setNotice] = useState(''); const [error, setError] = useState(''); const [dirty, setDirty] = useState(false); const [saving, setSaving] = useState(false);
   const [importKind, setImportKind] = useState<'invoices' | 'receipts' | null>(null); const fileRef = useRef<HTMLInputElement>(null);
   const [receipt, setReceipt] = useState(''); const [invoice, setInvoice] = useState(''); const [amount, setAmount] = useState(''); const [manual, setManual] = useState(false);
-  const [caseId, setCaseId] = useState<string | null>(null); const [reason, setReason] = useState(''); const [owner, setOwner] = useState(''); const [notes, setNotes] = useState(''); const [resolved, setResolved] = useState(false);
+  const [caseId, setCaseId] = useState<string | null>(null);
+  const [snCaseId, setSnCaseId] = useState<string | null>(null); const [reason, setReason] = useState(''); const [owner, setOwner] = useState(''); const [notes, setNotes] = useState(''); const [resolved, setResolved] = useState(false);
   const [reset, setReset] = useState(false);
   const [focusHistory, setFocusHistory] = useState(false);
   const [openingHistory, setOpeningHistory] = useState(false);
@@ -236,10 +238,18 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8 text-xs font-semibold text-primary" onClick={() => { const base = w.allocations.length ? w : autoMatch(w); if (base !== w) change(base, 'Payments matched to bills.'); setTab('exceptions'); openCase('INV-102'); }}>
+            <Button size="sm" variant="outline" className="h-8 text-xs font-semibold text-primary" onClick={() => {
+              const base = w.allocations.length ? w : autoMatch(w);
+              if (base !== w) change(base, 'Payments matched to bills.');
+              setSnCaseId('INV-102');
+            }}>
               ⚡ Open INV-102 Ticket (Emergency 2-day TAT) →
             </Button>
-            <Button size="sm" variant="ghost" className="h-8 text-xs font-semibold text-foreground hover:bg-muted" onClick={() => { const base = w.allocations.length ? w : autoMatch(w); if (base !== w) change(base, 'Payments matched to bills.'); setTab('exceptions'); openCase('INV-101'); }}>
+            <Button size="sm" variant="ghost" className="h-8 text-xs font-semibold text-foreground hover:bg-muted" onClick={() => {
+              const base = w.allocations.length ? w : autoMatch(w);
+              if (base !== w) change(base, 'Payments matched to bills.');
+              setSnCaseId('INV-101');
+            }}>
               Open INV-101 (Normal 7-day TAT) →
             </Button>
           </div>
@@ -328,12 +338,30 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             <div className="rounded-lg bg-muted/50 p-2.5"><b className="text-foreground">3. Finance Checker (Vikram):</b><br />For any gap <b>above ₹10,000 (BR-5)</b>, <b>Vikram (Finance Controller)</b> must review and approve. Asha is blocked from approving her own submission.</div>
           </div>
         </div>
-        <div className="overflow-x-auto"><table className="er-table"><thead><tr><th>Invoice / customer</th><th>Short by</th><th>Reason</th><th>Owner</th><th>Case &amp; Audit Chain</th></tr></thead><tbody>{cases.map(i => { const e = w.exceptions.find(e => e.invoiceId === i.id); return <tr key={i.id}><td><strong>{i.id}</strong><span className="block text-xs text-muted-foreground">{i.customer}</span></td><td>{money(invoiceBalance(w, i.id))}</td><td>{e?.reason ?? 'Unexplained'}</td><td>{e?.owner ? personLabel(e.owner) : 'Unassigned'}</td><td><div className="flex flex-wrap gap-1.5"><Button size="sm" variant="outline" onClick={() => openCase(i.id)}>{(() => { const st = caseStatus(w, i.id); return st === 'resolved' ? '✓ Resolved' : st === 'pending' ? 'Waiting for Vikram' : 'Review'; })()}</Button><Button size="sm" variant="ghost" className="text-xs text-primary" onClick={() => { openCase(i.id); setFocusHistory(true); }}>🔒 SHA-256 chain</Button></div></td></tr>; })}</tbody></table></div>{!cases.length && <p className="py-10 text-center text-muted-foreground">No outstanding exceptions.</p>}</section>}
+        <div className="overflow-x-auto"><table className="er-table"><thead><tr><th>Invoice / customer</th><th>Short by</th><th>Reason</th><th>Owner</th><th>Action &amp; ServiceNow ITIL</th></tr></thead><tbody>{cases.map(i => { const e = w.exceptions.find(e => e.invoiceId === i.id); return <tr key={i.id}><td><strong>{i.id}</strong><span className="block text-xs text-muted-foreground">{i.customer}</span></td><td>{money(invoiceBalance(w, i.id))}</td><td>{e?.reason ?? 'Unexplained'}</td><td>{e?.owner ? personLabel(e.owner) : 'Unassigned'}</td><td><div className="flex flex-wrap items-center gap-1.5">
+  <Button size="sm" variant="outline" onClick={() => openCase(i.id)}>
+    {(() => { const st = caseStatus(w, i.id); return st === 'resolved' ? '✓ Resolved' : st === 'pending' ? 'Waiting for Vikram' : 'Review Case'; })()}
+  </Button>
+  <Button
+    size="sm"
+    variant="secondary"
+    className="h-8 gap-1 border border-sky-300 bg-sky-50 text-xs font-semibold text-sky-900 hover:bg-sky-100"
+    onClick={() => setSnCaseId(i.id)}
+    title="Open ServiceNow ITIL Dispute Ticket"
+  >
+    <span className="font-bold text-sky-600">⚡</span>
+    <span>sn Ticket</span>
+  </Button>
+  <Button size="sm" variant="ghost" className="h-8 px-2 text-xs text-muted-foreground hover:text-foreground" onClick={() => { openCase(i.id); setFocusHistory(true); }}>
+    🔒 SHA-256
+  </Button>
+</div></td></tr>; })}</tbody></table></div>{!cases.length && <p className="py-10 text-center text-muted-foreground">No outstanding exceptions.</p>}</section>}
       <footer className="mt-10 flex flex-wrap justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground"><span>Strict reference matching · no automatic write-offs</span><span>{demo ? 'Sample changes are not saved.' : dirty ? 'Unsaved changes' : 'Private records'} · <Link to="/capabilities" className="underline">Release limitations</Link></span></footer>
     </main>
     <Tour steps={tourSteps} step={tour} setStep={setTour} />
     <Dialog open={importKind !== null} onOpenChange={open => { if (!open) setImportKind(null); }}><DialogContent className="er-app max-h-[90vh] overflow-y-auto"><DialogTitle>Import {importKind}</DialogTitle><DialogDescription>CSV · amounts in rupees · dates YYYY-MM-DD · up to 1,000 records per type. Imports append; duplicate IDs are rejected.</DialogDescription><Button variant="outline" onClick={() => download(`${importKind}-template.csv`, importKind === 'invoices' ? 'id,customer,amount,date\nINV-NEW,Example Distributors,11800.00,2026-10-01' : 'id,reference,amount,date\nUTR-NEW,INV-NEW,10620.00,2026-10-15')}><Download />Download template</Button><input ref={fileRef} type="file" accept=".csv,text/csv" aria-label="Choose CSV" className="er-input" onChange={async e => { const file = e.target.files?.[0]; if (!file || !importKind) return; if (file.size > 2_000_000) { setError('CSV must be smaller than 2 MB.'); return; } try { const next = importCsv(w, importKind, await file.text()); change(next, `${next[importKind].length - w[importKind].length} ${importKind} imported.`); setImportKind(null); } catch (e) { setError(e instanceof Error ? e.message : 'Import failed.'); } }} />{error && <p role="alert" className="text-sm text-destructive">{error}</p>}</DialogContent></Dialog>
     <Dialog open={manual} onOpenChange={setManual}><DialogContent className="er-app"><DialogTitle>Allocate a receipt</DialogTitle><DialogDescription>Only available cash can be applied to an outstanding invoice.</DialogDescription><form className="grid gap-4" onSubmit={e => { e.preventDefault(); action(() => { change(allocate(w, receipt, invoice, parseMoney(amount)), 'Receipt allocated.'); setManual(false); }); }}><label className="grid gap-1 text-sm">Receipt<select required className="er-input" value={receipt} onChange={e => setReceipt(e.target.value)}><option value="">Select receipt</option>{receiptOptions.map(r => <option key={r.id} value={r.id}>{r.id} · {money(receiptBalance(w, r.id))}</option>)}</select></label><label className="grid gap-1 text-sm">Invoice<select required className="er-input" value={invoice} onChange={e => setInvoice(e.target.value)}><option value="">Select invoice</option>{w.invoices.filter(i => invoiceBalance(w, i.id) > 0).map(i => <option key={i.id} value={i.id}>{i.id} · {money(invoiceBalance(w, i.id))}</option>)}</select></label><label className="grid gap-1 text-sm">Amount (₹)<input required className="er-input" value={amount} onChange={e => setAmount(e.target.value)} inputMode="decimal" /></label>{error && <p className="text-sm text-destructive" role="alert">{error}</p>}<Button type="submit"><Check />Apply allocation</Button></form></DialogContent></Dialog>
+    <ServiceNowModal open={Boolean(snCaseId)} onClose={() => setSnCaseId(null)} caseId={snCaseId} w={w} actor="Asha" />
     <CaseDialog w={w} caseId={caseId} approvals={approvals} demo={demo} focusHistory={focusHistory} onClose={() => { setCaseId(null); setFocusHistory(false); }} change={change} />
     <Dialog open={reset} onOpenChange={setReset}><DialogContent className="er-app"><DialogTitle>{demo ? 'Reset sample records?' : 'Clear current records?'}</DialogTitle><DialogDescription>{demo ? 'Restore the original illustrative dataset.' : 'All invoices, receipts, allocations and cases will be removed from the current workspace. Save to make this permanent.'}</DialogDescription><Button variant="destructive" onClick={() => { change(demo ? initial : emptyWorkspace(), 'Workspace reset.'); setReset(false); }}>Confirm reset</Button></DialogContent></Dialog>
   </div>;

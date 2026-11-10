@@ -29,14 +29,10 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const [error, setError] = useState('');
   const [done, setDone] = useState('');
   const [did, setDid] = useState('');
-  const [snType, setSnType] = useState<'Normal' | 'Emergency'>('Normal');
-  const [snProofAttached, setSnProofAttached] = useState(false);
-  const [snPvtSigned, setSnPvtSigned] = useState(false);
-  const [snExpanded, setSnExpanded] = useState(false);
   const e = caseId ? w.exceptions.find(x => x.invoiceId === caseId) : undefined;
   useEffect(() => {
     if (!caseId) return;
-    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setChainNodes([]); setAnchorHash(undefined); setEditingRow(false); setOriginalTexts({}); setUndoLog(null); setSnType(caseId === 'INV-102' ? 'Emergency' : 'Normal'); setSnProofAttached(false); setSnPvtSigned(false); setSnExpanded(false);
+    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setChainNodes([]); setAnchorHash(undefined); setEditingRow(false); setOriginalTexts({}); setUndoLog(null);
   }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!caseId || !demo) return;
