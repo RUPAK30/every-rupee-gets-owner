@@ -236,10 +236,10 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Button size="sm" variant="outline" className="h-8 text-xs font-semibold text-primary" onClick={() => { setTab('exceptions'); setCaseId('INV-102'); }}>
+            <Button size="sm" variant="outline" className="h-8 text-xs font-semibold text-primary" onClick={() => { const base = w.allocations.length ? w : autoMatch(w); if (base !== w) change(base, 'Payments matched to bills.'); setTab('exceptions'); openCase('INV-102'); }}>
               ⚡ Open INV-102 Ticket (Emergency 2-day TAT) →
             </Button>
-            <Button size="sm" variant="ghost" className="h-8 text-xs font-semibold text-foreground hover:bg-muted" onClick={() => { setTab('exceptions'); setCaseId('INV-101'); }}>
+            <Button size="sm" variant="ghost" className="h-8 text-xs font-semibold text-foreground hover:bg-muted" onClick={() => { const base = w.allocations.length ? w : autoMatch(w); if (base !== w) change(base, 'Payments matched to bills.'); setTab('exceptions'); openCase('INV-101'); }}>
               Open INV-101 (Normal 7-day TAT) →
             </Button>
           </div>
