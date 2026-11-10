@@ -222,6 +222,57 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     <p className="m-0 text-xs leading-5 text-muted-foreground">{d}</p>
     {active && (n === 1 ? <Button data-tour="automatch" className="mt-auto" onClick={() => action(() => { const next = autoMatch(w); const added = next.allocations.length - w.allocations.length; change(next, added ? `${added} payments paired with their bills.` : 'Everything that can be paired already is.'); if (added) setNotice(`Done: ${added} payments were paired with the bill they mention. Any bill still marked Partial was paid short. Open "Gaps to explain" to say why.`); })}><GitMerge />{cta}</Button> : <Button className="mt-auto" onClick={ev => { ev.stopPropagation(); go(); }}>{cta} <ArrowRight /></Button>)}
   </li>; })}</ol>; })()}
+      {/* Enterprise ServiceNow ITIL Change & Dispute Hub (Native Desk Component) */}
+      <section id="sn-gateway" className="mt-6 rounded-2xl border-2 border-primary/30 bg-card p-4 sm:p-5 shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="flex size-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">⚡</span>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="m-0 text-sm font-bold text-foreground">ServiceNow ITIL Change &amp; Dispute Hub</h3>
+                <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[.65rem] font-bold uppercase tracking-wider text-primary">Table API Active</span>
+              </div>
+              <p className="m-0 text-xs text-muted-foreground">Every unapproved deduction automatically dispatches a structured <code>change_request</code> with dual-approvals and SLA monitoring.</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" variant="outline" className="h-8 text-xs font-semibold text-primary" onClick={() => { setTab('exceptions'); setCaseId('INV-102'); }}>
+              ⚡ Open INV-102 Ticket (Emergency 2-day TAT) →
+            </Button>
+            <Button size="sm" variant="ghost" className="h-8 text-xs font-semibold text-foreground hover:bg-muted" onClick={() => { setTab('exceptions'); setCaseId('INV-101'); }}>
+              Open INV-101 (Normal 7-day TAT) →
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-3.5 grid gap-2.5 sm:grid-cols-3 text-xs">
+          <div className="rounded-xl border border-border bg-background p-3">
+            <div className="flex items-center justify-between text-[.7rem] text-muted-foreground">
+              <span className="font-semibold text-primary">1 · DUAL CHANGE TYPES</span>
+              <span className="font-mono">CHG-EMG-102</span>
+            </div>
+            <p className="m-0 mt-1 font-semibold text-foreground">Normal vs. Emergency SLAs</p>
+            <p className="m-0 mt-0.5 text-muted-foreground leading-4.5">Standard 7-day TAT vs. 2-day critical TAT for unapproved claims &gt;₹10,000.</p>
+          </div>
+          <div className="rounded-xl border border-border bg-background p-3">
+            <div className="flex items-center justify-between text-[.7rem] text-muted-foreground">
+              <span className="font-semibold text-primary">2 · MANDATORY PROOF GATE</span>
+              <span className="font-mono">sys_attachment</span>
+            </div>
+            <p className="m-0 mt-1 font-semibold text-foreground">Signed GRN / POD Upload</p>
+            <p className="m-0 mt-0.5 text-muted-foreground leading-4.5">Tickets physically lock until verified delivery notes or trade circulars are attached.</p>
+          </div>
+          <div className="rounded-xl border border-border bg-background p-3">
+            <div className="flex items-center justify-between text-[.7rem] text-muted-foreground">
+              <span className="font-semibold text-primary">3 · HOD &amp; PVT SIGN-OFF</span>
+              <span className="font-mono">u_pvt_signoff</span>
+            </div>
+            <p className="m-0 mt-1 font-semibold text-foreground">Post-Validation Testing Gate</p>
+            <p className="m-0 mt-0.5 text-muted-foreground leading-4.5">Requires Finance Head (Vikram) approval + PVT test pass before ticket can close.</p>
+          </div>
+        </div>
+      </section>
+
       <div data-tour="totals" className="mt-7 grid grid-cols-2 border-y border-border py-5 md:grid-cols-4">{[['Money received', received, 'Payments in the bank'], ['Matched to bills', matched, 'Paired with an invoice'], ['Not yet matched', received - matched, 'Payments waiting for a bill'], ['Still owed', billed - matched, 'Billed but not paid']].map(([label, value, hint]) => <div key={String(label)} className="min-w-0 px-2 py-3 sm:px-4"><p className="text-xs font-medium">{label}</p><p className="text-[.7rem] text-muted-foreground">{hint}</p><p className="mt-2 break-words text-xl font-semibold tabular-nums">{money(Number(value))}</p></div>)}</div>
       {(() => {
         const evalW = w.allocations.length ? w : autoMatch(w);
