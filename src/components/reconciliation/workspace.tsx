@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Tour, DeskSwitch, type TourStep } from './tour';
 import { CaseDialog } from './case-dialog';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { checkTenTodaySeal, readTenTodayApproval, salesApprovals, benchmarkApprovals, benchmarkWorkspace, computeDeskImpact, type SalesApproval, allocate, approvalCheck, autoMatch, caseStatus, emptyWorkspace, personLabel, importCsv, invoiceBalance, money, parseMoney, receiptBalance, saveCase, sealLog, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
+import { checkTenTodaySeal, readTenTodayApproval, salesApprovals, benchmarkApprovals, benchmarkWorkspace, computeDeskImpact, type SalesApproval, type LogEntry, type ChainNodeCheck, allocate, approvalCheck, autoMatch, caseStatus, emptyWorkspace, personLabel, importCsv, invoiceBalance, money, parseMoney, receiptBalance, saveCase, sealLog, inspectLogChain, verifyLogWithAnchor, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
 
 type Props = { initial: Data; demo?: boolean; onSave?: (data: Data) => Promise<void>; onSignOut?: () => Promise<void> };
 function download(filename: string, text: string) { const url = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
@@ -26,11 +26,60 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [focusHistory, setFocusHistory] = useState(false);
   const [openingHistory, setOpeningHistory] = useState(false);
   const [tour, setTour] = useState<number | null>(null);
+  const [deskBlocks, setDeskBlocks] = useState<LogEntry[]>([]);
+  const [deskNodes, setDeskNodes] = useState<ChainNodeCheck[]>([]);
+  const [deskCheck, setDeskCheck] = useState<{ ok: boolean; text: string; brokenAt?: number } | null>(null);
+  const [deskEditing, setDeskEditing] = useState(false);
+  const [deskBlockIdx, setDeskBlockIdx] = useState(0);
+  const [deskBlockText, setDeskBlockText] = useState('');
+  const [deskUndo, setDeskUndo] = useState<LogEntry[] | null>(null);
+  const [deskOrig, setDeskOrig] = useState<Record<number, string>>({});
+  const deskChainRef = useRef<HTMLElement>(null);
   const openedHistoryLink = useRef(false);
+  useEffect(() => {
+    if (!demo || deskBlocks.length > 0) return;
+    const seed: LogEntry[] = [
+      { at: '2026-10-26T09:15:12.000Z', who: 'Asha', text: 'Matched APV-2026-031 (₹1,000 + 18% GST) for Aarav Distributors (INV-101), routed to Asha' },
+      { at: '2026-10-26T09:18:44.000Z', who: 'Asha', text: 'Flagged ₹12,400 unapproved discount for Meera Trading (INV-102), routed to Rahul' },
+      { at: '2026-10-26T09:22:05.000Z', who: 'System', text: 'Held ₹28,350 unreferenced receipt (UTR-003) for Southern Stores; blocked auto-write-off' },
+    ];
+    void sealLog('DESK-RECORD', seed).then(sealed => {
+      setDeskBlocks(sealed);
+      setDeskBlockText(sealed[0]?.text ?? '');
+      void inspectLogChain('DESK-RECORD', sealed).then(setDeskNodes);
+    });
+  }, [demo, deskBlocks.length]);
+  const verifyDeskRecord = async (blocks = deskBlocks) => {
+    const [r, nodes] = await Promise.all([verifyLogWithAnchor('DESK-RECORD', blocks), inspectLogChain('DESK-RECORD', blocks)]);
+    setDeskNodes(nodes);
+    if (r.ok) setDeskCheck({ ok: true, text: `✓ All ${blocks.length} blocks verified: every stored SHA-256 fingerprint matches its recomputed hash and upstream link.` });
+    else setDeskCheck({ ok: false, brokenAt: r.brokenAt, text: `✗ Tamper detected at Block #${r.brokenAt + 1}: stored fingerprint (${blocks[r.brokenAt]?.hash?.slice(0, 8)}) ≠ recomputed SHA-256 (${nodes[r.brokenAt]?.recomputedHash.slice(0, 8)}).${r.brokenAt < blocks.length - 1 ? ` Downstream blocks #${r.brokenAt + 2}..#${blocks.length} cascade-invalidated.` : ''}` });
+  };
+  const saveDeskTamper = async () => {
+    const orig = deskBlocks[deskBlockIdx];
+    if (!orig || orig.text === deskBlockText) return;
+    setDeskOrig(prev => ({ ...prev, [deskBlockIdx]: prev[deskBlockIdx] ?? orig.text }));
+    if (!deskUndo) setDeskUndo(deskBlocks);
+    const next = deskBlocks.map((b, i) => i === deskBlockIdx ? { ...b, text: deskBlockText } : b);
+    setDeskBlocks(next);
+    setDeskEditing(false);
+    setDeskCheck(null);
+  };
+  const restoreDeskRecord = async () => {
+    if (!deskUndo) return;
+    setDeskBlocks(deskUndo);
+    const nodes = await inspectLogChain('DESK-RECORD', deskUndo);
+    setDeskNodes(nodes);
+    setDeskUndo(null);
+    setDeskOrig({});
+    setDeskCheck({ ok: true, text: `✓ Original sealed record restored (${deskUndo.length}/${deskUndo.length} blocks intact).` });
+  };
   useEffect(() => {
     if (!demo || openedHistoryLink.current || routeSearch.history !== '1') return;
     openedHistoryLink.current = true;
-    void openSampleHistory();
+    setDeskEditing(true);
+    setDeskBlockIdx(0);
+    setTimeout(() => deskChainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
   }, [demo, routeSearch.history]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (demo && new URLSearchParams(window.location.search).get('tour') === '1') setTour(0); }, [demo]);
   const tourSteps: TourStep[] = [
@@ -92,7 +141,76 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           {inv ? <Button size="sm" className="mt-2" onClick={() => { const base = w.allocations.length ? w : autoMatch(w); if (base !== w) change(base, 'Payments matched to bills.'); setTab('exceptions'); setCaseId(inv.id); }}>Check {inv.id} against this approval</Button> : <p className="m-0 mt-1 text-muted-foreground">No bill for {a.customer} in this sample, so there is nothing to check yet.</p>}</>; })()}
       </div>}
       <div className="flex flex-wrap items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase text-muted-foreground">Receivables / reconciliation</p><h1 className="mt-2 text-3xl font-semibold">Reconciliation desk</h1><p className="mt-2 max-w-[60ch] text-sm leading-6 text-muted-foreground">Customers often pay less than the bill. This desk pairs each bank payment with its bill, then makes sure every missing rupee gets a reason and an owner.</p></div><div className="flex flex-wrap gap-2">{demo && <Button onClick={() => { setTour(0); setBatchMode('starter'); setW(initial); }}>▶ 60-second guided tour</Button>}{demo && <Button variant="outline" onClick={() => { if (batchMode === 'starter') { const bw = autoMatch(benchmarkWorkspace()); setBatchMode('benchmark'); setW(bw); setNotice('Loaded & auto-matched 25-bill distributor batch (₹68.4L billed · calibrated to Cello FY25 AR & APQC CPG benchmarks).'); } else { setBatchMode('starter'); setW(initial); setNotice('Restored 4-bill starter sample.'); } }}>{batchMode === 'starter' ? '⚡ Load 25-bill batch (₹68.4L)' : '← Back to 4-bill starter'}</Button>}<Button variant="outline" onClick={() => setReset(true)} title="Replace current records"><RotateCcw />{demo ? 'Reset sample' : 'Clear workspace'}</Button>{!demo && <Button disabled={!dirty || saving} onClick={async () => { if (!onSave) return; setSaving(true); setError(''); try { await onSave(w); setDirty(false); toast.success('Saved. Your records are up to date.'); } catch (e) { setError(e instanceof Error ? e.message : 'Save failed.'); } finally { setSaving(false); } }}><Save />{saving ? 'Saving…' : dirty ? 'Save changes' : 'Saved'}</Button>}</div></div>
-      {demo && <section aria-label="Tamper-evident case history" className="mt-3 flex flex-wrap items-center justify-between gap-2 border-y border-primary/25 bg-primary/5 px-3 py-2"><div className="min-w-0"><h2 className="flex items-center gap-2 text-sm font-semibold"><History className="size-4 shrink-0 text-primary" />Past action edited? The history check flags it.</h2><p className="mt-1 text-xs leading-5 text-muted-foreground">3-layer SHA-256 chain + pinned Controller Anchor catches raw DB edits, deleted rows, and full DBA re-hashing.</p></div><Button className="h-auto max-w-full whitespace-normal text-left" disabled={openingHistory} onClick={() => void openSampleHistory()}><History className="shrink-0" />{openingHistory ? 'Opening sample history…' : 'Try tamper-evident history · hash chain'}</Button></section>}
+      {demo && <section ref={deskChainRef} aria-label="Sealed reconciliation record" className="mt-4 rounded-2xl border border-[#A7F3D0] bg-[#ECFDF5]/60 p-4 shadow-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 text-sm">
+            <span className="font-bold text-foreground">🔒 Sealed reconciliation record</span>
+            <span className="text-muted-foreground">· one record for the whole team · {deskBlocks.length} blocks</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button type="button" onClick={() => void verifyDeskRecord()} className="rounded-lg bg-[#059669] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#047857]">Verify record</button>
+            <button type="button" onClick={() => { setDeskBlockIdx(0); setDeskBlockText(deskBlocks[0]?.text ?? ''); setDeskEditing(v => !v); }} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted/40">Try tampering yourself</button>
+            {deskUndo && <button type="button" onClick={() => void restoreDeskRecord()} className="rounded-lg border border-[#059669]/40 bg-white px-3 py-1.5 text-xs font-semibold text-[#059669] hover:bg-[#ECFDF5]">↺ Restore original</button>}
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-col gap-2 md:flex-row md:items-stretch">
+          {deskBlocks.map((b, k) => {
+            const node = deskNodes[k];
+            const brokenAt = deskCheck && !deskCheck.ok ? deskCheck.brokenAt : undefined;
+            const hasBreak = brokenAt !== undefined && brokenAt >= 0;
+            const isEdited = hasBreak && k === brokenAt;
+            const isCascade = hasBreak && k > brokenAt!;
+            return <div key={k} className="flex flex-1 items-center gap-2">
+              <div className={`flex h-full w-full flex-col justify-between rounded-xl border p-3 text-xs shadow-2xs transition ${isEdited ? 'border-destructive bg-destructive/5 ring-2 ring-destructive/20' : isCascade ? 'border-[#D97706] bg-[#FFFBEB]' : 'border-border bg-white'}`}>
+                <div>
+                  <div className="flex items-center justify-between gap-1 text-[.7rem] text-muted-foreground">
+                    <span>#{k + 1} · {b.who}</span>
+                    {isEdited && <span className="rounded bg-destructive px-1.5 py-0.5 text-[.65rem] font-bold text-white">✗ TAMPERED</span>}
+                    {isCascade && <span className="rounded bg-[#D97706] px-1.5 py-0.5 text-[.65rem] font-bold text-white">⚠ INVALIDATED</span>}
+                  </div>
+                  <p className="m-0 mt-1.5 text-xs leading-5 font-medium text-foreground">{b.text}</p>
+                  {isEdited && deskOrig[k] && <p className="m-0 mt-1 text-[.7rem] text-destructive">Was: "{deskOrig[k]}"</p>}
+                </div>
+                <div className="mt-2.5 pt-1">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <code className={`rounded px-1.5 py-0.5 font-mono text-[.72rem] font-bold ${isEdited ? 'bg-destructive/15 text-destructive line-through' : 'bg-muted text-foreground'}`}>{b.hash?.slice(0, 8)}</code>
+                    {isEdited && node && <code className="rounded bg-destructive px-1.5 py-0.5 font-mono text-[.72rem] font-bold text-white">≠ {node.recomputedHash.slice(0, 8)}</code>}
+                  </div>
+                  <p className="m-0 mt-1 text-[.68rem] text-muted-foreground">
+                    {k === 0 ? 'first block' : <>built from #{k}'s <code className="rounded bg-muted px-1 py-0.5 font-mono text-[.66rem]">{b.prevHash?.slice(0, 6)}</code></>}
+                  </p>
+                </div>
+              </div>
+              {k < deskBlocks.length - 1 && <span aria-hidden="true" className={`hidden font-bold md:inline ${hasBreak && k >= brokenAt! ? 'text-destructive' : 'text-[#059669]'}`}>→</span>}
+            </div>;
+          })}
+        </div>
+
+        {deskEditing && <div aria-label="Outside the app raw database row" className="mt-3.5 rounded-xl bg-[#141413] p-4 text-xs text-[#E7E5E4] shadow-md">
+          <p className="m-0 text-[.7rem] font-bold uppercase tracking-wider text-[#F97316]">⚠ OUTSIDE THE APP · RAW DATABASE ROW</p>
+          <p className="m-0 mt-1.5 leading-5 text-[#D6D3D1]">The app has no edit button for this record. An insider with database access could change a stored row directly, like this. No new fingerprint is made, because that only happens when a decision goes through the app.</p>
+          <label className="mt-3 block font-semibold text-white">Block
+            <select aria-label="Select block to tamper" className="mt-1 block w-44 rounded-lg border border-[#44403C] bg-[#1C1917] px-2.5 py-1.5 text-xs font-medium text-white" value={deskBlockIdx} onChange={ev => { const idx = Number(ev.target.value); setDeskBlockIdx(idx); setDeskBlockText(deskBlocks[idx]?.text ?? ''); }}>
+              {deskBlocks.map((b, i) => <option key={i} value={i}>#{i + 1} · {b.who}</option>)}
+            </select>
+          </label>
+          <label className="mt-2.5 block font-semibold text-white">text
+            <textarea aria-label="Raw database text" rows={2} className="mt-1 block w-full rounded-lg border border-[#44403C] bg-[#1C1917] p-2.5 font-mono text-xs text-white focus:border-[#F97316] focus:outline-none" value={deskBlockText} onChange={ev => setDeskBlockText(ev.target.value)} />
+          </label>
+          <p className="m-0 mt-2 font-mono text-[.7rem] text-[#A8A29E]">
+            who: {deskBlocks[deskBlockIdx]?.who} · at: {deskBlocks[deskBlockIdx]?.at} · stored fingerprint: {deskBlocks[deskBlockIdx]?.hash?.slice(0, 16)}…
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button type="button" disabled={deskBlockText === deskBlocks[deskBlockIdx]?.text} onClick={() => void saveDeskTamper()} className="rounded-lg bg-[#C2410C] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#9A3412] disabled:opacity-50">Save to database</button>
+            <button type="button" onClick={() => setDeskEditing(false)} className="rounded-lg border border-[#44403C] bg-transparent px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#292524]">Cancel</button>
+          </div>
+        </div>}
+
+        <p role="status" className={`m-0 mt-2.5 text-xs ${deskCheck ? (deskCheck.ok ? 'font-semibold text-[#065F46]' : 'font-semibold text-destructive') : 'text-muted-foreground'}`}>
+          {deskCheck ? deskCheck.text : <>Not checked in this view yet. Press <b>Verify record</b> to recompute every fingerprint, or <b>Try tampering yourself</b> to edit a stored block.</>}
+        </p>
+      </section>}
       {(() => { const owned = cases.length === 0 || cases.every(i => w.exceptions.find(e => e.invoiceId === i.id)?.owner); const closed = cases.every(i => caseStatus(w, i.id) === 'resolved'); const s1 = w.allocations.length > 0; const cur = !s1 ? 1 : !owned ? 2 : !closed ? 3 : 0;
   const steps: [number, string, string, string, boolean][] = [
     [1, 'Match payments to bills', s1 ? `${w.allocations.length} payments paired with their bills. Any payment without a bill number is held, not guessed.` : 'Each bank payment names the bill it pays. One click pairs them.', 'Auto-match payments', s1],

@@ -60,20 +60,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
     const head = e?.log?.at(-1)?.hash;
     if (head && !undoLog) setAnchorHash(head);
     if (caseId && e?.log?.length) {
-      void Promise.all([verifyLogWithAnchor(caseId, e.log, anchorHash ?? head), inspectLogChain(caseId, e.log)]).then(([r, nodes]) => {
-        setChainNodes(nodes);
-        if (!r.ok) {
-          if (r.reason === 'anchor_mismatch') {
-            setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, expectedAnchor: r.expectedAnchor, actualAnchor: r.actualAnchor, text: `✗ Chain rewrite detected: internal links were re-sealed, but head hash (${r.actualAnchor?.slice(0, 8)}…) ≠ pinned Controller Anchor (${r.expectedAnchor?.slice(0, 8)}…)` });
-          } else if (r.reason === 'link_broken') {
-            setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, text: `✗ Missing entry detected before Entry ${r.brokenAt + 1}: stored prevHash does not match previous entry's fingerprint` });
-          } else {
-            setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, text: `✗ Entry ${r.brokenAt + 1} was changed after it was recorded (stored seal ≠ live recomputed SHA-256)` });
-          }
-        } else if (undoLog) {
-          setCheck({ ok: true, text: `✓ All ${e.log!.length} entries & controller anchor (${r.headHash.slice(0, 8)}…) verified intact` });
-        }
-      });
+      void inspectLogChain(caseId, e.log).then(setChainNodes);
     }
   }, [caseId, e?.log]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
@@ -168,8 +155,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   };
   const locked = status !== 'open';
   const isSchemeReason = reason.startsWith('Scheme claim') || reason === 'Unexplained';
-  const brokenIndex = check && !check.ok ? check.brokenAt : chainNodes.findIndex(n => n.status === 'tampered' || n.status === 'deleted_before');
-  const activeBrokenAt = brokenIndex !== undefined && brokenIndex >= 0 ? brokenIndex : undefined;
+  const activeBrokenAt = check && !check.ok ? check.brokenAt : undefined;
 
   return <Dialog open onOpenChange={open => { if (!open) onClose(); }}>
     <DialogContent className="er-app max-h-[92vh] sm:max-w-2xl overflow-y-auto">
@@ -188,83 +174,74 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
         </p>
       </div>
 
-      <div ref={historyRef} className="rounded-xl border-2 border-primary/35 bg-primary/5 p-3.5 text-sm shadow-xs">
+      <div ref={historyRef} className="rounded-2xl border border-[#A7F3D0] bg-[#ECFDF5]/60 p-4 text-sm shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="m-0 font-bold text-foreground">🔒 Live SHA-256 Audit Chain &amp; Front-End Tamper Sandbox</p>
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${activeBrokenAt !== undefined ? 'bg-destructive text-white' : 'bg-[#ECFDF5] text-[#065F46] border border-[#065F46]/30'}`}>
-              {activeBrokenAt !== undefined ? `✗ TAMPER DETECTED AT ENTRY #${activeBrokenAt + 1}` : `✓ CHAIN INTACT (${log.length}/${log.length} SEALED)`}
-            </span>
-            {anchorHash && <span className="rounded-full border border-primary/30 bg-background px-2 py-0.5 text-[.7rem] font-medium text-foreground">Controller Anchor: <code>{anchorHash.slice(0, 10)}…</code></span>}
+          <div className="flex flex-wrap items-center gap-1.5 text-sm">
+            <span className="font-bold text-foreground">🔒 Sealed case record</span>
+            <span className="text-muted-foreground">· one record for the whole team · {log.length} blocks</span>
           </div>
+          {log.length > 0 && <div className="flex flex-wrap items-center gap-2">
+            <button type="button" onClick={verify} className="rounded-lg bg-[#059669] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#047857]">Verify record</button>
+            {demo && <button type="button" onClick={openTamper} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted/40">Try tampering yourself</button>}
+            {demo && undoLog && <button type="button" onClick={undoTamper} className="rounded-lg border border-[#059669]/40 bg-white px-3 py-1.5 text-xs font-semibold text-[#059669] hover:bg-[#ECFDF5]">↺ Restore original</button>}
+          </div>}
         </div>
-        <p className="m-0 mt-1 text-xs leading-5 text-muted-foreground">
-          <b className="text-foreground">Try it right here:</b> Type inside any entry's text box below to simulate someone altering a stored record in the database. Watch its live recomputed SHA-256 hash diverge from the stored seal and cascade-break every entry after it.
-        </p>
-        {log.length > 0 && <div className="mt-2 flex flex-wrap items-center gap-2">
-          <Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>
-          {demo && <Button type="button" size="sm" variant="outline" onClick={openTamper}>Try tampering yourself (advanced DB modes)</Button>}
-          {demo && undoLog && <Button type="button" size="sm" variant="default" onClick={undoTamper}>↺ Restore original intact log</Button>}
-        </div>}
-        {demo && editingRow && <section aria-label="Raw database row editor" className="mt-2 grid gap-3 rounded-md bg-foreground p-3 text-background">
-          <h3 className="m-0 text-sm font-semibold">⚠ Outside the app · raw database tamper simulator</h3>
-          <p className="m-0 text-xs leading-5">Test 3 database-level attacks: (1) raw row edit, (2) deleting a middle row, or (3) editing a row AND recalculating every SHA-256 hash (caught by the pinned Controller Anchor Root).</p>
-          <label className="grid gap-1 text-xs">Target Entry
-            <select className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" value={entryIndex} onChange={ev => { const i = Number(ev.target.value); setEntryIndex(i); setEntryText(log[i]?.text ?? ''); }}>
-              {log.map((l, i) => <option key={i} value={i}>Entry {i + 1} · {l.who}</option>)}
+
+        {log.length === 0 ? <p className="m-0 mt-2 text-xs text-muted-foreground">No actions yet.</p> :
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+            {log.map((l, k) => {
+              const node = chainNodes[k];
+              const edited = activeBrokenAt !== undefined && k === activeBrokenAt;
+              const later = activeBrokenAt !== undefined && k > activeBrokenAt;
+              return <div key={k} className="flex flex-1 items-center gap-2">
+                <div className={`flex h-full w-full flex-col justify-between rounded-xl border p-3 text-xs shadow-2xs transition ${edited ? 'border-destructive bg-destructive/5 ring-2 ring-destructive/20' : later ? 'border-[#D97706] bg-[#FFFBEB]' : 'border-border bg-white'}`}>
+                  <div>
+                    <div className="flex items-center justify-between gap-1 text-[.7rem] text-muted-foreground">
+                      <span>#{k + 1} · {l.who}</span>
+                      {edited && <span className="rounded bg-destructive px-1.5 py-0.5 text-[.65rem] font-bold text-white">✗ TAMPERED</span>}
+                      {later && <span className="rounded bg-[#D97706] px-1.5 py-0.5 text-[.65rem] font-bold text-white">⚠ INVALIDATED</span>}
+                    </div>
+                    <p className="m-0 mt-1.5 break-words text-xs leading-5 font-medium text-foreground">{l.text}</p>
+                    {edited && originalTexts[k] !== undefined && <p className="m-0 mt-1 break-words text-[.7rem] text-destructive">Was: "{originalTexts[k]}"</p>}
+                  </div>
+                  {l.hash && <div className="mt-2.5 pt-1">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <code className={`rounded px-1.5 py-0.5 font-mono text-[.72rem] font-bold ${edited ? 'bg-destructive/15 text-destructive line-through' : 'bg-muted text-foreground'}`}>{l.hash.slice(0, 8)}</code>
+                      {edited && node && <code className="rounded bg-destructive px-1.5 py-0.5 font-mono text-[.72rem] font-bold text-white">≠ {node.recomputedHash.slice(0, 8)}</code>}
+                    </div>
+                    <p className="m-0 mt-1 text-[.68rem] text-muted-foreground">
+                      {k === 0 ? 'first block' : <>built from #{k}'s <code className="rounded bg-muted px-1 py-0.5 font-mono text-[.66rem]">{l.prevHash?.slice(0, 6)}</code></>}
+                    </p>
+                  </div>}
+                </div>
+                {k < log.length - 1 && <span aria-hidden="true" className={`hidden font-bold sm:inline ${activeBrokenAt !== undefined && k >= activeBrokenAt ? 'text-destructive' : 'text-[#059669]'}`}>→</span>}
+              </div>;
+            })}
+          </div>}
+
+        {demo && editingRow && <section aria-label="Raw database row editor" className="mt-3.5 rounded-xl bg-[#141413] p-4 text-xs text-[#E7E5E4] shadow-md">
+          <p className="m-0 text-[.7rem] font-bold uppercase tracking-wider text-[#F97316]">⚠ OUTSIDE THE APP · RAW DATABASE ROW</p>
+          <p className="m-0 mt-1.5 leading-5 text-[#D6D3D1]">The app has no edit button for this record. An insider with database access could change a stored row directly, like this. No new fingerprint is made, because that only happens when a decision goes through the app.</p>
+          <label className="mt-3 block font-semibold text-white">Block
+            <select className="mt-1 block w-44 rounded-lg border border-[#44403C] bg-[#1C1917] px-2.5 py-1.5 text-xs font-medium text-white" value={entryIndex} onChange={ev => { const i = Number(ev.target.value); setEntryIndex(i); setEntryText(log[i]?.text ?? ''); }}>
+              {log.map((l, i) => <option key={i} value={i}>#{i + 1} · {l.who}</option>)}
             </select>
           </label>
-          <label className="grid gap-1 text-xs">Stored action text
-            <textarea className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" rows={2} maxLength={300} value={entryText} onChange={ev => setEntryText(ev.target.value)} />
+          <label className="mt-2.5 block font-semibold text-white">text
+            <textarea className="mt-1 block w-full rounded-lg border border-[#44403C] bg-[#1C1917] p-2.5 font-mono text-xs text-white focus:border-[#F97316] focus:outline-none" rows={2} maxLength={300} value={entryText} onChange={ev => setEntryText(ev.target.value)} />
           </label>
-          <div className="flex flex-wrap gap-2">
-            <Button type="button" size="sm" variant="secondary" disabled={entryText === log[entryIndex]?.text} onClick={tamper}>Save to database</Button>
-            {log.length >= 2 && <Button type="button" size="sm" variant="secondary" onClick={tamperDeleteMiddle}>Delete Entry 2</Button>}
-            <Button type="button" size="sm" variant="secondary" onClick={() => void tamperAndResealAll()}>DBA edit + re-hash all rows</Button>
-            <Button type="button" size="sm" variant="ghost" className="text-background hover:bg-background/10 hover:text-background" onClick={() => setEditingRow(false)}>Cancel</Button>
+          <p className="m-0 mt-2 font-mono text-[.7rem] text-[#A8A29E]">
+            who: {log[entryIndex]?.who} · at: {log[entryIndex]?.at} · stored fingerprint: {log[entryIndex]?.hash?.slice(0, 16)}…
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <button type="button" disabled={entryText === log[entryIndex]?.text} onClick={tamper} className="rounded-lg bg-[#C2410C] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#9A3412] disabled:opacity-50">Save to database</button>
+            <button type="button" onClick={() => setEditingRow(false)} className="rounded-lg border border-[#44403C] bg-transparent px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#292524]">Cancel</button>
           </div>
         </section>}
-        {check && <p role="status" className={`m-0 mt-2 rounded-md p-2 text-xs font-semibold ${check.ok ? 'bg-[#ECFDF5] text-[#065F46]' : 'bg-destructive/10 text-destructive'}`}>{check.text}</p>}
-        {log.length === 0 ? <p className="m-0 mt-2 text-muted-foreground">No actions yet.</p> :
-          <ol className="m-0 mt-2.5 grid gap-2.5 pl-0">{log.map((l, k) => {
-            const node = chainNodes[k];
-            const edited = activeBrokenAt !== undefined && k === activeBrokenAt;
-            const later = activeBrokenAt !== undefined && k > activeBrokenAt;
-            const bgCard = edited ? 'border-destructive bg-destructive/5' : later ? 'border-money-wip bg-[#FFFBEB]' : 'border-border bg-background';
-            return <li key={k} className={`list-none rounded-lg border border-l-4 p-2.5 ${bgCard}`}>
-              <div className="flex flex-wrap items-center justify-between gap-1 text-xs">
-                <span className="font-semibold text-foreground">Entry #{k + 1} · {fmtTime(l.at)} · {personLabel(l.who)}</span>
-                <span className={`font-semibold ${edited ? 'text-destructive' : later ? 'text-[#92400E]' : 'text-[#065F46]'}`}>
-                  {edited ? (check?.reason === 'anchor_mismatch' ? '✗ RE-HASHED (CAUGHT BY ANCHOR)' : '✗ PAYLOAD TAMPERED') : later ? '⚠ CASCADE INVALIDATED' : '✓ SEAL INTACT'}
-                </span>
-              </div>
-              {demo ? (
-                <label className="mt-1.5 block text-[.7rem] font-medium text-muted-foreground">
-                  Stored database text (edit live to test tamper detection):
-                  <input
-                    type="text"
-                    aria-label={`Edit stored text for Entry ${k + 1}`}
-                    className={`er-input mt-0.5 w-full text-xs font-medium ${edited ? 'border-destructive text-destructive' : 'text-foreground'}`}
-                    value={l.text}
-                    onChange={ev => liveEditEntry(k, ev.target.value)}
-                  />
-                </label>
-              ) : <p className="m-0 mt-1 break-words text-xs">{l.text}</p>}
-              {edited && originalTexts[k] !== undefined && <p className="m-0 mt-1 break-words text-xs font-medium text-destructive">Original sealed text was: "{originalTexts[k]}"</p>}
-              {edited && check?.reason === 'anchor_mismatch' && <p className="m-0 mt-1 text-xs font-medium text-destructive">Attacker re-computed all hashes, but head ({check.actualAnchor?.slice(0, 8)}…) ≠ Pinned Controller Anchor ({check.expectedAnchor?.slice(0, 8)}…)</p>}
-              {later && <p className="m-0 mt-1 text-xs font-medium text-[#92400E]">Built on tampered Entry #{activeBrokenAt! + 1}: its prevHash no longer matches the real upstream chain.</p>}
-              {l.hash && <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 rounded bg-muted/60 px-2 py-1 text-[.72rem]">
-                <span>prevHash: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span>
-                <span aria-hidden="true">→</span>
-                <span>Stored seal: <code>{l.hash.slice(0, 8)}</code></span>
-                {node && (
-                  <span className={node.payloadOk ? 'text-[#065F46]' : 'font-bold text-destructive'}>
-                    {node.payloadOk ? `= Live SHA-256: ${node.recomputedHash.slice(0, 8)} ✓` : `≠ Live SHA-256: ${node.recomputedHash.slice(0, 8)} ✗`}
-                  </span>
-                )}
-              </div>}
-            </li>;
-          })}</ol>}
+
+        <p role="status" className={`m-0 mt-2.5 text-xs ${check ? (check.ok ? 'font-semibold text-[#065F46]' : 'font-semibold text-destructive') : 'text-muted-foreground'}`}>
+          {check ? check.text : <>Not checked in this view yet. Press <b>Verify record</b> to recompute every fingerprint.</>}
+        </p>
       </div>
 
       <div className="flex flex-wrap items-center gap-2 rounded-lg bg-muted p-2 text-sm">
