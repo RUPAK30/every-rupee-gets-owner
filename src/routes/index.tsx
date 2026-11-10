@@ -68,6 +68,7 @@ function Index() {
           <nav aria-label="Main" className="hidden items-center justify-center gap-1 md:flex">
             <Link to="/demo" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Product</Link>
             <a href="#tour-h" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">How it works</a>
+            <a href="https://everyrupee-o2c.vercel.app/#sn" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-bold text-primary no-underline hover:bg-primary/10 flex items-center gap-1.5">⚡ ServiceNow ITIL Hub ↗</a>
             <a href="https://everyrupee-o2c.vercel.app/" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Case study ↗</a>
           </nav>
           <div className="flex shrink-0 items-center justify-end gap-2">
@@ -80,6 +81,7 @@ function Index() {
         <ImportedSectionADistributorPaysShort />
         <QuickTour />
         <CanonicalWorkflows />
+        <ServiceNowITILSection />
         <ImportedSectionOpenWhatYouCare openDetails={openDetails} setOpenDetails={setOpenDetails} deadline={deadline} />
         <ImportedSection2 />
       </main>
@@ -118,6 +120,43 @@ function QuickTour() {
   );
 }
 
+function ServiceNowITILSection() {
+  return (
+    <div className="er-app my-6">
+      <section className="rounded-2xl border-2 border-primary/30 bg-card p-5 sm:p-6 shadow-sm" aria-labelledby="sn-mode">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">Enterprise ITIL Architecture · ServiceNow Table API</p>
+            <h2 id="sn-mode" className="mt-1 text-xl font-bold sm:text-2xl text-foreground">ServiceNow Change &amp; Dispute Hub (Dual-Mode)</h2>
+          </div>
+          <Button asChild size="sm" className="min-h-9 text-primary-foreground! no-underline!"><a href="https://everyrupee-o2c.vercel.app/desk.html#sn">▶ Open Interactive ServiceNow Hub ↗</a></Button>
+        </div>
+        <p className="mt-2 max-w-[70ch] text-sm leading-6 text-muted-foreground">
+          When an unapproved short-payment occurs, Every Rupee automatically dispatches a structured <b>change_request</b> or dispute ticket to ServiceNow (Table API: <code>change_request</code> &amp; <code>sys_attachment</code>).
+        </p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="rounded-xl border border-border bg-background p-3.5">
+            <span className="text-xs font-bold text-primary">1 · Dual Change Types</span>
+            <p className="mt-1 text-xs font-semibold text-foreground">Normal vs. Emergency Changes</p>
+            <p className="mt-1 text-xs text-muted-foreground">7-day standard SLA vs. 2-day compressed emergency SLA with real-time TAT breach detection.</p>
+          </div>
+          <div className="rounded-xl border border-border bg-background p-3.5">
+            <span className="text-xs font-bold text-primary">2 · Mandatory Proof Gate</span>
+            <p className="mt-1 text-xs font-semibold text-foreground">Signed GRN / POD Upload</p>
+            <p className="mt-1 text-xs text-muted-foreground">Tickets physically lock until verified delivery notes or trade circulars are attached via <code>sys_attachment</code>.</p>
+          </div>
+          <div className="rounded-xl border border-border bg-background p-3.5">
+            <span className="text-xs font-bold text-primary">3 · HoD &amp; PVT Sign-off</span>
+            <p className="mt-1 text-xs font-semibold text-foreground">Post-Validation Testing Gate</p>
+            <p className="mt-1 text-xs text-muted-foreground">Requires Finance Head (Vikram) approval + mandatory PVT validation before state transitions to Closed (Resolved).</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
+
 function CanonicalWorkflows() {
   return <div className="er-app my-6">
     <section className="border-b border-border pb-6" aria-labelledby="lender-mode">
@@ -153,6 +192,7 @@ function ImportedSectionADistributorPaysShort() {
         <Button asChild className="min-h-10 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button>
         <Button asChild variant="outline" className="min-h-10 no-underline!"><Link to="/demo">Explore on my own</Link></Button>
         <Button asChild variant="outline" size="sm" className="h-10 rounded-md text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}><ShieldCheck className="mr-1.5 size-3.5 text-primary" />Live SHA-256 tamper sandbox →</Link></Button>
+        <Button asChild variant="outline" size="sm" className="h-10 border-primary/40 bg-primary/5 text-xs font-semibold text-primary no-underline! hover:bg-primary/10"><a href="https://everyrupee-o2c.vercel.app/desk.html#sn">⚡ ServiceNow Change &amp; Cases (ITIL Dual-Mode) ↗</a></Button>
         <Button asChild variant="ghost" size="sm" className="h-10 text-xs text-muted-foreground no-underline! hover:text-foreground"><a href="https://everyrupee-o2c.vercel.app/#proof">16 rules · 31/31 tests ↗</a></Button>
       </div>
 
