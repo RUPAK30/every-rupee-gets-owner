@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   APPROVAL_LIMIT, HANDBACKS, PEOPLE, financeOwns, handBack, REASONS, approvalCheck, approveCase, caseStatus, invoiceBalance, money, ownersFor, personLabel,
-  resolveSmall, saveCase, sealLog, verifyLog, tenTodayTaskLink, type SalesApproval, type LogEntry, sendBack, submitForApproval, type Workspace as Data,
+  resolveSmall, saveCase, sealLog, forceResealLog, inspectLogChain, verifyLogWithAnchor, tenTodayTaskLink, type SalesApproval, type LogEntry, type ChainNodeCheck, sendBack, submitForApproval, type Workspace as Data,
 } from '@/lib/reconciliation/engine';
 
 type Props = { w: Data; caseId: string | null; approvals?: SalesApproval[]; demo?: boolean; focusHistory?: boolean; onClose: () => void; change: (next: Data, message?: string) => void };
@@ -13,7 +13,9 @@ const fmtTime = (d: string) => new Date(d).toLocaleTimeString('en-IN', { hour: '
 export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = false, onClose, change: rawChange }: Props) {
   const historyRef = useRef<HTMLDivElement>(null);
   const change = (next: Data, msg?: string) => { void Promise.all(next.exceptions.map(async x => x.log ? { ...x, log: await sealLog(x.invoiceId, x.log) } : x)).then(exceptions => rawChange({ ...next, exceptions }, msg)); };
-  const [check, setCheck] = useState<{ ok: boolean; text: string; brokenAt?: number } | null>(null);
+  const [check, setCheck] = useState<{ ok: boolean; text: string; brokenAt?: number; reason?: string; expectedAnchor?: string; actualAnchor?: string } | null>(null);
+  const [chainNodes, setChainNodes] = useState<ChainNodeCheck[]>([]);
+  const [anchorHash, setAnchorHash] = useState<string | undefined>(undefined);
   const [editingRow, setEditingRow] = useState(false);
   const [entryIndex, setEntryIndex] = useState(0);
   const [entryText, setEntryText] = useState('');
@@ -30,10 +32,15 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const e = caseId ? w.exceptions.find(x => x.invoiceId === caseId) : undefined;
   useEffect(() => {
     if (!caseId) return;
-    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setEditingRow(false); setOriginalTexts({}); setUndoLog(null);
+    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setChainNodes([]); setAnchorHash(undefined); setEditingRow(false); setOriginalTexts({}); setUndoLog(null);
   }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { setCheck(null); }, [e?.log]);
-  useEffect(() => { if (e?.log?.some(l => !l.hash)) change(w); }, [caseId, e?.log?.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (e?.log?.some(l => !l.hash)) { change(w); return; }
+    const head = e?.log?.at(-1)?.hash;
+    if (head && !undoLog) setAnchorHash(head);
+    if (caseId && e?.log?.length) void inspectLogChain(caseId, e.log).then(setChainNodes);
+  }, [caseId, e?.log]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!caseId || !focusHistory) return;
     const timer = setTimeout(() => {
@@ -44,7 +51,19 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   }, [caseId, focusHistory]);
   if (!caseId) return null;
   const log = e?.log ?? [];
-  const verify = async () => { const r = await verifyLog(caseId, log); setCheck(r.ok ? { ok: true, text: `✓ All ${log.length} entries intact` } : { ok: false, brokenAt: r.brokenAt, text: `✗ Entry ${r.brokenAt + 1} was changed after it was recorded` }); };
+  const verify = async () => {
+    const [r, nodes] = await Promise.all([verifyLogWithAnchor(caseId, log, anchorHash), inspectLogChain(caseId, log)]);
+    setChainNodes(nodes);
+    if (r.ok) {
+      setCheck({ ok: true, text: `✓ All ${log.length} entries & controller anchor (${r.headHash.slice(0, 8)}…) verified intact` });
+    } else if (r.reason === 'anchor_mismatch') {
+      setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, expectedAnchor: r.expectedAnchor, actualAnchor: r.actualAnchor, text: `✗ Chain rewrite detected: internal links were re-sealed, but head hash (${r.actualAnchor?.slice(0, 8)}…) does not match the pinned Controller Anchor (${r.expectedAnchor?.slice(0, 8)}…)` });
+    } else if (r.reason === 'link_broken') {
+      setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, text: `✗ Missing entry detected before Entry ${r.brokenAt + 1}: stored prevHash does not match previous entry's fingerprint` });
+    } else {
+      setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, text: `✗ Entry ${r.brokenAt + 1} was changed after it was recorded (recomputed SHA-256 mismatch)` });
+    }
+  };
   const openTamper = () => {
     if (!demo || !log.length) return;
     setEntryIndex(0); setEntryText(log[0]?.text ?? ''); setEditingRow(true);
@@ -52,17 +71,39 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const tamper = () => {
     const original = log[entryIndex];
     if (!demo || !original || original.text === entryText) return;
+    if (!anchorHash && log.at(-1)?.hash) setAnchorHash(log.at(-1)!.hash);
     setOriginalTexts(previous => ({ ...previous, [entryIndex]: previous[entryIndex] ?? original.text }));
-    setUndoLog(log);
+    setUndoLog(undoLog ?? log);
     rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? {
       ...x, log: log.map((l, k) => k === entryIndex ? { ...l, text: entryText } : l),
     } : x) }, 'Demo only: stored text changed without a new fingerprint.');
     setEditingRow(false); setCheck(null);
   };
+  const tamperDeleteMiddle = () => {
+    if (!demo || log.length < 2) return;
+    const delIdx = Math.min(1, log.length - 1);
+    if (!anchorHash && log.at(-1)?.hash) setAnchorHash(log.at(-1)!.hash);
+    setUndoLog(undoLog ?? log);
+    rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? {
+      ...x, log: log.filter((_, k) => k !== delIdx),
+    } : x) }, `Demo only: deleted Entry ${delIdx + 1} directly from storage.`);
+    setEditingRow(false); setCheck(null);
+  };
+  const tamperAndResealAll = async () => {
+    const original = log[entryIndex];
+    if (!demo || !original) return;
+    const mutatedText = entryText !== original.text ? entryText : `${original.text} (silently altered ₹1,180 -> ₹11,800)`;
+    if (!anchorHash && log.at(-1)?.hash) setAnchorHash(log.at(-1)!.hash);
+    setOriginalTexts(previous => ({ ...previous, [entryIndex]: previous[entryIndex] ?? original.text }));
+    setUndoLog(undoLog ?? log);
+    const resealed = await forceResealLog(caseId, log.map((l, k) => k === entryIndex ? { ...l, text: mutatedText } : l));
+    rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? { ...x, log: resealed } : x) }, 'Demo only: DBA altered row AND recalculated every SHA-256 hash.');
+    setEditingRow(false); setCheck(null);
+  };
   const undoTamper = () => {
     if (!demo || !undoLog) return;
     rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? { ...x, log: undoLog } : x) });
-    setUndoLog(null); setCheck(null);
+    setUndoLog(null); setOriginalTexts({}); setCheck(null);
   };
   const inv = w.invoices.find(i => i.id === caseId);
   const short = invoiceBalance(w, caseId);
@@ -148,28 +189,38 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
       </div>
 
       <div ref={historyRef} className="border-y border-primary/25 bg-primary/5 p-3 text-sm">
-        <p className="m-0 mb-1 font-semibold">History · linked fingerprints</p>
-        <div className="grid gap-1"><span className="w-fit rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium">Tamper-evident · SHA-256</span>
-          <p className="m-0 text-xs leading-5 text-muted-foreground">Each entry's fingerprint includes the one before it, so editing or backdating any entry breaks every fingerprint after it. It proves the history wasn't altered; it doesn't prove a decision was right, and it isn't a blockchain: one company keeps this record.</p>
-          {log.length > 0 && <div className="flex flex-wrap items-center gap-3"><Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>{demo && <Button type="button" size="sm" variant="link" className="h-auto whitespace-normal p-0 text-xs text-muted-foreground" onClick={openTamper}>Try tampering yourself</Button>}{demo && undoLog && <Button type="button" size="sm" variant="outline" onClick={undoTamper}>Undo</Button>}</div>}
+        <p className="m-0 mb-1 font-semibold">History · linked SHA-256 fingerprints &amp; controller anchor</p>
+        <div className="grid gap-1">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="w-fit rounded-full border border-border bg-muted px-2 py-0.5 text-xs font-medium">Tamper-evident · SHA-256 chain</span>
+            {anchorHash && <span className="w-fit rounded-full border border-primary/30 bg-background px-2 py-0.5 text-[.7rem] font-medium text-foreground">Pinned Anchor Root: <code>{anchorHash.slice(0, 12)}…</code></span>}
+          </div>
+          <p className="m-0 text-xs leading-5 text-muted-foreground">Each entry hashes <code>{`{invoiceId, at, who, text, prevHash}`}</code> via Web Crypto SHA-256. Editing any field or deleting a row breaks every downstream fingerprint—and pinning the Controller Anchor Root catches even a DBA who rewrites the table and recalculates every hash.</p>
+          {log.length > 0 && <div className="flex flex-wrap items-center gap-3"><Button type="button" size="sm" variant="outline" onClick={verify}>Verify history</Button>{demo && <Button type="button" size="sm" variant="link" className="h-auto whitespace-normal p-0 text-xs text-muted-foreground" onClick={openTamper}>Try tampering yourself (3 attack modes)</Button>}{demo && undoLog && <Button type="button" size="sm" variant="outline" onClick={undoTamper}>Undo</Button>}</div>}
           {demo && editingRow && <section aria-label="Raw database row editor" className="mt-2 grid gap-3 rounded-md bg-foreground p-3 text-background">
-            <h3 className="m-0 text-sm font-semibold">⚠ Outside the app · raw database row</h3>
-            <p className="m-0 text-xs leading-5">The app has no edit button for history. An insider with database access could change a stored row directly. No new fingerprint is made.</p>
-            <label className="grid gap-1 text-xs">Entry
+            <h3 className="m-0 text-sm font-semibold">⚠ Outside the app · raw database tamper simulator</h3>
+            <p className="m-0 text-xs leading-5">The UI has no edit or delete button for audit history. Test what happens when someone with direct Postgres access attacks the table:</p>
+            <label className="grid gap-1 text-xs">Target Entry
               <select className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" value={entryIndex} onChange={ev => { const i = Number(ev.target.value); setEntryIndex(i); setEntryText(log[i]?.text ?? ''); }}>
                 {log.map((l, i) => <option key={i} value={i}>Entry {i + 1} · {l.who}</option>)}
               </select>
             </label>
             <label className="grid gap-1 text-xs">Stored action text
-              <textarea className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" rows={3} maxLength={300} value={entryText} onChange={ev => setEntryText(ev.target.value)} />
+              <textarea className="w-full min-w-0 rounded-md border border-background/30 bg-foreground p-2 text-background" rows={2} maxLength={300} value={entryText} onChange={ev => setEntryText(ev.target.value)} />
             </label>
-            <p className="m-0 text-xs">Demo only · this changes the sample in this session, not a real database.</p>
-            <div className="flex flex-wrap gap-2"><Button type="button" size="sm" variant="secondary" disabled={entryText === log[entryIndex]?.text} onClick={tamper}>Save to database</Button><Button type="button" size="sm" variant="ghost" className="text-background hover:bg-background/10 hover:text-background" onClick={() => setEditingRow(false)}>Cancel</Button></div>
+            <div className="flex flex-wrap gap-2">
+              <Button type="button" size="sm" variant="secondary" disabled={entryText === log[entryIndex]?.text} onClick={tamper}>1. Save raw edit (no re-hash)</Button>
+              {log.length >= 2 && <Button type="button" size="sm" variant="secondary" onClick={tamperDeleteMiddle}>2. Delete Entry 2</Button>}
+              <Button type="button" size="sm" variant="secondary" onClick={() => void tamperAndResealAll()}>3. DBA edit + re-hash all rows</Button>
+              <Button type="button" size="sm" variant="ghost" className="text-background hover:bg-background/10 hover:text-background" onClick={() => setEditingRow(false)}>Cancel</Button>
+            </div>
+            <p className="m-0 text-[.7rem] opacity-80">Demo only · modifies in-memory session state, then run "Verify history" to see which check catches each attack.</p>
           </section>}
           {check && <p role="status" className={`m-0 text-sm font-medium ${check.ok ? 'text-money-ok' : 'text-destructive'}`}>{check.text}</p>}
-          <details className="mt-1 text-xs"><summary className="cursor-pointer font-medium text-primary">What happens behind the scenes?</summary><div className="mt-2 grid gap-2 leading-5 text-muted-foreground"><p className="m-0"><b className="text-foreground">1. Record.</b> Save the case ID, action text, person and time.</p><p className="m-0"><b className="text-foreground">2. Link.</b> SHA-256 turns that record plus the previous fingerprint into a new fingerprint. The first starts with GENESIS.</p><p className="m-0"><b className="text-foreground">3. Check.</b> Verify recalculates each fingerprint and checks every link against the stored values. Simulating an edit keeps the old fingerprint, so verification fails.</p><p className="m-0">This detects changes to the recorded history, not whether the decision was correct. There are no independent copies or signatures: someone able to replace the entire history and recalculate every fingerprint could make it pass.</p></div></details></div>
+          <details className="mt-1 text-xs"><summary className="cursor-pointer font-medium text-primary">How the 3-layer SHA-256 verification works</summary><div className="mt-2 grid gap-2 leading-5 text-muted-foreground"><p className="m-0"><b className="text-foreground">1. Payload check (catches raw edits).</b> Recomputes <code>sha256(JSON.stringify({`{invoiceId, at, who, text, prevHash}`}))</code> and compares against stored <code>hash</code>.</p><p className="m-0"><b className="text-foreground">2. Chain link check (catches deleted/reordered rows).</b> Verifies <code>entry[k].prevHash === entry[k-1].hash</code> starting from <code>GENESIS</code>.</p><p className="m-0"><b className="text-foreground">3. Pinned Controller Anchor check (catches full DBA re-seal).</b> Compares the final chain head against the 64-hex digest pinned when the controller sealed the case (exported to external audit mail/webhook).</p></div></details></div>
         {log.length === 0 ? <p className="m-0 text-muted-foreground">No actions yet.</p> :
           <ol className="m-0 mt-2 grid gap-2 pl-0">{log.map((l, k) => {
+            const node = chainNodes[k];
             const brokenAt = check && !check.ok ? check.brokenAt : undefined;
             const edited = brokenAt !== undefined && k === brokenAt;
             const later = brokenAt !== undefined && k > brokenAt;
@@ -179,8 +230,9 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
               <span className="text-xs">Action {k + 1} · {fmtTime(l.at)} · {personLabel(l.who)}</span>
               <p className="m-0 break-words">{l.text}</p>
               {edited && originalTexts[k] !== undefined && <p className="m-0 break-words text-xs">was: {originalTexts[k]}</p>}
-              {later && <p className="m-0 text-xs">built on the edited entry, can't be trusted</p>}
-              {l.hash && <div className="mt-1 flex flex-wrap gap-x-2 text-xs"><span>Previous: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span><span aria-hidden="true">→</span><span>This fingerprint: <code>{l.hash.slice(0, 8)}</code></span></div>}
+              {edited && check?.reason === 'anchor_mismatch' && <p className="m-0 text-xs">re-hashed by attacker; caught by Controller Anchor mismatch ({check.actualAnchor?.slice(0, 8)} ≠ {check.expectedAnchor?.slice(0, 8)})</p>}
+              {later && <p className="m-0 text-xs">built on the edited entry, cascade-invalidated</p>}
+              {l.hash && <div className="mt-1 flex flex-wrap items-center gap-x-2 text-xs"><span>Previous: <code>{l.prevHash === 'GENESIS' ? 'GENESIS' : l.prevHash?.slice(0, 8)}</code></span><span aria-hidden="true">→</span><span>Stored: <code>{l.hash.slice(0, 8)}</code></span>{node && !node.payloadOk && <span className="font-semibold text-destructive">≠ Recomputed: <code>{node.recomputedHash.slice(0, 8)}</code></span>}{node && <details className="w-full text-[.7rem] text-muted-foreground"><summary className="cursor-pointer underline">Inspect SHA-256 payload</summary><code className="mt-1 block break-all rounded bg-muted p-1.5 text-foreground">{node.canonical}</code></details>}</div>}
             </li>;
           })}</ol>}
       </div>

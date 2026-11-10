@@ -118,7 +118,7 @@ describe('Ten Today handoff contract v1', () => {
   });
 });
 
-import { checkTenTodaySeal } from './engine';
+import { checkTenTodaySeal, benchmarkWorkspace, benchmarkApprovals, computeDeskImpact, forceResealLog, inspectLogChain, verifyLogWithAnchor } from './engine';
 describe('Ten Today fingerprint', () => {
   it('matches untouched fields and catches an edited cap', async () => {
     const { createHash } = await import('node:crypto');
@@ -128,5 +128,51 @@ describe('Ten Today fingerprint', () => {
     expect(await checkTenTodaySeal(t({ ...o, seal }))).toBe('match');
     expect(await checkTenTodaySeal(t({ ...o, capPct: 10, seal }))).toBe('mismatch');
     expect(await checkTenTodaySeal(t(o))).toBe('none');
+  });
+});
+
+describe('3-layer SHA-256 chain & controller anchor verification', () => {
+  const steps = [
+    { at: '2026-11-01T10:00:00Z', who: 'Asha', text: 'Set reason and owner' },
+    { at: '2026-11-01T10:05:00Z', who: 'Asha', text: 'Attached Ten Today approval APV-2026-031' },
+    { at: '2026-11-01T10:10:00Z', who: 'Vikram', text: 'Controller approved resolution' },
+  ];
+  it('catches a DBA who edits a historical row AND recalculates all downstream SHA-256 hashes via pinned anchor root', async () => {
+    const sealed = await sealLog('INV-101', steps);
+    const anchorRoot = sealed.at(-1)!.hash!;
+    expect(await verifyLogWithAnchor('INV-101', sealed, anchorRoot)).toEqual({ ok: true, headHash: anchorRoot });
+
+    // Attacker edits Entry 1 and re-runs SHA-256 across the entire chain so internal links look valid
+    const rewritten = await forceResealLog('INV-101', sealed.map((l, i) => i === 0 ? { ...l, text: 'Silently altered amount' } : l));
+    expect(await verifyLog('INV-101', rewritten)).toEqual({ ok: true }); // naive internal check passes
+    const deepCheck = await verifyLogWithAnchor('INV-101', rewritten, anchorRoot);
+    expect(deepCheck.ok).toBe(false);
+    if (!deepCheck.ok) {
+      expect(deepCheck.reason).toBe('anchor_mismatch');
+      expect(deepCheck.expectedAnchor).toBe(anchorRoot);
+    }
+  });
+  it('inspectLogChain reports per-node payload and cascade states', async () => {
+    const sealed = await sealLog('INV-101', steps);
+    sealed[0] = { ...sealed[0]!, text: 'Tampered step 1' };
+    const nodes = await inspectLogChain('INV-101', sealed);
+    expect(nodes[0]?.status).toBe('tampered');
+    expect(nodes[1]?.status).toBe('cascade');
+    expect(nodes[2]?.status).toBe('cascade');
+  });
+});
+
+describe('25-bill public benchmark batch & operational impact metrics', () => {
+  it('auto-matches the 25-bill batch and computes deterministic time & leakage metrics', () => {
+    const w = autoMatch(benchmarkWorkspace());
+    expect(w.invoices).toHaveLength(25);
+    expect(w.allocations).toHaveLength(24); // UTR-003 has no reference, held in suspense
+    const impact = computeDeskImpact(w, benchmarkApprovals());
+    expect(impact.totalBills).toBe(25);
+    expect(impact.fullPaidBills).toBe(15);
+    expect(impact.shortBills).toBe(10);
+    expect(impact.autoTriagedBills).toBe(21); // 15 full paid + 6 Ten Today rule-checked short bills
+    expect(impact.manualMinutesSaved).toBe(420); // 7.0 hours saved @ 20 min/bill delta
+    expect(impact.blockedLeakagePaise).toBeGreaterThan(0);
   });
 });

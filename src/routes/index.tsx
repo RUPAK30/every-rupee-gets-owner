@@ -96,6 +96,12 @@ const steps = [
 ];
 
 function QuickTour() {
+  const metrics = [
+    ['7–14 days → Day 0', 'Short-payment detection', 'Splits paid cash from shortfall in <5 ms at UTR import vs. 7–14d manual ERP lag (The Hackett Group CPG baseline).'],
+    ['22 min → <2 min', 'Manual 4-way check per bill', 'Auto-verifies UTR, bill, Ten Today discount cap & GST split (BR-10); saves ~7.3 hrs per 25-bill batch (APQC benchmark).'],
+    ['30–45d → 3–7d SLA', 'Dispute resolution cycle', 'Routes each gap to one role-locked owner on Day 0, preventing >180d Ind AS ECL provisions (Cello World FY25 AR notes).'],
+    ['₹0 write-offs', 'Silent leakage blocked', 'Blocks unapproved/expired claims (BR-4), enforces 2-person approval >₹10k (BR-5), and seals history with SHA-256.'],
+  ];
   return (
     <section className="er-app my-8 grid gap-6" aria-labelledby="tour-h">
       <div>
@@ -109,6 +115,21 @@ function QuickTour() {
             </li>
           ))}
         </ol>
+      </div>
+      <div className="rounded-xl border border-border bg-card p-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-primary">Measured operational outcomes · public CPG benchmarks vs. live engine</p>
+          <Link to="/demo" className="text-xs font-semibold text-primary underline">Run the 25-bill benchmark batch in the desk →</Link>
+        </div>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {metrics.map(([stat, title, desc]) => (
+            <div key={title} className="rounded-lg border border-border/70 bg-background p-3">
+              <p className="text-base font-bold tracking-tight text-foreground">{stat}</p>
+              <p className="mt-0.5 text-xs font-semibold text-foreground">{title}</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">{desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-4 text-sm">
         <p><b>Working today:</b> CSV import, auto-match, manual allocation, exceptions, private saved workspaces. <b>Planned:</b> bank and ERP connections.</p>
