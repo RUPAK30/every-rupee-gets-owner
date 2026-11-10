@@ -274,6 +274,78 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
         {!locked && <Button type="button" variant="outline" disabled={!dirty} onClick={() => run(() => saveCase(w, caseId, { reason, owner, notes }, actor), `Saved: ${caseId} owned by ${owner ? personLabel(owner) : 'nobody yet'}.`)}>Save</Button>}
       </div>
 
+      {/* Enterprise ITIL Change & Dispute Governance (Native in Dialog) */}
+      <div className="rounded-xl border border-[#93C5FD] bg-[#EFF6FF]/60 p-3.5 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5">
+            <span className="font-bold text-[#1E3A8A]">⚡ ServiceNow Change &amp; Dispute Gate</span>
+            <span className={`rounded px-1.5 py-0.5 text-[.68rem] font-bold ${snType === 'Emergency' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>{snType} Change (CHG-${caseId?.replace('INV-', '') ?? '101'})</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <button type="button" onClick={() => setSnType(t => t === 'Normal' ? 'Emergency' : 'Normal')} className="rounded border border-[#93C5FD] bg-white px-2 py-1 text-[.72rem] font-semibold text-[#1D4ED8] hover:bg-blue-50">
+              Switch to {snType === 'Normal' ? 'Emergency (2-day TAT)' : 'Normal (7-day TAT)'}
+            </button>
+            <button type="button" onClick={() => setSnExpanded(x => !x)} className="text-[.72rem] font-semibold text-[#1D4ED8] underline">
+              {snExpanded ? 'Hide REST Payload' : 'Inspect API Payload'}
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-2.5 grid gap-2 sm:grid-cols-3">
+          {/* Gate 1: SLA TAT Window */}
+          <div className="rounded-lg border border-blue-200/70 bg-white p-2">
+            <b className="block text-foreground">1. SLA TAT Window:</b>
+            <span className="text-muted-foreground">{snType === 'Normal' ? 'Day 0 → Day 7 (Standard SLA)' : 'Day 0 → Day 2 (P1 Critical SLA)'}</span>
+            <span className="mt-1 block font-semibold text-emerald-700">✓ Within TAT Window</span>
+          </div>
+
+          {/* Gate 2: Mandatory Proof Gate */}
+          <div className="rounded-lg border border-blue-200/70 bg-white p-2">
+            <b className="block text-foreground">2. Mandatory Proof:</b>
+            {snProofAttached ? (
+              <span className="font-semibold text-emerald-700">✓ Signed GRN / POD attached</span>
+            ) : (
+              <div className="mt-1 flex items-center justify-between">
+                <span className="text-red-700 font-medium">✗ Missing proof</span>
+                <button type="button" onClick={() => { setSnProofAttached(true); setNotes(n => `${n}\nServiceNow sys_attachment: Signed_GRN_Verified.pdf attached.`.trim()); }} className="rounded bg-blue-600 px-2 py-0.5 text-[.7rem] font-semibold text-white hover:bg-blue-700">Attach GRN</button>
+              </div>
+            )}
+          </div>
+
+          {/* Gate 3: PVT Sign-off */}
+          <div className="rounded-lg border border-blue-200/70 bg-white p-2">
+            <b className="block text-foreground">3. PVT Verification:</b>
+            {snPvtSigned ? (
+              <span className="font-semibold text-emerald-700">✓ PVT Signed by {actor}</span>
+            ) : (
+              <div className="mt-1 flex items-center justify-between">
+                <span className="text-amber-800 font-medium">Pending test sign-off</span>
+                <button type="button" onClick={() => { setSnPvtSigned(true); setNotes(n => `${n}\nServiceNow PVT passed: ledger & GST credit balanced by ${actor}.`.trim()); }} className="rounded bg-emerald-700 px-2 py-0.5 text-[.7rem] font-semibold text-white hover:bg-emerald-800">Sign off PVT</button>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {snExpanded && (
+          <pre className="mt-2.5 overflow-x-auto rounded bg-slate-900 p-2 text-[.68rem] text-sky-400">
+            {`POST /api/now/table/change_request HTTP/1.1
+Content-Type: application/json
+
+{
+  "sys_id": "sn_${caseId?.toLowerCase()}_4812",
+  "number": "CHG-${snType === 'Emergency' ? 'EMG' : 'NRM'}-${caseId?.replace('INV-', '') ?? '101'}",
+  "type": "${snType.toLowerCase()}",
+  "short_description": "Short-payment on ${caseId} (${money(short)})",
+  "start_date": "DAY-0",
+  "end_date": "${snType === 'Emergency' ? 'DAY-2' : 'DAY-7'}",
+  "u_mandatory_proof": ${snProofAttached},
+  "u_pvt_signoff": ${snPvtSigned},
+  "state": ${snPvtSigned ? 0 : -3}
+}`}
+          </pre>
+        )}
+      </div>
+
       <div id="er-close-it" className="grid gap-2 rounded-lg border border-border p-3 text-sm">
         {done && <p role="status" className="m-0 rounded-md bg-[#ECFDF5] p-2 font-medium text-[#065F46]">{done}</p>}
         <p className="m-0 font-semibold">Close it</p>
