@@ -115,27 +115,30 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
     <Dialog open={open} onOpenChange={o => { if (!o) onClose(); }}>
       <DialogContent className="max-w-2xl max-h-[92vh] overflow-y-auto p-0 rounded-2xl border border-border bg-card">
         {/* Header Banner */}
-        <div className="bg-[#0f172a] text-white p-5 rounded-t-2xl border-b border-slate-800">
+        <div className="bg-[#134E4A] text-white p-5 rounded-t-2xl border-b border-[#0F766E]/40">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <span className="flex size-8 items-center justify-center rounded-lg bg-[#0284c7] font-bold text-white text-sm">
-                sn
-              </span>
+            <div className="flex items-center gap-3">
+              <div className="flex size-9 items-center justify-center rounded-xl bg-white/10 ring-1 ring-white/20 shadow-xs">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-teal-200">
+                  <path d="M12 2L3 7V12C3 17.5 7 21.6 12 22C17 21.6 21 17.5 21 12V7L12 2Z" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
               <div>
                 <div className="flex items-center gap-2">
                   <h2 className="text-base font-bold text-white m-0 tracking-tight">ServiceNow ITIL Change Management</h2>
-                  <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-[0.65rem] font-bold text-emerald-400 border border-emerald-500/30">
+                  <span className="rounded-full bg-teal-400/20 px-2 py-0.5 text-[0.65rem] font-bold text-teal-200 border border-teal-300/30">
                     LIVE REST API SYNC
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 m-0 mt-0.5">
-                  Automated Ticket for <b>{caseId}</b> · {inv.customer} · <span className="text-sky-300 font-semibold">{money(shortPaise)}</span> gap
+                <p className="text-xs text-teal-100/80 m-0 mt-0.5">
+                  Governance Ticket for <b>{caseId}</b> · {inv.customer} · <span className="text-teal-200 font-semibold">{money(shortPaise)}</span> gap
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${ticketType === 'Emergency' ? 'bg-red-500/20 text-red-300 border border-red-500/30' : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'}`}>
+              <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${ticketType === 'Emergency' ? 'bg-amber-400/25 text-amber-100 border border-amber-300/40' : 'bg-teal-700/50 text-teal-100 border border-teal-500/30'}`}>
                 {ticketNumber} ({ticketType})
               </span>
             </div>

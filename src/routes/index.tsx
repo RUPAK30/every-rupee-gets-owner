@@ -68,7 +68,6 @@ function Index() {
           <nav aria-label="Main" className="hidden items-center justify-center gap-1 md:flex">
             <Link to="/demo" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Product</Link>
             <a href="#tour-h" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">How it works</a>
-            <a href="/demo?sn=1" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-bold text-primary no-underline hover:bg-primary/10 flex items-center gap-1.5">⚡ ServiceNow ITIL Hub ↗</a>
             <a href="https://everyrupee-o2c.vercel.app/" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Case study ↗</a>
           </nav>
           <div className="flex shrink-0 items-center justify-end gap-2">

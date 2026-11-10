@@ -130,7 +130,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const receiptOptions = w.receipts.filter(r => receiptBalance(w, r.id) > 0);
   return <div className="er-app min-h-screen bg-background text-foreground">
     <header className="border-b border-border bg-card"><div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-8">
-      <Link to="/" className="flex items-center gap-2 text-lg font-semibold"><span className="flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground">₹</span>Every Rupee</Link>
+      <Link to="/" className="flex items-center gap-2.5 text-lg font-semibold tracking-tight"><div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-tr from-[#0F766E] to-[#14B8A6] shadow-xs ring-1 ring-[#0F766E]/20"><span className="font-sans text-base font-extrabold text-white leading-none">₹</span></div>Every Rupee</Link>
       <div className="flex flex-wrap items-center gap-2">{demo && <DeskSwitch active="receivables" />}<span className="hidden text-xs font-medium text-muted-foreground sm:inline">{demo ? 'SAMPLE WORKSPACE' : 'PRIVATE WORKSPACE'}</span><Button variant="ghost" asChild><Link to="/capabilities">Capability status</Link></Button>{demo ? <Button asChild><Link to="/workspace">Your workspace <ArrowRight /></Link></Button> : <Button variant="outline" onClick={onSignOut}>Sign out</Button>}</div>
     </div></header>
     {demo && <div className="border-b border-border bg-secondary px-4 py-2 text-center text-xs text-secondary-foreground">Illustrative records · changes stay in this session · no connected banks or ERPs</div>}
