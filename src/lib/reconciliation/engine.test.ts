@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { computePresentationNumbers } from './presentation';
 import { allocate, approvalCheck, approveCase, autoMatch, handBack, resolveSmall, saveCase, sendBack, submitForApproval, importCsv, invoiceBalance, receiptBalance, sampleWorkspace, validateWorkspace, sealLog, verifyLog } from './engine';
 describe('reconciliation rules', () => {
   it('keeps demo totals aligned with the homepage and README sample', () => {
@@ -163,6 +164,23 @@ describe('3-layer SHA-256 chain & controller anchor verification', () => {
 });
 
 describe('25-bill public benchmark batch & operational impact metrics', () => {
+  it('cash identified equals the allocations, starting at zero before matching', () => {
+    expect(computePresentationNumbers(sampleWorkspace()).cashIdentifiedPaise).toBe(0);
+    const w = autoMatch(sampleWorkspace());
+    expect(computePresentationNumbers(w).cashIdentifiedPaise).toBe(14536000);
+    expect(computePresentationNumbers(w).cashIdentifiedPaise).toBe(w.allocations.reduce((sum, allocation) => sum + allocation.amount, 0));
+  });
+  it('leakage stopped totals only over-cap, unapproved and expired sample amounts', () => {
+    const w = autoMatch(sampleWorkspace());
+    const n = computePresentationNumbers(w);
+    expect(n.leakageStoppedPaise).toBe(1326000);
+    expect(n.leakageStoppedPaise).toBe(n.unapprovedPaise + n.overCapPaise + n.expiredPaise);
+    const checks = computePresentationNumbers(autoMatch(benchmarkWorkspace()), benchmarkApprovals());
+    expect(checks.overCapPaise).toBeGreaterThan(0);
+    expect(checks.expiredPaise).toBeGreaterThan(0);
+    expect(checks.leakageStoppedPaise).toBe(checks.unapprovedPaise + checks.overCapPaise + checks.expiredPaise);
+    expect(computePresentationNumbers(sampleWorkspace()).leakageStoppedPaise).toBe(0);
+  });
   it('auto-matches the 25-bill batch and computes deterministic time & leakage metrics', () => {
     const w = autoMatch(benchmarkWorkspace());
     expect(w.invoices).toHaveLength(25);

@@ -1,3 +1,4 @@
+import { BuilderStrip } from '@/components/reconciliation/presentation';
 import { Toaster } from '@/components/ui/sonner';
 import { useMatches as useImportedMatches } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -153,6 +154,7 @@ function RootComponent() {
       <AccountContext.Provider value={{ signedIn }}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <BuilderStrip />
       </AccountContext.Provider>
     </QueryClientProvider>
   );

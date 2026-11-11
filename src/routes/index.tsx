@@ -3,6 +3,8 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { Button } from '@/components/ui/button';
 import { ShieldCheck } from 'lucide-react';
 import { DemoRequest } from '@/components/reconciliation/demo-request';
+import { PresentationHeader, IndustryHook, NumbersBand, BuilderStrip } from '@/components/reconciliation/presentation';
+import { sampleWorkspace } from '@/lib/reconciliation/engine';
 import capturedCSS from "../styles/site.css?raw";
 
 export const Route = createFileRoute("/")({
@@ -54,33 +56,13 @@ function Index() {
         <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[50%] h-[420px] opacity-75 absolute right-[-140px] top-[-60px] w-[480px] [filter:blur(70px)]" />
         <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[50%] h-[360px] left-[38%] opacity-[.55] absolute top-[180px] w-[420px] [filter:blur(70px)]" />
       </div>
-      <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
-        <div className="mx-auto grid h-16 max-w-[1040px] grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-4 md:grid-cols-[auto_1fr_auto]">
-          <a className="flex min-w-0 items-center gap-2 text-[1.02rem] font-semibold tracking-tight text-foreground no-underline" aria-label="Every Rupee home" href="/">
-            <svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Every Rupee">
-              <circle cx="16" cy="16" r="13" fill="none" stroke="#64748B" strokeWidth="4.5" strokeDasharray="2.48 79.20" transform="rotate(-90 16 16)" />
-              <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="31.07 50.61" strokeDashoffset="-4.08" transform="rotate(-90 16 16)" />
-              <circle cx="16" cy="16" r="13" fill="none" stroke="#0071E3" strokeWidth="4.5" strokeDasharray="43.32 38.36" strokeDashoffset="-36.76" transform="rotate(-90 16 16)" />
-              <text x="16" y="21.2" textAnchor="middle" fontFamily="Inter,Arial,sans-serif" fontWeight="700" fontSize="14" fill="#111827">₹</text>
-            </svg>
-            <span className="truncate">Every Rupee</span>
-          </a>
-          <nav aria-label="Main" className="hidden items-center justify-center gap-1 md:flex">
-            <Link to="/demo" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Product</Link>
-            <a href="#tour-h" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">How it works</a>
-            <a href="https://everyrupee-o2c.vercel.app/" className="whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-muted-foreground no-underline hover:bg-muted hover:text-foreground">Case study ↗</a>
-          </nav>
-          <div className="flex shrink-0 items-center justify-end gap-2">
-            <Link to="/demo" className="hidden px-3 py-2 text-sm font-medium text-foreground no-underline hover:underline sm:inline">Try the demo (no sign-up)</Link>
-            <Button size="sm" className="min-h-10 text-primary-foreground! no-underline!" asChild><a href="#contact">Let's talk</a></Button>
-          </div>
-        </div>
-      </header>
+      <PresentationHeader />
       <main className="col my-0 mx-auto max-w-[1040px]">
+        <div className="er-app er-home-intro pt-4"><p className="mb-2 text-xs font-semibold text-primary">Every Rupee · Portfolio case study · sample data</p><IndustryHook /><NumbersBand w={sampleWorkspace()} /><BuilderStrip /></div>
         <ImportedSectionADistributorPaysShort />
         <QuickTour />
-        <CanonicalWorkflows />
-        <ServiceNowITILSection />
+        <details className="er-app border-y border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">Lender desk</summary><CanonicalWorkflows /></details>
+        <details className="er-app border-b border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">ServiceNow simulated workflow</summary><ServiceNowITILSection /></details>
         <ImportedSectionOpenWhatYouCare openDetails={openDetails} setOpenDetails={setOpenDetails} deadline={deadline} />
         <ImportedSection2 />
       </main>
@@ -131,14 +113,14 @@ function ServiceNowITILSection() {
           <Button asChild size="sm" className="min-h-9 text-primary-foreground! no-underline!"><a href="/demo?sn=1">▶ Open Interactive ServiceNow Hub ↗</a></Button>
         </div>
         <p className="mt-2 max-w-[70ch] text-sm leading-6 text-muted-foreground">
-          When an unapproved short-payment occurs, Every Rupee automatically dispatches a structured <b>change_request</b> or dispute ticket to ServiceNow (Table API: <code>change_request</code> &amp; <code>sys_attachment</code>).
+          When an unapproved short-payment occurs, Every Rupee would dispatch a structured <b>change_request</b> or dispute ticket to ServiceNow (Table API: <code>change_request</code> &amp; <code>sys_attachment</code>).
         </p>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-border bg-background p-3.5">
             <span className="text-xs font-bold text-primary">1 · Dual Change Types</span>
             <p className="mt-1 text-xs font-semibold text-foreground">Normal vs. Emergency Changes</p>
-            <p className="mt-1 text-xs text-muted-foreground">7-day standard SLA vs. 2-day compressed emergency SLA with real-time TAT breach detection.</p>
+            <p className="mt-1 text-xs text-muted-foreground">7-day standard SLA vs. 2-day compressed emergency SLA with illustrative TAT monitoring.</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3.5">
             <span className="text-xs font-bold text-primary">2 · Mandatory Proof Gate</span>
@@ -176,47 +158,21 @@ function CanonicalWorkflows() {
 }
 
 function ImportedSectionADistributorPaysShort() {
-  const heroOutcomes = [
-    ['7–14d → Day 0', 'Short-Payment Detection (<5 ms)', 'Splits cash from shortfall at UTR import vs. 7–14d manual ERP lag', 'The Hackett Group CPG baseline'],
-    ['22m → <2m / bill', '~8.0 Hrs Saved per 25 Bills', '24/25 bills rule-checked across UTR, invoice, Ten Today cap & GST split', 'APQC O2C process benchmark'],
-    ['30–45d → 3–7d', 'Dispute Resolution SLA', 'Routes each gap to one role-locked owner on Day 0; prevents >180d ECL', 'Cello World FY25 AR filings'],
-    ['₹18,544 caught', '₹0 Silent Write-Offs', 'Blocks expired/over-cap claims (BR-4), 2-person >₹10k (BR-5) & SHA-256 chain', 'Live 25-bill batch (BR-4, BR-10)'],
-  ];
   return (
-    <section className="er-app pt-8 pb-6 text-center sm:pt-12 sm:pb-8" aria-labelledby="intro-title">
-      <p className="text-xs font-medium text-muted-foreground sm:text-sm">Order-to-cash · Deduction management · <span className="font-semibold text-primary">Tamper-evident</span> · Portfolio case study by Rupak Ghanpathi</p>
-      <h1 id="intro-title" className="mx-auto mt-2.5 max-w-[24ch] text-3xl font-semibold text-foreground sm:text-5xl">Every Rupee<span className="mt-2 block text-xl font-medium sm:text-3xl">Short-payment reconciliation, from invoice to cash.</span></h1>
-      <p className="mx-auto mt-3 max-w-[58ch] text-sm leading-6 text-muted-foreground">Designed for Indian B2B finance teams to find, explain and resolve deductions from invoices. Every gap gets a reason, an owner and an ending.</p>
+    <details className="er-app border-b border-border" aria-labelledby="intro-title"><summary id="intro-title" className="cursor-pointer py-3 text-sm font-semibold">Explore the reconciliation sample &amp; controls</summary>
       <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5">
         <Button asChild className="min-h-10 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button>
         <Button asChild variant="outline" className="min-h-10 no-underline!"><Link to="/demo">Explore on my own</Link></Button>
-        <Button asChild variant="outline" size="sm" className="h-10 rounded-md text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}><ShieldCheck className="mr-1.5 size-3.5 text-primary" />Live SHA-256 tamper sandbox →</Link></Button>
+        <Button asChild variant="outline" size="sm" className="h-10 rounded-md text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}><ShieldCheck className="mr-1.5 size-3.5 text-primary" />SHA-256 tampering sample →</Link></Button>
         <Button asChild variant="outline" size="sm" className="h-10 border-primary/40 bg-primary/5 text-xs font-semibold text-primary no-underline! hover:bg-primary/10"><a href="/demo?sn=1">⚡ ServiceNow Change &amp; Cases (ITIL Dual-Mode) ↗</a></Button>
         <Button asChild variant="ghost" size="sm" className="h-10 text-xs text-muted-foreground no-underline! hover:text-foreground"><a href="https://everyrupee-o2c.vercel.app/#proof">16 rules · 31/31 tests ↗</a></Button>
       </div>
 
-      <div aria-label="Measured business outcomes" className="mx-auto mt-6 max-w-[920px] overflow-hidden rounded-2xl border-2 border-primary/25 bg-card text-left shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-primary/5 px-4 py-2">
-          <span className="text-[.72rem] font-bold uppercase tracking-wider text-primary">Measured Business Outcomes · Public CPG Benchmarks + Live 25-Bill Engine</span>
-          <Link to="/demo" className="text-xs font-semibold text-primary hover:underline">Verify on 25-bill batch in the desk →</Link>
-        </div>
-        <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4">
-          {heroOutcomes.map(([stat, label, sub, src]) => (
-            <div key={label} className="p-3.5">
-              <p className="text-lg font-bold tracking-tight text-foreground sm:text-xl">{stat}</p>
-              <p className="mt-0.5 text-xs font-semibold text-foreground">{label}</p>
-              <p className="mt-1 text-xs leading-4.5 text-muted-foreground">{sub}</p>
-              <p className="mt-1 text-[.66rem] font-medium text-primary/80">Source: {src}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <Link to="/demo" aria-label="Open the live reconciliation desk" className="mx-auto mt-4 block max-w-[920px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
-        <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Live reconciliation desk preview</span><span className="flex items-center gap-1.5">Billed ₹1,91,300 · Received ₹1,73,710 · <b className="text-money-wip">Gap ₹17,590</b> · <b className="text-primary">Open desk →</b></span></div>
-        <div className="grid grid-cols-2 sm:grid-cols-4">{[['INV-101', 'Aarav Distributors', '₹1,180 short', 'Scheme claim · Asha', 'text-money-wip'], ['INV-102', 'Meera Trading', '₹12,400 short', 'Scheme claim · Unowned', 'text-money-risk'], ['INV-103', 'Southern Stores', '₹31,500 unpaid', '₹28,350 unreferenced receipt held in suspense', 'text-money-risk'], ['INV-104', 'Eastern Wholesale', '₹860 short', 'No reason yet', 'text-money-risk']].map(([id, n, amt, why, c]) => <div key={id} className="min-w-0 border-b border-r border-border px-3 py-2 text-xs even:border-r-0 sm:border-b-0 sm:even:border-r sm:last:border-r-0"><p className="truncate font-medium text-foreground">{id} · {n}</p><p className={'mt-0.5 text-sm font-semibold ' + c}>{amt}</p><p className="truncate text-muted-foreground">{why}</p></div>)}</div>
+      <Link to="/demo" aria-label="Open the reconciliation sample" className="mx-auto mt-4 block max-w-[920px] overflow-hidden rounded-2xl border border-border bg-card text-left no-underline! shadow-sm transition hover:shadow-md">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Reconciliation sample preview</span><span className="flex items-center gap-1.5">Billed ₹1,91,300 · Received ₹1,73,710 · <b className="text-money-wip">Gap ₹17,590</b> · <b className="text-primary">Open desk →</b></span></div>
+        <div className="grid grid-cols-2 sm:grid-cols-4">{[['INV-101', 'Aarav Distributors', '₹1,180 short', 'Scheme claim · Asha', 'text-money-wip'], ['INV-102', 'Meera Trading', '₹12,400 short', 'Scheme claim · Unowned', 'text-money-risk'], ['INV-103', 'Southern Stores', '₹31,500 unpaid', '₹28,350 unreferenced receipt held in suspense', 'text-money-risk'], ['INV-104', 'Eastern Wholesale', '₹860 short', 'No reason yet', 'text-money-risk']].map(([id, n, amt, why, c]) => <div key={id} className="min-w-0 border-b border-r border-border px-3 py-2 text-xs even:border-r-0 sm:border-b-0 sm:even:border-r sm:last:border-r-0"><p className="truncate font-medium text-foreground">{id} · {n}</p><p className={'mt-0.5 text-sm font-semibold ' + c}>{amt}</p><p className="text-muted-foreground">{why}</p></div>)}</div>
       </Link>
-    </section>
+    </details>
   );
 }
 

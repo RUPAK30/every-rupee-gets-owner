@@ -15,3 +15,4 @@
 - [x] Move case history to the top and add a compact homepage link opening the check directly; verify both placements.
 - [x] Add four sealed sample actions, a demo-only raw-row editor with verification colors and Undo, and move History below Close it; all 27 tests and desktop/phone interaction checks pass.
 - [x] Final /demo presentation: header summary, steps, money, tables, tabbed Controls & proof; honest simulation labels; all 30 tests and phone/desktop action checks pass, with no page overflow and the money row visible on the first screen.
+- [x] Final / and /demo pass: compact drawer headers, supported industry citations, live numbers and scale estimate, builder strips, design decisions and money-focused tour; all 32 tests and phone/tablet/desktop flows pass, with clean preview checks and no page overflow.
