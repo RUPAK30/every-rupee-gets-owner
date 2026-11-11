@@ -281,6 +281,8 @@
 .er-builder a, .er-builder button { min-height: 44px; }
 .er-presentation-header button, .er-presentation-header div > a { padding-left: 8px; padding-right: 8px; }
 .er-menu > button { width: 44px; height: 44px; display: grid; place-items: center; }
+.er-menu { width: 100%; max-width: none; }
+@media (min-width: 1024px) { .er-menu { width: 360px; max-width: 360px; } }
 .er-menu a { display: flex; align-items: center; }
 .er-builder a { color: var(--foreground); }
 .er-builder p > a { display: inline; }
