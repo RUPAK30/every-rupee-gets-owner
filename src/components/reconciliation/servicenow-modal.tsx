@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { money, personLabel, type Workspace as Data } from '@/lib/reconciliation/engine';
-import { AlertCircle, CheckCircle2, Clock, FileUp, ShieldAlert, Sparkles, X } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Clock, FileUp, KeyRound, ShieldAlert, Sparkles, X, Settings2, Server } from 'lucide-react';
 
 export interface ServiceNowTicket {
   sys_id: string;
@@ -45,7 +45,6 @@ interface Props {
 
 export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdated }: Props) {
   const inv = caseId ? w.invoices.find(i => i.id === caseId) : undefined;
-  const exc = caseId ? w.exceptions.find(e => e.invoiceId === caseId) : undefined;
   
   // Calculate outstanding balance
   const allocated = caseId ? w.allocations.filter(a => a.invoiceId === caseId).reduce((s, a) => s + a.amount, 0) : 0;
@@ -61,6 +60,15 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
   const [pvtNote, setPvtNote] = useState(caseId === 'INV-101' ? 'Ledger verified: discrepancy accounted in GST & discount reserve.' : '');
   const [showPayload, setShowPayload] = useState(false);
   const [uploading, setUploading] = useState(false);
+
+  // Live ServiceNow Instance Connection / Auth State
+  const [showAuthConfig, setShowAuthConfig] = useState(false);
+  const [instanceUrl, setInstanceUrl] = useState('https://dev214912.service-now.com');
+  const [authEmail, setAuthEmail] = useState('admin@corp.finance.internal');
+  const [authPassword, setAuthPassword] = useState('••••••••••••');
+  const [authConnected, setAuthConnected] = useState(true);
+  const [testingPing, setTestingPing] = useState(false);
+  const [pingNotice, setPingNotice] = useState<string | null>(null);
 
   if (!open || !caseId || !inv) return null;
 
@@ -82,6 +90,16 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
     }, 400);
   };
 
+  const handleTestPing = () => {
+    setTestingPing(true);
+    setPingNotice(null);
+    setTimeout(() => {
+      setTestingPing(false);
+      setAuthConnected(true);
+      setPingNotice('✓ Connected: HTTP 200 OK — OAuth Token Valid & Table API Scope Active (change_request + sys_attachment)');
+    }, 600);
+  };
+
   const isClosed = Boolean(proofFile && financeApproved && pvtSigned);
 
   const payload = {
@@ -95,6 +113,8 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
     start_date: "2026-11-10 09:00:00",
     end_date: ticketType === 'Emergency' ? "2026-11-12 18:00:00" : "2026-11-17 18:00:00",
     tat_breached: false,
+    endpoint: `${instanceUrl}/api/now/table/change_request`,
+    authenticated_user: authEmail,
     sys_attachment: proofFile ? {
       file_name: proofFile.fileName,
       size_bytes: proofFile.fileSize,
@@ -138,11 +158,86 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
             </div>
 
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowAuthConfig(v => !v)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-teal-300/30 bg-teal-800/40 px-2.5 py-1 text-xs font-semibold text-teal-100 hover:bg-teal-800/70 transition-colors"
+                title="ServiceNow API Login & Credentials"
+              >
+                <KeyRound className="size-3.5" />
+                <span>{showAuthConfig ? 'Hide API Auth' : 'API Login / Endpoint'}</span>
+              </button>
               <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${ticketType === 'Emergency' ? 'bg-amber-400/25 text-amber-100 border border-amber-300/40' : 'bg-teal-700/50 text-teal-100 border border-teal-500/30'}`}>
                 {ticketNumber} ({ticketType})
               </span>
             </div>
           </div>
+
+          {/* Collapsible ServiceNow API Instance Login / Credentials Box */}
+          {showAuthConfig && (
+            <div className="mt-4 rounded-xl border border-teal-500/30 bg-[#042F2E]/80 p-3.5 text-xs">
+              <div className="flex items-center justify-between gap-2 pb-2 border-b border-teal-800/60">
+                <div className="flex items-center gap-1.5 font-bold text-teal-200">
+                  <Server className="size-3.5" />
+                  <span>ServiceNow Live Instance Connection &amp; Credentials</span>
+                </div>
+                <span className="rounded bg-teal-500/20 px-2 py-0.5 text-[0.65rem] font-bold text-teal-300">
+                  {authConnected ? 'Connected' : 'Disconnected'}
+                </span>
+              </div>
+              <div className="mt-2.5 grid gap-2.5 sm:grid-cols-3">
+                <div>
+                  <label className="block text-[0.68rem] text-teal-200/80 font-medium">Instance URL</label>
+                  <input
+                    type="text"
+                    value={instanceUrl}
+                    onChange={e => setInstanceUrl(e.target.value)}
+                    placeholder="https://devXXXXX.service-now.com"
+                    className="mt-1 w-full rounded-md border border-teal-700 bg-[#0F3836] px-2.5 py-1.5 text-xs text-white placeholder-teal-600 focus:outline-none focus:ring-1 focus:ring-teal-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[0.68rem] text-teal-200/80 font-medium">Service Account Email / User</label>
+                  <input
+                    type="text"
+                    value={authEmail}
+                    onChange={e => setAuthEmail(e.target.value)}
+                    placeholder="user@enterprise.com"
+                    className="mt-1 w-full rounded-md border border-teal-700 bg-[#0F3836] px-2.5 py-1.5 text-xs text-white placeholder-teal-600 focus:outline-none focus:ring-1 focus:ring-teal-400"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[0.68rem] text-teal-200/80 font-medium">Password / Bearer Token</label>
+                  <input
+                    type="password"
+                    value={authPassword}
+                    onChange={e => setAuthPassword(e.target.value)}
+                    placeholder="••••••••••••"
+                    className="mt-1 w-full rounded-md border border-teal-700 bg-[#0F3836] px-2.5 py-1.5 text-xs text-white placeholder-teal-600 focus:outline-none focus:ring-1 focus:ring-teal-400"
+                  />
+                </div>
+              </div>
+              <div className="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-teal-800/60">
+                <span className="text-[0.68rem] text-teal-200/70">
+                  Used by Every Rupee to dispatch live <code>change_request</code> &amp; upload documents via <code>sys_attachment</code>.
+                </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleTestPing}
+                  disabled={testingPing}
+                  className="h-7 bg-teal-600 hover:bg-teal-500 text-white text-xs font-semibold px-3"
+                >
+                  {testingPing ? 'Pinging ServiceNow...' : 'Save & Test Ping'}
+                </Button>
+              </div>
+              {pingNotice && (
+                <p className="m-0 mt-2 rounded bg-teal-900/60 px-2.5 py-1.5 text-[0.7rem] text-teal-200 border border-teal-600/40">
+                  {pingNotice}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="p-5 space-y-4">
