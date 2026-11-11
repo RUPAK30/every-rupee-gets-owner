@@ -43,3 +43,4 @@ use the editor.
 - Demo history shortcuts create and seal four illustrative actions only on request, preserve existing fingerprints and workflow state, and focus History below Close it; the raw-row editor is session-only and demo-only so private records cannot be edited through the simulator.
 
 - Receivables proof panels share one tab state below the tables; summary shortcuts and tour targets open that state, while per-25-bill savings use the shared benchmark engine to avoid conflicting estimates.
+- Presentation numbers use current allocations and shared approval checks, excluding unmatched invoices from flagged leakage; the root mounts one end-of-page builder strip and shared drawer headers keep sample actions in their owning workspace.

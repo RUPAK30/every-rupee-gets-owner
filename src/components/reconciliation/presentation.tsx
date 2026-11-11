@@ -56,7 +56,7 @@ export function IndustryHook() {
   </section>;
 }
 
-function AnimatedNumber({ value, currency = true }: { value: number; currency?: boolean }) {
+function AnimatedNumber({ value, currency = true }: { value: number; currency?: boolean | undefined }) {
   const [shown, setShown] = useState(value);
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { setShown(value); return; }
