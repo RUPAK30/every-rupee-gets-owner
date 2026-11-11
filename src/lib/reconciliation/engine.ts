@@ -223,7 +223,7 @@ const entryHash = (invoiceId: string, l: LogEntry, prevHash: string) => sha256(c
 /** Seals only entries without a hash, so existing (possibly tampered) entries are never silently re-sealed. */
 export async function sealLog(invoiceId: string, log: LogEntry[]): Promise<LogEntry[]> {
   const out: LogEntry[] = []; let prev = 'GENESIS';
-  for (const l of log) { const e = l.hash ? l : { ...l, prevHash: prev, hash: await entryHash(invoiceId, l, prev) }; out.push(e); prev = e.hash!; }
+  for (const l of log) { const e = l.hash ? l : { ...l, prevHash: prev, hash: await entryHash(invoiceId, l, prev) }; out.push(e); prev = e.hash ?? prev; }
   return out;
 }
 /** Recomputes every hash from scratch (simulates a rogue DBA editing a row AND re-hashing the rest of the chain). */
@@ -259,18 +259,27 @@ export async function verifyLog(invoiceId: string, log: LogEntry[]): Promise<{ o
   for (let i = 0; i < log.length; i++) { const l = log[i]!; if (l.prevHash !== prev || l.hash !== await entryHash(invoiceId, l, prev)) return { ok: false, brokenAt: i }; prev = l.hash!; }
   return { ok: true };
 }
-export async function verifyLogWithAnchor(invoiceId: string, log: LogEntry[], pinnedAnchorHash?: string): Promise<{ ok: true; headHash: string } | { ok: false; brokenAt: number; reason: 'entry_tampered' | 'link_broken' | 'anchor_mismatch'; expectedAnchor?: string; actualAnchor?: string }> {
+export async function verifyLogWithAnchor(invoiceId: string, log: LogEntry[], pinnedAnchorHash?: string, checkpointLength = log.length): Promise<{ ok: true; headHash: string } | { ok: false; brokenAt: number; reason: 'entry_tampered' | 'link_broken' | 'anchor_mismatch'; expectedAnchor?: string; actualAnchor?: string }> {
   let prev = 'GENESIS';
   for (let i = 0; i < log.length; i++) {
-    const l = log[i]!;
+    const l = log[i];
+    if (!l) return { ok: false, brokenAt: i, reason: 'link_broken' };
     if (l.prevHash !== prev) return { ok: false, brokenAt: i, reason: 'link_broken' };
     if (l.hash !== await entryHash(invoiceId, l, prev)) return { ok: false, brokenAt: i, reason: 'entry_tampered' };
-    prev = l.hash!;
+    prev = l.hash ?? prev;
   }
-  if (pinnedAnchorHash && prev !== pinnedAnchorHash) {
-    return { ok: false, brokenAt: Math.max(0, log.length - 1), reason: 'anchor_mismatch', expectedAnchor: pinnedAnchorHash, actualAnchor: prev };
+  const checkpoint = log[checkpointLength - 1]?.hash ?? 'GENESIS';
+  if (pinnedAnchorHash && checkpoint !== pinnedAnchorHash) {
+    return { ok: false, brokenAt: Math.max(0, Math.min(checkpointLength, log.length) - 1), reason: 'anchor_mismatch', expectedAnchor: pinnedAnchorHash, actualAnchor: checkpoint };
   }
   return { ok: true, headHash: prev };
+}
+
+/** An approval is evidence only when its chain and optional independent checkpoint verify. */
+export async function sealedDecisionLookup(invoiceId: string, log: LogEntry[], anchorHash?: string, checkpointLength = log.length): Promise<LogEntry | undefined> {
+  const result = await verifyLogWithAnchor(invoiceId, log, anchorHash, checkpointLength);
+  if (!result.ok) return undefined;
+  return [...log].reverse().find(entry => /\bapproved\b/i.test(entry.text) && !/\b(unapproved|not approved)\b/i.test(entry.text));
 }
 
 /* Ten Today sends a fingerprint of the approval fields. Recompute it here: a mismatch means the link was edited on the way. */

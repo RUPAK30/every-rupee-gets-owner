@@ -4,12 +4,13 @@ import { Link, useSearch } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, Download, Upload, RotateCcw, Save, Check, Search, Trash2, Wallet, GitMerge, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tour, type TourStep } from './tour';
-import { PresentationHeader, IndustryHook, NumbersBand, BuilderStrip, DesignDecisions } from './presentation';
+import { PresentationHeader, IndustryHook, NumbersBand, BuilderStrip, DesignDecisions, BeforeAfterScorecard, AuditFraming } from './presentation';
 import { computePresentationNumbers } from '@/lib/reconciliation/presentation';
+import { RuleChangeRequest } from './rule-change';
 import { CaseDialog } from './case-dialog';
 import { ServiceNowModal, type ServiceNowTicket } from './servicenow-modal';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { checkTenTodaySeal, readTenTodayApproval, salesApprovals, benchmarkApprovals, benchmarkWorkspace, computeDeskImpact, type SalesApproval, type LogEntry, type ChainNodeCheck, allocate, approvalCheck, autoMatch, caseStatus, emptyWorkspace, personLabel, importCsv, invoiceBalance, money, parseMoney, receiptBalance, saveCase, sealLog, inspectLogChain, verifyLogWithAnchor, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
+import { checkTenTodaySeal, readTenTodayApproval, salesApprovals, benchmarkApprovals, benchmarkWorkspace, computeDeskImpact, type SalesApproval, type LogEntry, type ChainNodeCheck, allocate, approvalCheck, autoMatch, caseStatus, emptyWorkspace, personLabel, importCsv, invoiceBalance, money, parseMoney, receiptBalance, saveCase, sealLog, forceResealLog, inspectLogChain, verifyLogWithAnchor, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
 
 type Props = { initial: Data; demo?: boolean; onSave?: (data: Data) => Promise<void>; onSignOut?: () => Promise<void> };
 function download(filename: string, text: string) { const url = URL.createObjectURL(new Blob([text], { type: 'text/csv' })); const a = document.createElement('a'); a.href = url; a.download = filename; a.click(); URL.revokeObjectURL(url); }
@@ -38,9 +39,11 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const proofRef = useRef<HTMLElement>(null);
   function openProof(next: 'record' | 'servicenow' | 'impact') { setProofTab(next); setTimeout(() => proofRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80); }
   const [tour, setTour] = useState<number | null>(null);
+  const deskAnchor = useRef<{ hash: string; count: number } | null>(null);
+  const [deskAdminRewrite, setDeskAdminRewrite] = useState(false);
   const [deskBlocks, setDeskBlocks] = useState<LogEntry[]>([]);
   const [deskNodes, setDeskNodes] = useState<ChainNodeCheck[]>([]);
-  const [deskCheck, setDeskCheck] = useState<{ ok: boolean; text: string; brokenAt?: number } | null>(null);
+  const [deskCheck, setDeskCheck] = useState<{ ok: boolean; text: string; brokenAt?: number; anchorMismatch?: boolean } | null>(null);
   const [deskEditing, setDeskEditing] = useState(false);
   const [deskBlockIdx, setDeskBlockIdx] = useState(0);
   const [deskBlockText, setDeskBlockText] = useState('');
@@ -56,15 +59,17 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
       { at: '2026-10-26T09:22:05.000Z', who: 'System', text: 'Held ₹28,350 unreferenced receipt (UTR-003) for Southern Stores; blocked auto-write-off' },
     ];
     void sealLog('DESK-RECORD', seed).then(sealed => {
+      deskAnchor.current = { hash: sealed.at(-1)?.hash ?? 'GENESIS', count: sealed.length };
       setDeskBlocks(sealed);
       setDeskBlockText(sealed[0]?.text ?? '');
       void inspectLogChain('DESK-RECORD', sealed).then(setDeskNodes);
     });
   }, [demo, deskBlocks.length]);
   const verifyDeskRecord = async (blocks = deskBlocks) => {
-    const [r, nodes] = await Promise.all([verifyLogWithAnchor('DESK-RECORD', blocks), inspectLogChain('DESK-RECORD', blocks)]);
+    const [r, nodes] = await Promise.all([verifyLogWithAnchor('DESK-RECORD', blocks, deskAnchor.current?.hash, deskAnchor.current?.count), inspectLogChain('DESK-RECORD', blocks)]);
     setDeskNodes(nodes);
     if (r.ok) setDeskCheck({ ok: true, text: `✓ All ${blocks.length} blocks verified: every stored SHA-256 fingerprint matches its recomputed hash and upstream link.` });
+    else if (r.reason === 'anchor_mismatch') setDeskCheck({ ok: false, anchorMismatch: true, text: '✗ Whole chain rewritten: no longer matches the anchor shared with the auditor. (Simulated sharing)' });
     else setDeskCheck({ ok: false, brokenAt: r.brokenAt, text: `✗ Tamper detected at Block #${r.brokenAt + 1}: stored fingerprint (${blocks[r.brokenAt]?.hash?.slice(0, 8)}) ≠ recomputed SHA-256 (${nodes[r.brokenAt]?.recomputedHash.slice(0, 8)}).${r.brokenAt < blocks.length - 1 ? ` Downstream blocks #${r.brokenAt + 2}..#${blocks.length} cascade-invalidated.` : ''}` });
   };
   const saveDeskTamper = async () => {
@@ -72,7 +77,8 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     if (!orig || orig.text === deskBlockText) return;
     setDeskOrig(prev => ({ ...prev, [deskBlockIdx]: prev[deskBlockIdx] ?? orig.text }));
     if (!deskUndo) setDeskUndo(deskBlocks);
-    const next = deskBlocks.map((b, i) => i === deskBlockIdx ? { ...b, text: deskBlockText } : b);
+    const edited = deskBlocks.map((b, i) => i === deskBlockIdx ? { ...b, text: deskBlockText } : b);
+    const next = deskAdminRewrite ? await forceResealLog('DESK-RECORD', edited) : edited;
     setDeskBlocks(next);
     setDeskEditing(false);
     setDeskCheck(null);
@@ -160,7 +166,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   return <div className={`er-app ${demo ? 'er-receivables-demo' : 'min-h-screen'} bg-background text-foreground`}>
     {demo ? <PresentationHeader onTour={() => { setTour(0); setBatchMode('starter'); setW(initial); }} onBatch={toggleBatch} benchmark={batchMode === 'benchmark'} onReset={() => setReset(true)} onExport={() => download('everyrupee-workspace.json', JSON.stringify(w, null, 2))} /> : <header className="border-b border-border bg-card px-4 py-3"><div className="mx-auto flex max-w-7xl items-center justify-between"><Link to="/">Every Rupee</Link><Button variant="outline" onClick={onSignOut}>Sign out</Button></div></header>}
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
-      {demo && <><IndustryHook /><NumbersBand w={w} approvals={approvals} /><BuilderStrip /></>}
+      {demo && <><IndustryHook /><BeforeAfterScorecard /><NumbersBand w={w} approvals={approvals} /><BuilderStrip /></>}
       {handoff && <div role="status" className={`mb-5 rounded-xl border p-4 text-sm leading-6 ${handoff.error ? 'border-destructive/40 bg-destructive/5 text-destructive' : 'border-[#FED7AA] border-l-4 border-l-[#C2410C] bg-[#FFF8F2]'}`}>
         {handoff.error ? <><b>Approval from Ten Today rejected.</b> {handoff.error}</> : (() => { const a = handoff.approval; if (!a) return null; const inv = w.invoices.find(i => i.customer === a.customer); return <><p className="m-0 text-[.7rem] font-semibold uppercase tracking-[.06em] text-[#C2410C]">Received from Ten Today · handoff contract v1</p>
           <p className="m-0 mt-1"><b>{a.id}</b>: {a.approver} approved <b>{a.capPct}% before GST</b> for {a.customer}, asked by {a.rep}, valid to {a.validTo}. It replaces any older approval for this customer.</p>
@@ -204,7 +210,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             <div className="rounded-lg bg-muted/50 p-2.5"><b className="text-foreground">3. Finance Checker (Vikram):</b><br />For any gap <b>above ₹10,000 (BR-5)</b>, <b>Vikram (Finance Controller)</b> must review and approve. Asha is blocked from approving her own submission.</div>
           </div>
         </div>
-        <div className="overflow-x-auto"><table className="er-table"><thead><tr><th>Invoice / customer</th><th>Short by</th><th>Reason</th><th>Owner</th><th>Action &amp; ServiceNow ITIL</th></tr></thead><tbody>{cases.map(i => { const e = w.exceptions.find(e => e.invoiceId === i.id); return <tr key={i.id}><td><strong>{i.id}</strong><span className="block text-xs text-muted-foreground">{i.customer}</span></td><td>{money(invoiceBalance(w, i.id))}</td><td>{e?.reason ?? 'Unexplained'}</td><td>{e?.owner ? personLabel(e.owner) : 'Unassigned'}</td><td><div className="flex flex-wrap items-center gap-1.5">
+        <div className="overflow-x-auto"><table className="er-table"><thead><tr><th>Invoice / customer</th><th>Short by</th><th>Reason</th><th>Owner</th><th>Action &amp; dispute case</th></tr></thead><tbody>{cases.map(i => { const e = w.exceptions.find(e => e.invoiceId === i.id); return <tr key={i.id}><td><strong>{i.id}</strong><span className="block text-xs text-muted-foreground">{i.customer}</span></td><td>{money(invoiceBalance(w, i.id))}</td><td>{e?.reason ?? 'Unexplained'}</td><td>{e?.owner ? personLabel(e.owner) : 'Unassigned'}</td><td><div className="flex flex-wrap items-center gap-1.5">
   <Button size="sm" variant="outline" onClick={() => openCase(i.id)}>
     {(() => { const st = caseStatus(w, i.id); return st === 'resolved' ? '✓ Resolved' : st === 'pending' ? 'Waiting for Vikram' : 'Review Case'; })()}
   </Button>
@@ -213,7 +219,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     variant="secondary"
     className="h-8 gap-1 border border-sky-300 bg-sky-50 text-xs font-semibold text-sky-900 hover:bg-sky-100"
     onClick={() => setSnCaseId(i.id)}
-    title="Open ServiceNow ITIL Dispute Ticket"
+    title="Open simulated dispute case"
   >
     <span className="font-bold text-sky-600">⚡</span>
     <span>sn Ticket</span>
@@ -237,19 +243,21 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             <span className="text-muted-foreground">· one record for the whole team · {deskBlocks.length} blocks</span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" onClick={() => void verifyDeskRecord()} className="rounded-lg bg-[#059669] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#047857]">Verify record</button>
+            <Button size="sm" disabled={!deskBlocks.length} onClick={() => void verifyDeskRecord()}>Verify record</Button>
+            <Button size="sm" variant="outline" disabled={openingHistory || !deskBlocks.length} onClick={() => void openSampleHistory()}>Open sample approval record</Button>
             <button type="button" onClick={() => { setDeskBlockIdx(0); setDeskBlockText(deskBlocks[0]?.text ?? ''); setDeskEditing(v => !v); }} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted/40">Try tampering yourself</button>
             {deskUndo && <button type="button" onClick={() => void restoreDeskRecord()} className="rounded-lg border border-[#059669]/40 bg-white px-3 py-1.5 text-xs font-semibold text-[#059669] hover:bg-[#ECFDF5]">↺ Restore original</button>}
           </div>
         </div>
 
+<AuditFraming /><p className="text-xs leading-5">Daily anchor drill: yesterday’s last fingerprint <code>{deskAnchor.current?.hash.slice(0, 8)}</code> “shared with the statutory auditor and Vikram (finance controller) at 18:00” · simulated, not sent. New actions append after this checkpoint.</p>
         <div className="mt-3 flex flex-col gap-2 md:flex-row md:items-stretch">
           {deskBlocks.map((b, k) => {
             const node = deskNodes[k];
             const brokenAt = deskCheck && !deskCheck.ok ? deskCheck.brokenAt : undefined;
             const hasBreak = brokenAt !== undefined && brokenAt >= 0;
             const isEdited = hasBreak && k === brokenAt;
-            const isCascade = hasBreak && k > (brokenAt ?? -1);
+            const isCascade = deskCheck?.anchorMismatch || (hasBreak && k > (brokenAt ?? -1));
             return <div key={k} className="flex flex-1 items-center gap-2">
               <div className={`flex h-full w-full flex-col justify-between rounded-xl border p-3 text-xs shadow-2xs transition ${isEdited ? 'border-destructive bg-destructive/5 ring-2 ring-destructive/20' : isCascade ? 'border-[#D97706] bg-[#FFFBEB]' : 'border-border bg-white'}`}>
                 <div>
@@ -290,6 +298,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           <p className="m-0 mt-2 font-mono text-[.7rem] text-[#A8A29E]">
             who: {deskBlocks[deskBlockIdx]?.who} · at: {deskBlocks[deskBlockIdx]?.at} · stored fingerprint: {deskBlocks[deskBlockIdx]?.hash?.slice(0, 16)}…
           </p>
+<label className="my-2 flex items-center gap-2"><input type="checkbox" checked={deskAdminRewrite} onChange={ev => setDeskAdminRewrite(ev.target.checked)} />Admin with full access: also recompute every fingerprint</label>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <button type="button" disabled={deskBlockText === deskBlocks[deskBlockIdx]?.text} onClick={() => void saveDeskTamper()} className="rounded-lg bg-[#C2410C] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#9A3412] disabled:opacity-50">Save to database</button>
             <button type="button" onClick={() => setDeskEditing(false)} className="rounded-lg border border-[#44403C] bg-transparent px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#292524]">Cancel</button>
@@ -309,10 +318,10 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             <span className="flex size-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">⚡</span>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="m-0 text-sm font-bold text-foreground">ServiceNow ITIL Change &amp; Dispute Hub</h3>
+                <h3 className="m-0 text-sm font-bold text-foreground">Dispute cases &amp; finance rule changes</h3>
                 <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[.65rem] font-bold uppercase tracking-wider text-primary">Simulated · ServiceNow Table API format</span>
               </div>
-              <p className="m-0 text-xs text-muted-foreground">Every unapproved deduction would dispatch a structured <code>change_request</code> with dual-approvals and SLA monitoring.</p>
+              <p className="m-0 text-xs text-muted-foreground">Dispute case (modelled on SAP S/4HANA Dispute Management: short pay → residual item with reason code → dispute case with cause, amount, owner). SLA tiers, proof and two-person sign-off are illustrated here; no SAP or ServiceNow connection.</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -340,8 +349,8 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
         <div className="mt-3.5 grid gap-2.5 sm:grid-cols-3 text-xs">
           <div className="rounded-xl border border-border bg-background p-3">
             <div className="flex items-center justify-between text-[.7rem] text-muted-foreground">
-              <span className="font-semibold text-primary">1 · DUAL CHANGE TYPES</span>
-              <span className="font-mono">CHG-EMG-102</span>
+              <span className="font-semibold text-primary">1 · DISPUTE SLA TIERS</span>
+              <span className="font-mono">DSP-EMG-102</span>
             </div>
             <p className="m-0 mt-1 font-semibold text-foreground">Normal vs. Emergency SLAs</p>
             <p className="m-0 mt-0.5 text-muted-foreground leading-4.5">Standard 7-day TAT vs. 2-day critical TAT for unapproved claims &gt;₹10,000.</p>
@@ -374,7 +383,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
                   {snPingStatus ? 'Simulation checked' : 'Ready to Ping'}
                 </span>
               </div>
-              <span className="text-[0.7rem] text-muted-foreground font-mono">REST Table API: change_request &amp; sys_attachment</span>
+              <span className="text-[0.7rem] text-muted-foreground font-mono">Disputes: illustrative u_dispute_case &amp; sys_attachment; rules: change_request</span>
             </div>
 
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
@@ -412,14 +421,14 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
 
             <div className="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-teal-200">
               <span className="text-[0.72rem] text-muted-foreground">
-                In a connected service, credentials would authenticate <code>POST /api/now/table/change_request</code> when short-payments occur.
+                Disputes use an illustrative <code>u_dispute_case</code> object, not ITIL Change. Only finance rule changes use <code>change_request</code>.
               </span>
               <div className="flex items-center gap-2">
                 <Button
                   size="sm"
                   className="h-7 bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold px-3"
                   onClick={() => {
-                    setSnPingStatus('Simulation checked · ServiceNow Table API format (change_request + sys_attachment); no connection made.');
+                    setSnPingStatus('Simulation checked · ServiceNow Table API format (u_dispute_case + sys_attachment); no connection made.');
                   }}
                 >
                   Save &amp; Test Ping
@@ -447,6 +456,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             )}
           </div>
         )}
+      <RuleChangeRequest onLogged={async entries => { const next = await sealLog('DESK-RECORD', [...deskBlocks, ...entries.map(({ at, who, text }) => ({ at, who, text }))]); setDeskBlocks(next); setDeskCheck(null); setDeskNodes(await inspectLogChain('DESK-RECORD', next)); }} />
       </section>
 
           </>}

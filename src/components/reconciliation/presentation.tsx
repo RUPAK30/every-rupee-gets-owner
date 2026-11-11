@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTitle, SheetDescription, SheetTrigger } from '@/components/ui/sheet';
-import { money, type Workspace, type SalesApproval } from '@/lib/reconciliation/engine';
+import { money, autoMatch, benchmarkWorkspace, benchmarkApprovals, computeDeskImpact, type Workspace, type SalesApproval } from '@/lib/reconciliation/engine';
 import { computePresentationNumbers } from '@/lib/reconciliation/presentation';
 
 export const industrySources = [
@@ -50,9 +50,8 @@ export function PresentationHeader({ onTour, onBatch, onReset, onExport, benchma
 
 export function IndustryHook() {
   return <section aria-label="Published industry data" className="er-industry border-b border-border pb-3">
-    <h1 className="m-0 max-w-[85ch] text-base font-semibold leading-6 sm:text-xl sm:leading-7">Distributors pay short. The gap sits unowned for weeks, then quietly gets written off. This desk gives every missing rupee an owner on Day 0.</h1>
-    <p className="mb-1 mt-3 text-[10px] font-semibold uppercase text-muted-foreground">Published industry data</p>
-    <ul className="m-0 grid list-none gap-1 p-0 text-xs leading-4 lg:grid-cols-3 lg:gap-4">{industrySources.map((source, i) => <li key={i} className="min-w-0">{source.text}<sup><a href={source.href} target="_blank" rel="noreferrer" aria-label={`Source ${i + 1}: ${source.source}`} title={source.source} className="er-source inline-flex min-h-11 min-w-6 items-center justify-center font-semibold text-primary underline">{i + 1}</a></sup></li>)}</ul>
+    <h1 className="m-0 max-w-[85ch] text-base font-semibold leading-6 sm:text-xl sm:leading-7">Short-paid bills sit unowned for <a className="text-primary underline" href={industrySources[1]?.href} target="_blank" rel="noreferrer">41 days</a> on average, then get quietly written off. I built the desk that gives every missing rupee an owner on Day 0, with ₹0 silent write-offs.</h1>
+    <p className="mb-0 mt-2 text-[10px] text-muted-foreground">41 days is published average resolution time, not measured time without an owner. Portfolio case study · sample data.</p>
   </section>;
 }
 
@@ -90,11 +89,34 @@ export function NumbersBand({ w, approvals }: { w: Workspace; approvals?: SalesA
 }
 
 export function DesignDecisions() {
-  return <details className="er-decisions mt-4 rounded-lg border border-border bg-card px-3"><summary className="cursor-pointer py-3 text-sm font-semibold">Why I built it this way</summary><ul className="mb-3 grid list-none gap-2 p-0 text-xs leading-5">{[
+  return <div className="mt-4 grid gap-3 lg:grid-cols-2"><details className="er-decisions rounded-lg border border-border bg-card px-3"><summary className="cursor-pointer py-3 text-sm font-semibold">Why I built it this way</summary><ul className="mb-3 grid list-none gap-2 p-0 text-xs leading-5">{[
     'No automatic write-offs: silent write-offs are where margin disappears.',
     'Strict bill-number matching, no guessing: a wrong match is worse than a held payment.',
     'Two people above ₹10,000: small gaps close fast, big ones get a second check.',
     'ServiceNow simulated, not integrated: shows the workflow shape without pretending to have access.',
     'Validate first: interview 3 AR teams on deduction ageing before building more.',
-  ].map(text => <li key={text}>{text}</li>)}</ul></details>;
+  ].map(text => <li key={text}>{text}</li>)}</ul><p className="mb-3 text-xs leading-5">What I'd do differently: I set the ₹10,000 two-person limit from experience, not data; a pilot would size it against the customer's gap distribution.</p></details><ReadyFromDayOne /></div>;
+}
+
+const auditSource = 'https://cajournal.icai.org/article-details/audit-trail-requirements-responsibilities';
+export function BeforeAfterScorecard() {
+  const impact = computeDeskImpact(autoMatch(benchmarkWorkspace()), benchmarkApprovals());
+  const rows = [
+    ['Short payment spotted', '7–14 days after it happens · The Hackett Group CPG baseline (previously cited; not independently verified)', 'Day 0, when the bank file is imported and exact references are matched', 'Enforced', 'https://www.thehackettgroup.com/'],
+    ['Bills checked by hand', '22 min each, every bill · APQC baseline (previously cited; not independently verified)', `${impact.autoTriagedBills} of ${impact.totalBills} auto-triaged, ~${(impact.manualMinutesSaved / 60).toFixed(1)} h saved per ${impact.totalBills} bills · 20 min saving assumption`, 'Computed', 'https://www.apqc.org/resource-library'],
+    ['Silent write-offs', '87% of enterprises auto-write off some short-pays · Attain/CRF 2021 survey', '₹0, blocked by rule BR-4', 'Enforced', industrySources[1]?.href],
+    ['Gaps over ₹10,000', 'One person decides · illustrative baseline, not published industry data', 'Two people, and nobody approves their own (BR-5); full workflow in linked canonical desk', 'Enforced', 'https://everyrupee-o2c.vercel.app/desk.html'],
+    ['Edited history', 'Since FY24 auditors must report whether the audit trail “has not been tampered with”', 'Hash-chained history, daily anchor drill, caught in one click · auditor sharing simulated', 'Enforced', auditSource],
+    ['Time to resolve a deduction', '41 days average · HighRadius', 'Owner on Day 0; 3–7 days · pilot target, not achieved customer results', 'Pilot target', industrySources[1]?.href],
+  ];
+  return <section className="er-scorecard py-3" aria-label="Before → after scorecard"><h2 className="mb-2 text-sm font-semibold">Before → after</h2><table className="w-full text-left text-xs"><thead><tr>{['What changes', 'Before (published)', 'With Every Rupee', 'Type'].map(t => <th className="border-b border-border p-2" key={t}>{t}</th>)}</tr></thead><tbody>{rows.map(([what, before, after, type, href]) => <tr key={what}><th className="border-b border-border p-2 font-semibold" scope="row">{what}</th><td className="border-b border-border p-2" data-label="Before"><a href={href} target="_blank" rel="noreferrer" className="underline">{before}</a></td><td className="border-b border-border p-2" data-label="With Every Rupee">{after}</td><td className="border-b border-border p-2"><span className={`inline-block rounded px-2 py-1 font-semibold ${type === 'Enforced' ? 'bg-money-ok/10 text-money-ok' : type === 'Computed' ? 'er-computed-tag' : 'bg-money-wip/10 text-money-wip'}`}>{type}</span></td></tr>)}</tbody></table><p className="mb-0 mt-2 text-[10px] leading-4 text-muted-foreground">Enforced = a rule with a test. Computed = from this sample. Pilot target = what I'd prove with a real AR team. I don't claim results from customers I don't have. Full maker-checker: <a className="underline" href="https://everyrupee-o2c.vercel.app/desk.html">canonical desk</a>; this single-account demo blocks unsupported high-value resolution.</p><details className="mt-2 text-xs"><summary className="cursor-pointer py-2">Published industry data · supporting sources</summary><ul className="grid gap-2">{industrySources.map(s => <li key={s.href + s.text}><a className="underline" href={s.href} target="_blank" rel="noreferrer">{s.text} · {s.source}</a></li>)}</ul></details></section>;
+}
+
+export function AuditFraming() {
+  return <div className="my-3 text-xs leading-5"><h3 className="text-sm font-semibold">SHA-256 record: the better fit</h3><p className="my-1">Designed around the MCA audit-trail standard for receivables and credit notes, which are books of account: since FY 2023-24, accounting software must keep an edit log that can't be disabled, and the auditor reports whether it was tampered with (<a href={auditSource} className="underline" target="_blank" rel="noreferrer">Rule 3(1), Rule 11(g); 8-year retention</a>).</p><p className="my-1">Tamper-evident, not tamper-proof: uses independent digest comparison, as in <a className="underline" href="https://learn.microsoft.com/en-us/sql/relational-databases/security/ledger/ledger-overview" target="_blank" rel="noreferrer">Microsoft's SQL Ledger</a>, not its full protection model. It supports the auditor's Rule 11(g) check; it is not a compliance certificate.</p><p className="my-1 text-muted-foreground">Daily anchor and auditor delivery are simulated in this session. No statutory delivery, disabled-log enforcement or 8-year retention service is implemented.</p></div>;
+}
+
+function ReadyFromDayOne() {
+  const rows = [['Requirements', '25+ BRDs/FRDs; templates cut clarification queries 25%', '16 rules written as testable specs'], ['UAT & releases', '20+ UAT cycles, 95% of defects fixed pre-release', '31 acceptance tests, runnable on the canonical case study'], ['Controls', 'Maker-checker; zero findings across 4–5 SOX audits', 'Two-person approval, no write-offs, sealed record'], ['Change management', 'ServiceNow change requests with PVT sign-off', 'Rule change requests through ServiceNow ITIL Change · simulated'], ['KPIs & MIS', 'Weekly MIS of 15+ KPIs; prep 8h → 3h', 'The before → after scorecard']];
+  return <details className="rounded-lg border border-border bg-card px-3"><summary className="cursor-pointer py-3 text-sm font-semibold">Ready from day one</summary><p className="text-[10px] text-muted-foreground">HDFC Bank figures: builder-reported experience. Rules and 31 acceptance tests: linked canonical desk, not customer results.</p><div className="er-readiness grid text-xs">{['Your team needs', 'I did it at HDFC Bank', 'Visible here'].map(h => <strong className="hidden border-b border-border py-2 lg:block" key={h}>{h}</strong>)}{rows.map(([need, did, visible]) => <div className="contents" key={need}><strong className="border-b border-border py-2">{need}</strong><p className="m-0 border-b border-border py-2">{did}</p><p className="m-0 border-b border-border py-2">{visible}</p></div>)}</div><p className="my-3 text-xs leading-5">Week one with your team: map your deduction flow, write the rules, run UAT with three users.</p><Button size="sm" variant="outline" asChild><a href="mailto:rupakr2g@gmail.com">Let's talk</a></Button></details>;
 }
