@@ -44,3 +44,4 @@ use the editor.
 
 - Receivables proof panels share one tab state below the tables; summary shortcuts and tour targets open that state, while per-25-bill savings use the shared benchmark engine to avoid conflicting estimates.
 - Presentation numbers use current allocations and shared approval checks, excluding unmatched invoices from flagged leakage; the root mounts one end-of-page builder strip and shared drawer headers keep sample actions in their owning workspace.
+- Audit-drill anchors are session-only independent snapshots; legitimate appends verify the checkpoint prefix, while simulated rule releases never change the live approval limit or claim auditor delivery.
