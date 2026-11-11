@@ -11,7 +11,7 @@ describe('weekly MIS', () => {
     expect(rows.every(r => r.status === 'NO DATA YET')).toBe(true);
   });
   it('fails history when altered and counts batch owners', () => {
-    const rows = computeMis(benchmarkWorkspace(), { sealedEntries: 5, intact: false }, new Date('2026-10-20'), benchmarkApprovals());
+    const rows = computeMis(autoMatch(benchmarkWorkspace()), { sealedEntries: 5, intact: false }, new Date('2026-10-20'), benchmarkApprovals());
     expect(rows[7]!.status).toBe('FAIL');
     expect(rows[0]!.value).toMatch(/of/);
   });
