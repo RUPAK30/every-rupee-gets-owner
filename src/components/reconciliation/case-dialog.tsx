@@ -207,8 +207,8 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-stretch">
             {log.map((l, k) => {
               const node = chainNodes[k];
-              const edited = activeBrokenAt !== undefined && k === activeBrokenAt;
-              const later = activeBrokenAt !== undefined && k > activeBrokenAt;
+              const edited = check?.reason !== 'anchor_mismatch' && activeBrokenAt !== undefined && k === activeBrokenAt;
+              const later = check?.reason === 'anchor_mismatch' || (activeBrokenAt !== undefined && k > activeBrokenAt);
               return <div key={k} className="flex flex-1 items-center gap-2">
                 <div className={`flex h-full w-full flex-col justify-between rounded-xl border p-3 text-xs shadow-2xs transition ${edited ? 'border-destructive bg-destructive/5 ring-2 ring-destructive/20' : later ? 'border-[#D97706] bg-[#FFFBEB]' : 'border-border bg-white'}`}>
                   <div>

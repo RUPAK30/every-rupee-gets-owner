@@ -43,7 +43,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [deskAdminRewrite, setDeskAdminRewrite] = useState(false);
   const [deskBlocks, setDeskBlocks] = useState<LogEntry[]>([]);
   const [deskNodes, setDeskNodes] = useState<ChainNodeCheck[]>([]);
-  const [deskCheck, setDeskCheck] = useState<{ ok: boolean; text: string; brokenAt?: number } | null>(null);
+  const [deskCheck, setDeskCheck] = useState<{ ok: boolean; text: string; brokenAt?: number; anchorMismatch?: boolean } | null>(null);
   const [deskEditing, setDeskEditing] = useState(false);
   const [deskBlockIdx, setDeskBlockIdx] = useState(0);
   const [deskBlockText, setDeskBlockText] = useState('');
@@ -69,7 +69,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     const [r, nodes] = await Promise.all([verifyLogWithAnchor('DESK-RECORD', blocks, deskAnchor.current?.hash, deskAnchor.current?.count), inspectLogChain('DESK-RECORD', blocks)]);
     setDeskNodes(nodes);
     if (r.ok) setDeskCheck({ ok: true, text: `✓ All ${blocks.length} blocks verified: every stored SHA-256 fingerprint matches its recomputed hash and upstream link.` });
-    else if (r.reason === 'anchor_mismatch') setDeskCheck({ ok: false, brokenAt: r.brokenAt, text: '✗ Whole chain rewritten: no longer matches the anchor shared with the auditor. (Simulated sharing)' });
+    else if (r.reason === 'anchor_mismatch') setDeskCheck({ ok: false, anchorMismatch: true, text: '✗ Whole chain rewritten: no longer matches the anchor shared with the auditor. (Simulated sharing)' });
     else setDeskCheck({ ok: false, brokenAt: r.brokenAt, text: `✗ Tamper detected at Block #${r.brokenAt + 1}: stored fingerprint (${blocks[r.brokenAt]?.hash?.slice(0, 8)}) ≠ recomputed SHA-256 (${nodes[r.brokenAt]?.recomputedHash.slice(0, 8)}).${r.brokenAt < blocks.length - 1 ? ` Downstream blocks #${r.brokenAt + 2}..#${blocks.length} cascade-invalidated.` : ''}` });
   };
   const saveDeskTamper = async () => {
@@ -243,7 +243,8 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             <span className="text-muted-foreground">· one record for the whole team · {deskBlocks.length} blocks</span>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <button type="button" onClick={() => void verifyDeskRecord()} className="rounded-lg bg-[#059669] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#047857]">Verify record</button>
+            <Button size="sm" disabled={!deskBlocks.length} onClick={() => void verifyDeskRecord()}>Verify record</Button>
+            <Button size="sm" variant="outline" disabled={openingHistory} onClick={() => void openSampleHistory()}>Open sample approval record</Button>
             <button type="button" onClick={() => { setDeskBlockIdx(0); setDeskBlockText(deskBlocks[0]?.text ?? ''); setDeskEditing(v => !v); }} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted/40">Try tampering yourself</button>
             {deskUndo && <button type="button" onClick={() => void restoreDeskRecord()} className="rounded-lg border border-[#059669]/40 bg-white px-3 py-1.5 text-xs font-semibold text-[#059669] hover:bg-[#ECFDF5]">↺ Restore original</button>}
           </div>
@@ -256,7 +257,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             const brokenAt = deskCheck && !deskCheck.ok ? deskCheck.brokenAt : undefined;
             const hasBreak = brokenAt !== undefined && brokenAt >= 0;
             const isEdited = hasBreak && k === brokenAt;
-            const isCascade = hasBreak && k > (brokenAt ?? -1);
+            const isCascade = deskCheck?.anchorMismatch || (hasBreak && k > (brokenAt ?? -1));
             return <div key={k} className="flex flex-1 items-center gap-2">
               <div className={`flex h-full w-full flex-col justify-between rounded-xl border p-3 text-xs shadow-2xs transition ${isEdited ? 'border-destructive bg-destructive/5 ring-2 ring-destructive/20' : isCascade ? 'border-[#D97706] bg-[#FFFBEB]' : 'border-border bg-white'}`}>
                 <div>
