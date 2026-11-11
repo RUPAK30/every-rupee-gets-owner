@@ -157,7 +157,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   }
   useEffect(() => { const query = new URLSearchParams(window.location.search); if (demo && query.get('batch') === '25') { setBatchMode('benchmark'); setW(autoMatch(benchmarkWorkspace())); } if (demo && query.get('export') === '1') download('everyrupee-workspace.json', JSON.stringify(initial, null, 2)); }, [demo, initial]);
   const escalations = evaluated.invoices.filter(i => invoiceBalance(evaluated, i.id) > 0 && !['covered', 'paid'].includes(approvalCheck(evaluated, i.id, approvals).status)).length;
-  return <div className={`er-app ${demo ? 'er-receivables-demo' : ''} min-h-screen bg-background text-foreground`}>
+  return <div className={`er-app ${demo ? 'er-receivables-demo' : 'min-h-screen'} bg-background text-foreground`}>
     {demo ? <PresentationHeader onTour={() => { setTour(0); setBatchMode('starter'); setW(initial); }} onBatch={toggleBatch} benchmark={batchMode === 'benchmark'} onReset={() => setReset(true)} onExport={() => download('everyrupee-workspace.json', JSON.stringify(w, null, 2))} /> : <header className="border-b border-border bg-card px-4 py-3"><div className="mx-auto flex max-w-7xl items-center justify-between"><Link to="/">Every Rupee</Link><Button variant="outline" onClick={onSignOut}>Sign out</Button></div></header>}
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
       {demo && <><IndustryHook /><NumbersBand w={w} approvals={approvals} /><BuilderStrip /></>}
