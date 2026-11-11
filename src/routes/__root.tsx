@@ -135,6 +135,7 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function RootComponent() {
+  const isHomepage = useImportedMatches({ select: matches => matches.some(match => match.routeId === '/') });
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
   const [signedIn, setSignedIn] = useState(false);
@@ -154,7 +155,7 @@ function RootComponent() {
       <AccountContext.Provider value={{ signedIn }}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
-      <BuilderStrip />
+      {!isHomepage && <BuilderStrip />}
       </AccountContext.Provider>
     </QueryClientProvider>
   );

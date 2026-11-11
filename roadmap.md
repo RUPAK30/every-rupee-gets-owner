@@ -1,4 +1,5 @@
 # Roadmap
+- [x] Homepage 10-second pass: compact promise/actions/tiles, sourced facts and folded details; demo starts at desk; all 37 tests pass, clean preview checks, single homepage builder strip, phone/desktop matching and no overflow verified. Daily anchoring remains explicitly a session drill, not statutory certification.
 - [x] Apply uploaded framing: first-person hook, scorecard, anchored rewrite drill, sealed approval lookup, dispute/rule-change separation and Day One evidence; 37 tests pass, phone/desktop widths and new workflows verified; auditor delivery and releases labelled simulated.
 - [x] Import the supplied EveryRupee home page.
 - [x] Compare desktop and phone sections and primary controls with the source; repair confirmed mismatches.

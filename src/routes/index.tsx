@@ -3,8 +3,8 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { Button } from '@/components/ui/button';
 import { ShieldCheck } from 'lucide-react';
 import { DemoRequest } from '@/components/reconciliation/demo-request';
-import { PresentationHeader, IndustryHook, NumbersBand, BuilderStrip, BeforeAfterScorecard, DesignDecisions } from '@/components/reconciliation/presentation';
-import { sampleWorkspace } from '@/lib/reconciliation/engine';
+import { PresentationHeader, BuilderStrip, BeforeAfterScorecard, DesignDecisions } from '@/components/reconciliation/presentation';
+import { autoMatch, benchmarkWorkspace, benchmarkApprovals, computeDeskImpact } from '@/lib/reconciliation/engine';
 import capturedCSS from "../styles/site.css?raw";
 
 export const Route = createFileRoute("/")({
@@ -58,9 +58,9 @@ function Index() {
       </div>
       <PresentationHeader />
       <main className="col my-0 mx-auto max-w-[1040px]">
-        <div className="er-app er-home-intro pt-4"><p className="mb-2 text-xs font-semibold text-primary">Every Rupee · Portfolio case study · sample data</p><IndustryHook /><BeforeAfterScorecard /><NumbersBand w={sampleWorkspace()} /><BuilderStrip /></div>
+        <HomepagePromise />
         <ImportedSectionADistributorPaysShort />
-        <QuickTour /><div className="er-app"><DesignDecisions /></div>
+        <details id="detail-how" className="er-app border-b border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">How it works · 3 steps</summary><QuickTour /></details><div className="er-app"><DesignDecisions /></div>
         <details className="er-app border-y border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">Lender desk</summary><CanonicalWorkflows /></details>
         <details className="er-app border-b border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">ServiceNow simulated workflow</summary><ServiceNowITILSection /></details>
         <ImportedSectionOpenWhatYouCare openDetails={openDetails} setOpenDetails={setOpenDetails} deadline={deadline} />
@@ -70,6 +70,32 @@ function Index() {
       <a href="#contact" className="hidden">Let's talk</a>
     </div>
   );
+}
+
+function HomepagePromise() {
+  const impact = computeDeskImpact(autoMatch(benchmarkWorkspace()), benchmarkApprovals());
+  const tiles = [
+    ['Short payment spotted', 'days later', 'Day 0', 'Enforced'],
+    ['Bills checked by hand', `all ${impact.totalBills}`, `${impact.autoTriagedBills} of ${impact.totalBills} auto`, 'Computed'],
+    ['Silent write-offs', 'quietly absorbed', '₹0', 'Enforced'],
+    ['“Who changed this?”', 'nobody knows', '1 click', 'Enforced'],
+  ];
+  const source = 'https://www.highradius.com/finsider/deduction-metrics-enterprises/';
+  return <section className="er-app er-home-promise" aria-label="Every Rupee at a glance">
+    <h1>Every missing rupee gets an owner on Day 0. ₹0 silent write-offs. No history rewritten later.</h1>
+    <p className="er-promise-audience">For finance teams where customers pay short and the gap sits unowned.</p>
+    <div className="er-promise-actions"><Button asChild><Link to="/demo">Try the live product →</Link></Button><Button variant="outline" asChild><a href="/demo?tour=1">▶ 60-sec tour</a></Button><Button variant="ghost" asChild><a href="mailto:rupakr2g@gmail.com">Let's talk</a></Button></div>
+    <div className="er-promise-tiles">{tiles.map(([label, old, value, tag]) => <article key={label}><h2>{label}</h2><p className="er-old-state"><s>{old}</s><span aria-hidden="true"> →</span></p><p className="er-new-state">{value}</p><span className={tag === 'Computed' ? 'er-computed-tag' : 'er-enforced-tag'}>{tag}</span></article>)}</div>
+    <p className="er-promise-seal">🔒 Recorded case actions are sealed with SHA-256; the daily anchor is a session-only drill. One click identifies a changed entry and its untrusted successors—supporting, not certifying, the auditor’s Rule 11(g) check.</p>
+    <div className="er-promise-stats">{[
+      ['41 days', 'average to resolve a deduction', 'HighRadius', source],
+      ['87%', 'of enterprises auto-write off some short-pays', 'Attain/CRF 2021 survey', source],
+      ['FY24', 'auditors must report whether the audit trail was tampered with', 'ICAI · Rule 11(g)', 'https://cajournal.icai.org/article-details/audit-trail-requirements-responsibilities'],
+    ].map(([number, meaning, label, href]) => <article key={number}><strong>{number}</strong><p>{meaning}</p><a href={href} target="_blank" rel="noreferrer">{label} ↗</a></article>)}</div>
+    <p className="er-promise-key">Enforced = a rule with a test · Computed = from the 25-bill sample · Pilot target = what I'd prove with a real AR team. Sample data; no customer results claimed.</p>
+    <BuilderStrip compact />
+    <details className="border-b border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">Sources, numbers &amp; trust tags</summary><BeforeAfterScorecard /></details>
+  </section>;
 }
 
 const steps = [
