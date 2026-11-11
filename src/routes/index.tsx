@@ -86,7 +86,7 @@ function HomepagePromise() {
     <p className="er-promise-audience">For finance teams where customers pay short and the gap sits unowned.</p>
     <div className="er-promise-actions"><Button asChild><Link to="/demo">Try the live product →</Link></Button><Button variant="outline" asChild><a href="/demo?tour=1">▶ 60-sec tour</a></Button><Button variant="ghost" asChild><a href="mailto:rupakr2g@gmail.com">Let's talk</a></Button></div>
     <div className="er-promise-tiles">{tiles.map(([label, old, value, tag]) => <article key={label}><h2>{label}</h2><p className="er-old-state"><s>{old}</s><span aria-hidden="true"> →</span></p><p className="er-new-state">{value}</p><span className={tag === 'Computed' ? 'er-computed-tag' : 'er-enforced-tag'}>{tag}</span></article>)}</div>
-    <p className="er-promise-seal">🔒 Recorded case actions are sealed with SHA-256; the daily anchor is a session-only drill. One click identifies a changed entry and its untrusted successors—supporting, not certifying, the auditor’s Rule 11(g) check.</p>
+    <p className="er-promise-seal">🔒 <b>Every case is sealed (SHA-256) and anchored daily.</b> If anyone later edits a reason, owner or amount, one click shows which entry changed. It supports the auditor’s Rule 11(g) check (demo: anchor kept in this session).</p>
     <div className="er-promise-stats">{[
       ['41 days', 'average to resolve a deduction', 'HighRadius', source],
       ['87%', 'of enterprises auto-write off some short-pays', 'Attain/CRF 2021 survey', source],
