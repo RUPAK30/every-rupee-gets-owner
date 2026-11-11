@@ -13,7 +13,7 @@ const fmtTime = (d: string) => new Date(d).toLocaleTimeString('en-IN', { hour: '
 export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = false, onClose, change: rawChange }: Props) {
   const historyRef = useRef<HTMLDivElement>(null);
   const change = (next: Data, msg?: string) => { void Promise.all(next.exceptions.map(async x => x.log ? { ...x, log: await sealLog(x.invoiceId, x.log) } : x)).then(exceptions => rawChange({ ...next, exceptions }, msg)); };
-  const [check, setCheck] = useState<{ ok: boolean; text: string; brokenAt?: number; reason?: string; expectedAnchor?: string; actualAnchor?: string } | null>(null);
+  const [check, setCheck] = useState<{ ok: boolean; text: string; brokenAt?: number; reason?: string; expectedAnchor?: string | undefined; actualAnchor?: string | undefined } | null>(null);
   const [chainNodes, setChainNodes] = useState<ChainNodeCheck[]>([]);
   const [anchorHash, setAnchorHash] = useState<string | undefined>(undefined);
   const [editingRow, setEditingRow] = useState(false);
@@ -21,6 +21,10 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const [entryText, setEntryText] = useState('');
   const [originalTexts, setOriginalTexts] = useState<Record<number, string>>({});
   const [undoLog, setUndoLog] = useState<LogEntry[] | null>(null);
+  const [snType, setSnType] = useState<'Normal' | 'Emergency'>('Normal');
+  const [snExpanded, setSnExpanded] = useState(false);
+  const [snProofAttached, setSnProofAttached] = useState(false);
+  const [snPvtSigned, setSnPvtSigned] = useState(false);
   const [actor, setActor] = useState('Asha');
   const [reason, setReason] = useState('Unexplained');
   const [owner, setOwner] = useState('');
