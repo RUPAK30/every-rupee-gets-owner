@@ -61,7 +61,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
   const [showPayload, setShowPayload] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  // Live ServiceNow Instance Connection / Auth State
+  // Simulated ServiceNow Instance Connection / Auth State
   const [showAuthConfig, setShowAuthConfig] = useState(false);
   const [instanceUrl, setInstanceUrl] = useState('https://dev214912.service-now.com');
   const [authEmail, setAuthEmail] = useState('admin@corp.finance.internal');
@@ -96,7 +96,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
     setTimeout(() => {
       setTestingPing(false);
       setAuthConnected(true);
-      setPingNotice('✓ Connected: HTTP 200 OK — OAuth Token Valid & Table API Scope Active (change_request + sys_attachment)');
+      setPingNotice('Simulation checked · ServiceNow Table API format; no connection made.');
     }, 600);
   };
 
@@ -145,10 +145,10 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
                 </svg>
               </div>
               <div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-base font-bold text-white m-0 tracking-tight">ServiceNow ITIL Change Management</h2>
                   <span className="rounded-full bg-teal-400/20 px-2 py-0.5 text-[0.65rem] font-bold text-teal-200 border border-teal-300/30">
-                    LIVE REST API SYNC
+                    Simulated · ServiceNow Table API format
                   </span>
                 </div>
                 <p className="text-xs text-teal-100/80 m-0 mt-0.5">
@@ -179,10 +179,10 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
               <div className="flex items-center justify-between gap-2 pb-2 border-b border-teal-800/60">
                 <div className="flex items-center gap-1.5 font-bold text-teal-200">
                   <Server className="size-3.5" />
-                  <span>ServiceNow Live Instance Connection &amp; Credentials</span>
+                  <span>ServiceNow simulated instance connection &amp; Credentials</span>
                 </div>
                 <span className="rounded bg-teal-500/20 px-2 py-0.5 text-[0.65rem] font-bold text-teal-300">
-                  {authConnected ? 'Connected' : 'Disconnected'}
+                  {authConnected ? 'Simulation ready' : 'Not checked'}
                 </span>
               </div>
               <div className="mt-2.5 grid gap-2.5 sm:grid-cols-3">
@@ -219,7 +219,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
               </div>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-teal-800/60">
                 <span className="text-[0.68rem] text-teal-200/70">
-                  Used by Every Rupee to dispatch live <code>change_request</code> &amp; upload documents via <code>sys_attachment</code>.
+                  A connected service would dispatch <code>change_request</code> &amp; upload documents via <code>sys_attachment</code>.
                 </span>
                 <Button
                   type="button"
@@ -274,8 +274,8 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
                 <span>START DATE</span>
                 <Clock className="size-3.5 text-sky-600" />
               </div>
-              <p className="m-0 mt-1 font-bold text-foreground text-xs">10 Nov 2026 (Today)</p>
-              <p className="m-0 text-[0.68rem] text-emerald-600 font-semibold mt-0.5">Dispatched automatically</p>
+              <p className="m-0 mt-1 font-bold text-foreground text-xs">10 Nov 2026 (sample)</p>
+              <p className="m-0 text-[0.68rem] text-emerald-600 font-semibold mt-0.5">Illustrative dispatch</p>
             </div>
 
             <div className="rounded-xl border border-border p-3 bg-background">
@@ -286,7 +286,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
               <p className="m-0 mt-1 font-bold text-foreground text-xs">
                 {ticketType === 'Emergency' ? '12 Nov 2026' : '17 Nov 2026'}
               </p>
-              <p className="m-0 text-[0.68rem] text-muted-foreground mt-0.5">SLA TAT Active</p>
+              <p className="m-0 text-[0.68rem] text-muted-foreground mt-0.5">Illustrative SLA</p>
             </div>
 
             <div className={`rounded-xl border p-3 ${isClosed ? 'border-emerald-500/40 bg-emerald-50/50' : 'border-amber-500/40 bg-amber-50/40'}`}>
@@ -444,7 +444,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
         </div>
 
         {/* Modal Actions */}
-        <div className="p-4 bg-muted/40 border-t border-border flex items-center justify-between">
+        <div className="p-4 bg-muted/40 border-t border-border flex flex-wrap gap-3 items-center justify-between">
           <div className="text-xs text-muted-foreground">
             {isClosed ? (
               <span className="font-semibold text-emerald-700">✓ All 3 gates passed. Ticket is closed and resolved.</span>
