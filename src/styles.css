@@ -356,3 +356,6 @@
   .er-readiness strong { border: 0; padding-bottom: 0; }
   .er-readiness p { padding-top: 4px; }
 }
+
+:root { --proof-computed: oklch(0.48 0.16 250); --proof-computed-surface: oklch(0.96 0.025 250); }
+.er-computed-tag { color: var(--proof-computed); background: var(--proof-computed-surface); }
