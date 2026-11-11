@@ -287,7 +287,11 @@
 .er-builder a { color: var(--foreground); }
 .er-builder p > a { display: inline; }
 .er-industry .er-source { min-width: 44px; vertical-align: middle; margin-top: -16px; margin-bottom: -16px; }
-.er-home-intro h1 { font-size: 18px; line-height: 26px; }
+.er-home-intro .er-industry h1 { font-size: 18px !important; line-height: 26px !important; letter-spacing: 0 !important; margin: 0 !important; text-align: left !important; max-width: 85ch !important; }
+.er-presentation-header a { text-decoration: none !important; }
+.er-presentation-header a.bg-primary { color: var(--primary-foreground) !important; }
+.er-presentation-header a:not(.bg-primary) { color: var(--foreground) !important; }
+.er-presentation-header [aria-label="Open menu"] { border: none; }
 .er-home-intro h2, .er-home-intro h3, .er-home-intro p { letter-spacing: 0; }
 @media (max-width: 640px) {
   .er-receivables-demo button, .er-receivables-demo input, .er-receivables-demo select,
@@ -317,6 +321,7 @@
   .er-numbers > div > div > p:nth-child(2) { font-size: 18px; line-height: 24px; margin: 2px 0; }
   .er-numbers > div > div > p:nth-child(3) { font-size: 11px; line-height: 14px; }
   .er-industry h1 { font-size: 15px; line-height: 20px; }
+  .er-home-intro .er-industry h1 { font-size: 15px !important; line-height: 20px !important; }
   .er-industry { padding-bottom: 8px; }
   .er-industry ul { font-size: 10px; line-height: 14px; gap: 3px; }
 }
