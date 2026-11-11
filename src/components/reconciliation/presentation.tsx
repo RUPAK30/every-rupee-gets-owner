@@ -74,8 +74,8 @@ export function NumbersBand({ w, approvals }: { w: Workspace; approvals?: SalesA
   const identifiedGaps = w.invoices.filter(i => w.allocations.some(a => a.invoiceId === i.id)).reduce((s, i) => s + i.amount - w.allocations.filter(a => a.invoiceId === i.id).reduce((sum, a) => sum + a.amount, 0), 0);
   const leakageRatio = identifiedGaps > 0 ? n.leakageStoppedPaise / identifiedGaps : 0;
   const triageRatio = n.totalBills > 0 ? n.autoTriagedBills / n.totalBills : 0;
-  const monthlyLeakage = Math.round((Number(shorts) || 0) * 100 * leakageRatio);
-  const monthlyMinutes = (Number(bills) || 0) * triageRatio * 20;
+  const monthlyLeakage = Math.round(Math.max(0, Number(shorts) || 0) * 100 * leakageRatio);
+  const monthlyMinutes = Math.max(0, Number(bills) || 0) * triageRatio * 20;
   const tiles = [
     { label: 'Cash identified', value: n.cashIdentifiedPaise, meaning: 'Cash you can count on, so DSO drops.', how: 'How: sum of cash paired with bills; matching alone does not change DSO.' },
     { label: 'Leakage stopped', value: n.leakageStoppedPaise, meaning: 'Margin kept.', how: 'How: unapproved, over-cap or expired gaps flagged for Sales; not recovered cash.' },
