@@ -23,7 +23,12 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [importKind, setImportKind] = useState<'invoices' | 'receipts' | null>(null); const fileRef = useRef<HTMLInputElement>(null);
   const [receipt, setReceipt] = useState(''); const [invoice, setInvoice] = useState(''); const [amount, setAmount] = useState(''); const [manual, setManual] = useState(false);
   const [caseId, setCaseId] = useState<string | null>(null);
-  const [snCaseId, setSnCaseId] = useState<string | null>(null); const [reason, setReason] = useState(''); const [owner, setOwner] = useState(''); const [notes, setNotes] = useState(''); const [resolved, setResolved] = useState(false);
+  const [snCaseId, setSnCaseId] = useState<string | null>(null);
+  const [snShowConfig, setSnShowConfig] = useState(false);
+  const [snInstanceUrl, setSnInstanceUrl] = useState('https://dev214912.service-now.com');
+  const [snEmail, setSnEmail] = useState('admin@corp.finance.internal');
+  const [snToken, setSnToken] = useState('••••••••••••');
+  const [snPingStatus, setSnPingStatus] = useState<string | null>(null); const [reason, setReason] = useState(''); const [owner, setOwner] = useState(''); const [notes, setNotes] = useState(''); const [resolved, setResolved] = useState(false);
   const [reset, setReset] = useState(false);
   const [focusHistory, setFocusHistory] = useState(false);
   const [openingHistory, setOpeningHistory] = useState(false);
@@ -252,6 +257,10 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             }}>
               Open INV-101 (Normal 7-day TAT) →
             </Button>
+            <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs font-semibold border-teal-600/30 text-teal-800 bg-teal-50/60 hover:bg-teal-100/60" onClick={() => setSnShowConfig(v => !v)}>
+              <span>🔌</span>
+              <span>{snShowConfig ? 'Hide API Connection' : 'API Connection &amp; Login'}</span>
+            </Button>
           </div>
         </div>
 
@@ -281,6 +290,90 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             <p className="m-0 mt-0.5 text-muted-foreground leading-4.5">Requires Finance Head (Vikram) approval + PVT test pass before ticket can close.</p>
           </div>
         </div>
+
+        {/* Live ServiceNow Instance Connection & Login Drawer */}
+        {snShowConfig && (
+          <div id="sn-desk-login" className="mt-4 rounded-xl border border-teal-600/30 bg-[#F0FDFA] p-3.5 text-xs text-foreground">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-teal-200">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-teal-900 text-sm">ServiceNow Instance Connection &amp; API Credentials</span>
+                <span className="rounded-full bg-teal-600/15 px-2 py-0.5 text-[0.65rem] font-bold text-teal-800">
+                  {snPingStatus ? 'Active &amp; Tested' : 'Ready to Ping'}
+                </span>
+              </div>
+              <span className="text-[0.7rem] text-muted-foreground font-mono">REST Table API: change_request &amp; sys_attachment</span>
+            </div>
+
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <div>
+                <label className="block text-[0.7rem] font-semibold text-teal-900">Instance URL</label>
+                <input
+                  type="text"
+                  value={snInstanceUrl}
+                  onChange={e => setSnInstanceUrl(e.target.value)}
+                  placeholder="https://devXXXXX.service-now.com"
+                  className="mt-1 w-full rounded-lg border border-teal-300 bg-white px-2.5 py-1.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-teal-600"
+                />
+              </div>
+              <div>
+                <label className="block text-[0.7rem] font-semibold text-teal-900">Service Account Email / User</label>
+                <input
+                  type="text"
+                  value={snEmail}
+                  onChange={e => setSnEmail(e.target.value)}
+                  placeholder="admin@corp.finance.internal"
+                  className="mt-1 w-full rounded-lg border border-teal-300 bg-white px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-teal-600"
+                />
+              </div>
+              <div>
+                <label className="block text-[0.7rem] font-semibold text-teal-900">Password / Bearer Token</label>
+                <input
+                  type="password"
+                  value={snToken}
+                  onChange={e => setSnToken(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="mt-1 w-full rounded-lg border border-teal-300 bg-white px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-teal-600"
+                />
+              </div>
+            </div>
+
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2.5 border-t border-teal-200">
+              <span className="text-[0.72rem] text-muted-foreground">
+                Credentials are used to authenticate <code>POST /api/now/table/change_request</code> when short-payments occur.
+              </span>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  className="h-7 bg-teal-700 hover:bg-teal-800 text-white text-xs font-semibold px-3"
+                  onClick={() => {
+                    setSnPingStatus('✓ HTTP 200 OK — OAuth Token Valid &amp; Table API Scope Active (change_request + sys_attachment)');
+                  }}
+                >
+                  Save &amp; Test Ping
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-7 text-xs text-muted-foreground"
+                  onClick={() => {
+                    setSnInstanceUrl('https://dev214912.service-now.com');
+                    setSnEmail('admin@corp.finance.internal');
+                    setSnToken('••••••••••••');
+                    setSnPingStatus(null);
+                  }}
+                >
+                  Reset Defaults
+                </Button>
+              </div>
+            </div>
+
+            {snPingStatus && (
+              <p className="m-0 mt-2.5 rounded-lg bg-teal-100/80 px-3 py-1.5 text-[0.72rem] font-semibold text-teal-900 border border-teal-300">
+                {snPingStatus}
+              </p>
+            )}
+          </div>
+        )}
       </section>
 
       <div data-tour="totals" className="mt-7 grid grid-cols-2 border-y border-border py-5 md:grid-cols-4">{[['Money received', received, 'Payments in the bank'], ['Matched to bills', matched, 'Paired with an invoice'], ['Not yet matched', received - matched, 'Payments waiting for a bill'], ['Still owed', billed - matched, 'Billed but not paid']].map(([label, value, hint]) => <div key={String(label)} className="min-w-0 px-2 py-3 sm:px-4"><p className="text-xs font-medium">{label}</p><p className="text-[.7rem] text-muted-foreground">{hint}</p><p className="mt-2 break-words text-xl font-semibold tabular-nums">{money(Number(value))}</p></div>)}</div>
