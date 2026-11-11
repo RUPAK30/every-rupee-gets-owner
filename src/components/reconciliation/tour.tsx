@@ -21,14 +21,14 @@ export function Tour({ steps, step, setStep }: { steps: TourStep[]; step: number
   if (step === null || !current) return null;
   const last = step + 1 >= steps.length;
   const next = () => setStep(last ? null : step + 1);
-  return <div role="dialog" aria-label="Guided tour" className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-md rounded-2xl border border-border bg-card p-5 shadow-lg sm:right-6 sm:left-auto sm:bottom-6">
+  return <div role="dialog" aria-label="Guided tour" className="fixed inset-x-3 bottom-3 z-[1000000000] mx-auto max-w-md rounded-2xl border border-border bg-card p-5 shadow-lg sm:right-6 sm:left-auto sm:bottom-6">
     <div className="flex items-center justify-between text-xs text-muted-foreground"><span>60-second tour · step {step + 1} of {steps.length}</span><button type="button" className="underline" onClick={() => setStep(null)}>Close</button></div>
     <div className="mt-2 h-1 rounded-full bg-secondary"><div className="h-1 rounded-full bg-primary transition-all" style={{ width: `${((step + 1) / steps.length) * 100}%` }} /></div>
     <h2 className="mt-3 text-lg font-semibold">{current.title}</h2>
     <p className="mt-1 text-sm leading-6 text-muted-foreground">{current.text}</p>
     <div className="mt-4 flex flex-wrap justify-end gap-2">
       {step > 0 && <Button variant="ghost" onClick={() => setStep(step - 1)}><ArrowLeft />Back</Button>}
-      {current.run && ran.current !== step ? <Button onClick={() => { current.run!(); ran.current = step; window.setTimeout(next, 700); }}>{current.cta} <ArrowRight /></Button>
+      {current.run && ran.current !== step ? <Button onClick={() => { current.run?.(); ran.current = step; window.setTimeout(next, 700); }}>{current.cta} <ArrowRight /></Button>
         : <Button onClick={next}>{last ? 'Finish' : <>Next <ArrowRight /></>}</Button>}
     </div>
   </div>;

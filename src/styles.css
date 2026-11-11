@@ -255,3 +255,34 @@
 
 /* Guided tour spotlight */
 .er-tour-hl { position: relative; z-index: 55; background: var(--background); border-radius: 12px; box-shadow: 0 0 0 4px var(--primary), 0 0 0 9999px color-mix(in oklab, var(--foreground) 45%, transparent); transition: box-shadow .3s; }
+
+/* The demo keeps operational rows ahead of the optional proof panels. */
+.er-receivables-demo [role="tabpanel"] { min-width: 0; overflow-wrap: anywhere; }
+.er-receivables-demo #sn-gateway > div:first-child > div:first-child { min-width: 0; align-items: flex-start; }
+.er-receivables-demo #sn-gateway h3 + span { white-space: normal; }
+.er-receivables-demo #sn-gateway h3 { flex-shrink: 0; }
+.er-receivables-demo #sn-gateway > div:first-child > div:first-child > div > div { flex-wrap: wrap; }
+@media (max-width: 639px) {
+  .er-receivables-demo > header > div { padding: 8px 16px; gap: 4px; }
+  .er-receivables-demo > header > div > a { font-size: 14px; }
+  .er-receivables-demo > header > div > div { gap: 2px; }
+  .er-receivables-demo > header nav { padding: 2px; }
+  .er-receivables-demo > header nav a { padding: 4px 6px; font-size: 11px; }
+  .er-receivables-demo > header a:not([aria-current]), .er-receivables-demo > header button { min-height: 24px; height: 24px; padding: 2px 6px; font-size: 11px; }
+  .er-receivables-demo > main { padding-top: 8px; padding-bottom: 16px; }
+  .er-receivables-demo main > div:first-of-type { gap: 8px; }
+  .er-receivables-demo h1 { margin-top: 2px; font-size: 24px; }
+  .er-receivables-demo h1 + p { margin-top: 4px; font-size: 12px; line-height: 18px; }
+  .er-receivables-demo main > div:first-of-type > div:last-child { gap: 4px; }
+  .er-receivables-demo main > div:first-of-type > div:last-child button { padding: 4px 8px; height: 30px; font-size: 11px; }
+  .er-receivables-demo [aria-label="Desk summary"] { margin-top: 6px; }
+  .er-receivables-demo [aria-label="Do this next"] { margin-top: 10px; gap: 6px; }
+  .er-receivables-demo [aria-label="Do this next"] li { padding: 6px 8px; gap: 3px; border-radius: 8px; }
+  .er-receivables-demo [aria-label="Do this next"] li > div > span:first-child { width: 24px; height: 24px; }
+  .er-receivables-demo [aria-label="Do this next"] li p { font-size: 11px; line-height: 14px; }
+  .er-receivables-demo [aria-label="Do this next"] li button { height: 28px; }
+  .er-receivables-demo [data-tour="totals"] { margin-top: 12px; padding: 4px 0; }
+  .er-receivables-demo [data-tour="totals"] > div { padding: 3px 8px; }
+  .er-receivables-demo [data-tour="totals"] > div > p:nth-child(2) { font-size: 10px; line-height: 14px; }
+  .er-receivables-demo [data-tour="totals"] > div > p:last-child { margin-top: 2px; font-size: 18px; }
+}

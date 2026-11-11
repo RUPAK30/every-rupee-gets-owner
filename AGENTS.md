@@ -41,3 +41,5 @@ use the editor.
 
 - Lender return-code rules live in one shared module; AI explanations may only reword them and suggestions must be one of the allowed outcomes, logged only after a person confirms.
 - Demo history shortcuts create and seal four illustrative actions only on request, preserve existing fingerprints and workflow state, and focus History below Close it; the raw-row editor is session-only and demo-only so private records cannot be edited through the simulator.
+
+- Receivables proof panels share one tab state below the tables; summary shortcuts and tour targets open that state, while per-25-bill savings use the shared benchmark engine to avoid conflicting estimates.
