@@ -73,7 +73,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
   if (!open || !caseId || !inv) return null;
 
   const slaDays = ticketType === 'Emergency' ? 2 : 7;
-  const ticketNumber = `CHG-${ticketType === 'Emergency' ? 'EMG' : 'NRM'}-${caseId.replace('INV-', '')}`;
+  const ticketNumber = `DSP-${ticketType === 'Emergency' ? 'EMG' : 'NRM'}-${caseId.replace('INV-', '')}`;
   const sysId = `sn_${caseId.toLowerCase()}_9412`;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,13 +107,18 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
     number: ticketNumber,
     short_description: `Dispute Short-payment: ${caseId} (${inv.customer})`,
     category: "Financial Deduction",
+    cause: w.exceptions.find(e => e.invoiceId === caseId)?.reason ?? "Unexplained",
+    amount_paise: shortPaise,
+    owner: w.exceptions.find(e => e.invoiceId === caseId)?.owner ?? "Unassigned",
+    residual_item: caseId,
+    object_note: "Illustrative custom dispute table, not a standard SAP or ServiceNow endpoint",
     type: ticketType.toLowerCase(),
     priority: ticketType === 'Emergency' ? "1 - Critical" : "3 - Moderate",
     state: isClosed ? "Closed Complete" : (proofFile ? "Work in Progress" : "New"),
     start_date: "2026-11-10 09:00:00",
     end_date: ticketType === 'Emergency' ? "2026-11-12 18:00:00" : "2026-11-17 18:00:00",
     tat_breached: false,
-    endpoint: `${instanceUrl}/api/now/table/change_request`,
+    endpoint: `${instanceUrl}/api/now/table/u_dispute_case`,
     authenticated_user: authEmail,
     sys_attachment: proofFile ? {
       file_name: proofFile.fileName,
@@ -146,7 +151,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
               </div>
               <div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-base font-bold text-white m-0 tracking-tight">ServiceNow ITIL Change Management</h2>
+                  <h2 className="text-base font-bold text-white m-0 tracking-tight">Dispute case · SAP S/4HANA model</h2>
                   <span className="rounded-full bg-teal-400/20 px-2 py-0.5 text-[0.65rem] font-bold text-teal-200 border border-teal-300/30">
                     Simulated · ServiceNow Table API format
                   </span>
@@ -219,7 +224,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
               </div>
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-teal-800/60">
                 <span className="text-[0.68rem] text-teal-200/70">
-                  A connected service would dispatch <code>change_request</code> &amp; upload documents via <code>sys_attachment</code>.
+                  A connected service would dispatch <code>u_dispute_case</code> &amp; upload documents via <code>sys_attachment</code>.
                 </span>
                 <Button
                   type="button"
@@ -244,9 +249,9 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
           {/* Change Classification Selector */}
           <div className="rounded-xl border border-border bg-muted/30 p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
             <div>
-              <span className="font-bold text-foreground block text-sm">Change Classification &amp; Priority</span>
+              <span className="font-bold text-foreground block text-sm">Dispute SLA tier &amp; priority</span>
               <span className="text-muted-foreground text-xs">
-                Emergency tickets require accelerated 2-day TAT; Normal changes follow 7-day standard SLA.
+                Emergency tickets require accelerated 2-day TAT; Normal disputes follow 7-day standard SLA.
               </span>
             </div>
             <div className="inline-flex rounded-lg border border-border bg-background p-1">
@@ -306,7 +311,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
           {/* The 3 Strict ITIL Governance Gates */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground m-0">
-              Mandatory ITIL Closure Gates (Zero Hollow Form)
+              Dispute closure gates · simulation only
             </h4>
 
             {/* Gate 1: Mandatory Attachment / Document Proof */}
@@ -432,7 +437,7 @@ export function ServiceNowModal({ open, onClose, caseId, w, actor, onTicketUpdat
               onClick={() => setShowPayload(p => !p)}
               className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
             >
-              <span>{showPayload ? '▼ Hide' : '▶ Inspect'} ServiceNow Table API Request (change_request &amp; sys_attachment)</span>
+              <span>{showPayload ? '▼ Hide' : '▶ Inspect'} ServiceNow Table API Request (u_dispute_case &amp; sys_attachment)</span>
             </button>
 
             {showPayload && (

@@ -340,3 +340,19 @@
   .er-receivables-demo [aria-label="Controls & proof"] [role="tablist"] { padding-bottom: 4px; }
   .er-receivables-demo .er-numbers { padding: 6px 0; }
 }
+
+.er-scorecard table { table-layout: fixed; line-height: 1.5; }
+.er-scorecard th, .er-scorecard td { overflow-wrap: anywhere; }
+.er-scorecard th:first-child { width: 20%; }
+.er-scorecard th:last-child { width: 14%; }
+.er-readiness { grid-template-columns: minmax(0,1fr) minmax(0,2fr) minmax(0,2fr); gap: 0 12px; }
+@media (max-width: 640px) {
+  .er-scorecard thead { display: none; }
+  .er-scorecard table, .er-scorecard tbody { display: block; }
+  .er-scorecard tr { display: grid; margin-bottom: 8px; border: 1px solid var(--border); border-radius: 8px; padding: 8px; }
+  .er-scorecard th, .er-scorecard td { display: block; width: auto !important; border: 0; padding: 3px 0; }
+  .er-scorecard td[data-label]::before { content: attr(data-label) ": "; font-weight: 600; }
+  .er-readiness { grid-template-columns: minmax(0,1fr); }
+  .er-readiness strong { border: 0; padding-bottom: 0; }
+  .er-readiness p { padding-top: 4px; }
+}

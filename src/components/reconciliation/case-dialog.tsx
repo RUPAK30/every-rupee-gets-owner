@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
   APPROVAL_LIMIT, HANDBACKS, PEOPLE, financeOwns, handBack, REASONS, approvalCheck, approveCase, caseStatus, invoiceBalance, money, ownersFor, personLabel,
-  resolveSmall, saveCase, sealLog, forceResealLog, inspectLogChain, verifyLogWithAnchor, tenTodayTaskLink, type SalesApproval, type LogEntry, type ChainNodeCheck, sendBack, submitForApproval, type Workspace as Data,
+  resolveSmall, saveCase, sealLog, forceResealLog, inspectLogChain, verifyLogWithAnchor, sealedDecisionLookup, tenTodayTaskLink, type SalesApproval, type LogEntry, type ChainNodeCheck, sendBack, submitForApproval, type Workspace as Data,
 } from '@/lib/reconciliation/engine';
 
 type Props = { w: Data; caseId: string | null; approvals?: SalesApproval[]; demo?: boolean; focusHistory?: boolean; onClose: () => void; change: (next: Data, message?: string) => void };
@@ -15,6 +15,9 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const change = (next: Data, msg?: string) => { void Promise.all(next.exceptions.map(async x => x.log ? { ...x, log: await sealLog(x.invoiceId, x.log) } : x)).then(exceptions => rawChange({ ...next, exceptions }, msg)); };
   const [check, setCheck] = useState<{ ok: boolean; text: string; brokenAt?: number; reason?: string; expectedAnchor?: string | undefined; actualAnchor?: string | undefined } | null>(null);
   const [chainNodes, setChainNodes] = useState<ChainNodeCheck[]>([]);
+  const anchors = useRef<Record<string, { hash: string; count: number }>>({});
+  const [approvalEvidence, setApprovalEvidence] = useState<LogEntry | null | undefined>(undefined);
+  const [adminRewrite, setAdminRewrite] = useState(false);
   const [anchorHash, setAnchorHash] = useState<string | undefined>(undefined);
   const [editingRow, setEditingRow] = useState(false);
   const [entryIndex, setEntryIndex] = useState(0);
@@ -36,7 +39,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const e = caseId ? w.exceptions.find(x => x.invoiceId === caseId) : undefined;
   useEffect(() => {
     if (!caseId) return;
-    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setChainNodes([]); setAnchorHash(undefined); setEditingRow(false); setOriginalTexts({}); setUndoLog(null);
+    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setChainNodes([]); setAnchorHash(undefined); setEditingRow(false); setOriginalTexts({}); setUndoLog(null); setApprovalEvidence(undefined); setAdminRewrite(false);
   }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!caseId || !demo) return;
@@ -62,7 +65,10 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   useEffect(() => {
     if (e?.log?.some(l => !l.hash)) { change(w); return; }
     const head = e?.log?.at(-1)?.hash;
-    if (head && !undoLog) setAnchorHash(head);
+    if (head && caseId) {
+      anchors.current[caseId] ??= { hash: head, count: e?.log?.length ?? 0 };
+      setAnchorHash(anchors.current[caseId]?.hash);
+    }
     if (caseId && e?.log?.length) {
       void inspectLogChain(caseId, e.log).then(setChainNodes);
     }
@@ -78,12 +84,12 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   if (!caseId) return null;
   const log = e?.log ?? [];
   const verify = async () => {
-    const [r, nodes] = await Promise.all([verifyLogWithAnchor(caseId, log, anchorHash), inspectLogChain(caseId, log)]);
+    const [r, nodes] = await Promise.all([verifyLogWithAnchor(caseId, log, anchorHash, anchors.current[caseId]?.count), inspectLogChain(caseId, log)]);
     setChainNodes(nodes);
     if (r.ok) {
       setCheck({ ok: true, text: `✓ All ${log.length} entries & controller anchor (${r.headHash.slice(0, 8)}…) verified intact` });
     } else if (r.reason === 'anchor_mismatch') {
-      setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, expectedAnchor: r.expectedAnchor, actualAnchor: r.actualAnchor, text: `✗ Chain rewrite detected: internal links were re-sealed, but head hash (${r.actualAnchor?.slice(0, 8)}…) does not match the pinned Controller Anchor (${r.expectedAnchor?.slice(0, 8)}…)` });
+      setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, expectedAnchor: r.expectedAnchor, actualAnchor: r.actualAnchor, text: '✗ Whole chain rewritten: no longer matches the anchor shared with the auditor. (Simulated sharing)' });
     } else if (r.reason === 'link_broken') {
       setCheck({ ok: false, brokenAt: r.brokenAt, reason: r.reason, text: `✗ Missing entry detected before Entry ${r.brokenAt + 1}: stored prevHash does not match previous entry's fingerprint` });
     } else {
@@ -97,7 +103,8 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const tamper = () => {
     const original = log[entryIndex];
     if (!demo || !original || original.text === entryText) return;
-    if (!anchorHash && log.at(-1)?.hash) setAnchorHash(log.at(-1)!.hash);
+    const head = log.at(-1)?.hash;
+    if (!anchorHash && head) setAnchorHash(head);
     setOriginalTexts(previous => ({ ...previous, [entryIndex]: previous[entryIndex] ?? original.text }));
     setUndoLog(undoLog ?? log);
     rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? {
@@ -108,7 +115,8 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const tamperDeleteMiddle = () => {
     if (!demo || log.length < 2) return;
     const delIdx = Math.min(1, log.length - 1);
-    if (!anchorHash && log.at(-1)?.hash) setAnchorHash(log.at(-1)!.hash);
+    const head = log.at(-1)?.hash;
+    if (!anchorHash && head) setAnchorHash(head);
     setUndoLog(undoLog ?? log);
     rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? {
       ...x, log: log.filter((_, k) => k !== delIdx),
@@ -119,7 +127,8 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
     const original = log[entryIndex];
     if (!demo || !original) return;
     const mutatedText = entryText !== original.text ? entryText : `${original.text} (silently altered ₹1,180 -> ₹11,800)`;
-    if (!anchorHash && log.at(-1)?.hash) setAnchorHash(log.at(-1)!.hash);
+    const head = log.at(-1)?.hash;
+    if (!anchorHash && head) setAnchorHash(head);
     setOriginalTexts(previous => ({ ...previous, [entryIndex]: previous[entryIndex] ?? original.text }));
     setUndoLog(undoLog ?? log);
     const resealed = await forceResealLog(caseId, log.map((l, k) => k === entryIndex ? { ...l, text: mutatedText } : l));
@@ -134,7 +143,8 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const liveEditEntry = (idx: number, newText: string) => {
     const original = log[idx];
     if (!demo || !original) return;
-    if (!anchorHash && log.at(-1)?.hash) setAnchorHash(log.at(-1)!.hash);
+    const head = log.at(-1)?.hash;
+    if (!anchorHash && head) setAnchorHash(head);
     setOriginalTexts(previous => ({ ...previous, [idx]: previous[idx] ?? original.text }));
     if (!undoLog) setUndoLog(log);
     rawChange({ ...w, exceptions: w.exceptions.map(x => x.invoiceId === caseId ? {
@@ -185,12 +195,14 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
             <span className="text-muted-foreground">· one record for the whole team · {log.length} blocks</span>
           </div>
           {log.length > 0 && <div className="flex flex-wrap items-center gap-2">
-            <button type="button" onClick={verify} className="rounded-lg bg-[#059669] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#047857]">Verify record</button>
+            <Button size="sm" onClick={() => void verify()}>Verify record</Button><Button size="sm" variant="outline" onClick={() => void sealedDecisionLookup(caseId, log, anchorHash, anchors.current[caseId]?.count).then(entry => setApprovalEvidence(entry ?? null))}>Check what was really approved</Button>
             {demo && <button type="button" onClick={openTamper} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted/40">Try tampering yourself</button>}
             {demo && undoLog && <button type="button" onClick={undoTamper} className="rounded-lg border border-[#059669]/40 bg-white px-3 py-1.5 text-xs font-semibold text-[#059669] hover:bg-[#ECFDF5]">↺ Restore original</button>}
           </div>}
         </div>
 
+<p className="my-2 text-xs">Daily anchor drill: yesterday’s last fingerprint <code>{anchorHash?.slice(0, 8)}</code> “shared with the statutory auditor and Vikram (finance controller) at 18:00” · simulated, not sent.</p>
+        {approvalEvidence !== undefined && <p role="status" className="my-2 text-xs">{approvalEvidence ? <>✓ Unchanged since sealed · {approvalEvidence.who} · {approvalEvidence.at} · {approvalEvidence.text}</> : "No verified sealed approval entry; do not treat triage notes or altered records as approval."}</p>}
         {log.length === 0 ? <p className="m-0 mt-2 text-xs text-muted-foreground">No actions yet.</p> :
           <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-stretch">
             {log.map((l, k) => {
@@ -237,8 +249,9 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
           <p className="m-0 mt-2 font-mono text-[.7rem] text-[#A8A29E]">
             who: {log[entryIndex]?.who} · at: {log[entryIndex]?.at} · stored fingerprint: {log[entryIndex]?.hash?.slice(0, 16)}…
           </p>
+<label className="my-2 flex items-center gap-2"><input type="checkbox" checked={adminRewrite} onChange={ev => setAdminRewrite(ev.target.checked)} />Admin with full access: also recompute every fingerprint</label>
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <button type="button" disabled={entryText === log[entryIndex]?.text} onClick={tamper} className="rounded-lg bg-[#C2410C] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#9A3412] disabled:opacity-50">Save to database</button>
+            <button type="button" disabled={entryText === log[entryIndex]?.text} onClick={() => adminRewrite ? void tamperAndResealAll() : tamper()} className="rounded-lg bg-[#C2410C] px-3.5 py-2 text-xs font-bold text-white hover:bg-[#9A3412] disabled:opacity-50">Save to database</button>
             <button type="button" onClick={() => setEditingRow(false)} className="rounded-lg border border-[#44403C] bg-transparent px-3.5 py-2 text-xs font-semibold text-white hover:bg-[#292524]">Cancel</button>
           </div>
         </section>}
@@ -282,8 +295,8 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
       <div className="rounded-xl border border-[#93C5FD] bg-[#EFF6FF]/60 p-3.5 text-xs">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-[#1E3A8A]">⚡ ServiceNow Change &amp; Dispute Gate</span>
-            <span className={`rounded px-1.5 py-0.5 text-[.68rem] font-bold ${snType === 'Emergency' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>{snType} Change (CHG-${caseId?.replace('INV-', '') ?? '101'})</span>
+            <span className="font-bold text-[#1E3A8A]">⚡ Dispute case · proof &amp; approval gate</span>
+            <span className={`rounded px-1.5 py-0.5 text-[.68rem] font-bold ${snType === 'Emergency' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>{snType} Dispute (DSP-${caseId?.replace('INV-', '') ?? '101'})</span>
           </div>
           <div className="flex items-center gap-1.5">
             <button type="button" onClick={() => setSnType(t => t === 'Normal' ? 'Emergency' : 'Normal')} className="rounded border border-[#93C5FD] bg-white px-2 py-1 text-[.72rem] font-semibold text-[#1D4ED8] hover:bg-blue-50">
@@ -332,12 +345,12 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
 
         {snExpanded && (
           <pre className="mt-2.5 overflow-x-auto rounded bg-slate-900 p-2 text-[.68rem] text-sky-400">
-            {`POST /api/now/table/change_request HTTP/1.1
+            {`POST /api/now/table/u_dispute_case HTTP/1.1
 Content-Type: application/json
 
 {
   "sys_id": "sn_${caseId?.toLowerCase()}_4812",
-  "number": "CHG-${snType === 'Emergency' ? 'EMG' : 'NRM'}-${caseId?.replace('INV-', '') ?? '101'}",
+  "number": "DSP-${snType === 'Emergency' ? 'EMG' : 'NRM'}-${caseId?.replace('INV-', '') ?? '101'}",
   "type": "${snType.toLowerCase()}",
   "short_description": "Short-payment on ${caseId} (${money(short)})",
   "start_date": "DAY-0",

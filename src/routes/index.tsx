@@ -3,7 +3,7 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { Button } from '@/components/ui/button';
 import { ShieldCheck } from 'lucide-react';
 import { DemoRequest } from '@/components/reconciliation/demo-request';
-import { PresentationHeader, IndustryHook, NumbersBand, BuilderStrip } from '@/components/reconciliation/presentation';
+import { PresentationHeader, IndustryHook, NumbersBand, BuilderStrip, BeforeAfterScorecard, DesignDecisions } from '@/components/reconciliation/presentation';
 import { sampleWorkspace } from '@/lib/reconciliation/engine';
 import capturedCSS from "../styles/site.css?raw";
 
@@ -58,9 +58,9 @@ function Index() {
       </div>
       <PresentationHeader />
       <main className="col my-0 mx-auto max-w-[1040px]">
-        <div className="er-app er-home-intro pt-4"><p className="mb-2 text-xs font-semibold text-primary">Every Rupee · Portfolio case study · sample data</p><IndustryHook /><NumbersBand w={sampleWorkspace()} /><BuilderStrip /></div>
+        <div className="er-app er-home-intro pt-4"><p className="mb-2 text-xs font-semibold text-primary">Every Rupee · Portfolio case study · sample data</p><IndustryHook /><BeforeAfterScorecard /><NumbersBand w={sampleWorkspace()} /><BuilderStrip /></div>
         <ImportedSectionADistributorPaysShort />
-        <QuickTour />
+        <QuickTour /><div className="er-app"><DesignDecisions /></div>
         <details className="er-app border-y border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">Lender desk</summary><CanonicalWorkflows /></details>
         <details className="er-app border-b border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">ServiceNow simulated workflow</summary><ServiceNowITILSection /></details>
         <ImportedSectionOpenWhatYouCare openDetails={openDetails} setOpenDetails={setOpenDetails} deadline={deadline} />
@@ -108,18 +108,18 @@ function ServiceNowITILSection() {
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <div>
             <p className="text-xs font-bold uppercase tracking-wider text-primary">Enterprise ITIL Architecture · ServiceNow Table API</p>
-            <h2 id="sn-mode" className="mt-1 text-xl font-bold sm:text-2xl text-foreground">ServiceNow Change &amp; Dispute Hub (Dual-Mode)</h2>
+            <h2 id="sn-mode" className="mt-1 text-xl font-bold sm:text-2xl text-foreground">Dispute cases &amp; finance rule changes</h2>
           </div>
           <Button asChild size="sm" className="min-h-9 text-primary-foreground! no-underline!"><a href="/demo?sn=1">▶ Open Interactive ServiceNow Hub ↗</a></Button>
         </div>
         <p className="mt-2 max-w-[70ch] text-sm leading-6 text-muted-foreground">
-          When an unapproved short-payment occurs, Every Rupee would dispatch a structured <b>change_request</b> or dispute ticket to ServiceNow (Table API: <code>change_request</code> &amp; <code>sys_attachment</code>).
+          Short payments become dispute cases, modelled on SAP S/4HANA Dispute Management: residual item, reason, cause, amount and owner. ServiceNow ITIL <code>change_request</code> is reserved for changes to finance rules; both workflows here are simulations.
         </p>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           <div className="rounded-xl border border-border bg-background p-3.5">
-            <span className="text-xs font-bold text-primary">1 · Dual Change Types</span>
-            <p className="mt-1 text-xs font-semibold text-foreground">Normal vs. Emergency Changes</p>
+            <span className="text-xs font-bold text-primary">1 · Dispute SLA tiers</span>
+            <p className="mt-1 text-xs font-semibold text-foreground">Normal vs. Emergency disputes</p>
             <p className="mt-1 text-xs text-muted-foreground">7-day standard SLA vs. 2-day compressed emergency SLA with illustrative TAT monitoring.</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3.5">
@@ -164,7 +164,7 @@ function ImportedSectionADistributorPaysShort() {
         <Button asChild className="min-h-10 text-primary-foreground! no-underline!"><a href="/demo?tour=1">▶ 60-second guided demo</a></Button>
         <Button asChild variant="outline" className="min-h-10 no-underline!"><Link to="/demo">Explore on my own</Link></Button>
         <Button asChild variant="outline" size="sm" className="h-10 rounded-md text-xs no-underline!"><Link to="/demo" search={{ history: '1' }}><ShieldCheck className="mr-1.5 size-3.5 text-primary" />SHA-256 tampering sample →</Link></Button>
-        <Button asChild variant="outline" size="sm" className="h-10 border-primary/40 bg-primary/5 text-xs font-semibold text-primary no-underline! hover:bg-primary/10"><a href="/demo?sn=1">⚡ ServiceNow Change &amp; Cases (ITIL Dual-Mode) ↗</a></Button>
+        <Button asChild variant="outline" size="sm" className="h-10 border-primary/40 bg-primary/5 text-xs font-semibold text-primary no-underline! hover:bg-primary/10"><a href="/demo?sn=1">⚡ Dispute cases &amp; rule changes ↗</a></Button>
         <Button asChild variant="ghost" size="sm" className="h-10 text-xs text-muted-foreground no-underline! hover:text-foreground"><a href="https://everyrupee-o2c.vercel.app/#proof">16 rules · 31/31 tests ↗</a></Button>
       </div>
 
