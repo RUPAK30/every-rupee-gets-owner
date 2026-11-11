@@ -14,4 +14,4 @@
 - [x] Make hash-chain history prominent and explain the actual fingerprint links and limitations; verify desktop and phone.
 - [x] Move case history to the top and add a compact homepage link opening the check directly; verify both placements.
 - [x] Add four sealed sample actions, a demo-only raw-row editor with verification colors and Undo, and move History below Close it; all 27 tests and desktop/phone interaction checks pass.
-- [ ] Final /demo presentation: header summary, steps, money, tables, tabbed Controls & proof; honest simulation labels; verify actions, phone layout and all 30 tests.
+- [x] Final /demo presentation: header summary, steps, money, tables, tabbed Controls & proof; honest simulation labels; all 30 tests and phone/desktop action checks pass, with no page overflow and the money row visible on the first screen.
