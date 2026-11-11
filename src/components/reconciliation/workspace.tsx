@@ -4,7 +4,7 @@ import { Link, useSearch } from '@tanstack/react-router';
 import { ArrowLeft, ArrowRight, Download, Upload, RotateCcw, Save, Check, Search, Trash2, Wallet, GitMerge, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tour, type TourStep } from './tour';
-import { PresentationHeader, IndustryHook, NumbersBand, BuilderStrip, DesignDecisions, BeforeAfterScorecard, AuditFraming } from './presentation';
+import { PresentationHeader, NumbersBand, DesignDecisions, AuditFraming } from './presentation';
 import { computePresentationNumbers } from '@/lib/reconciliation/presentation';
 import { RuleChangeRequest } from './rule-change';
 import { CaseDialog } from './case-dialog';
@@ -166,7 +166,6 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   return <div className={`er-app ${demo ? 'er-receivables-demo' : 'min-h-screen'} bg-background text-foreground`}>
     {demo ? <PresentationHeader onTour={() => { setTour(0); setBatchMode('starter'); setW(initial); }} onBatch={toggleBatch} benchmark={batchMode === 'benchmark'} onReset={() => setReset(true)} onExport={() => download('everyrupee-workspace.json', JSON.stringify(w, null, 2))} /> : <header className="border-b border-border bg-card px-4 py-3"><div className="mx-auto flex max-w-7xl items-center justify-between"><Link to="/">Every Rupee</Link><Button variant="outline" onClick={onSignOut}>Sign out</Button></div></header>}
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
-      {demo && <><IndustryHook /><BeforeAfterScorecard /><NumbersBand w={w} approvals={approvals} /><BuilderStrip /></>}
       {handoff && <div role="status" className={`mb-5 rounded-xl border p-4 text-sm leading-6 ${handoff.error ? 'border-destructive/40 bg-destructive/5 text-destructive' : 'border-[#FED7AA] border-l-4 border-l-[#C2410C] bg-[#FFF8F2]'}`}>
         {handoff.error ? <><b>Approval from Ten Today rejected.</b> {handoff.error}</> : (() => { const a = handoff.approval; if (!a) return null; const inv = w.invoices.find(i => i.customer === a.customer); return <><p className="m-0 text-[.7rem] font-semibold uppercase tracking-[.06em] text-[#C2410C]">Received from Ten Today · handoff contract v1</p>
           <p className="m-0 mt-1"><b>{a.id}</b>: {a.approver} approved <b>{a.capPct}% before GST</b> for {a.customer}, asked by {a.rep}, valid to {a.validTo}. It replaces any older approval for this customer.</p>
@@ -228,7 +227,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     🔒 SHA-256
   </Button>
 </div></td></tr>; })}</tbody></table></div>{!cases.length && <p className="py-10 text-center text-muted-foreground">No outstanding exceptions.</p>}</section>}
-      {demo && <DesignDecisions />}
+      {demo && <><NumbersBand w={w} approvals={approvals} /><DesignDecisions /></>}
       <section ref={proofRef} aria-label="Controls & proof" className="mt-6 min-w-0 scroll-mt-4 rounded-lg border border-border bg-card p-3 sm:p-4">
         <h2 className="mb-3 text-base font-semibold">Controls &amp; proof</h2>
         <div role="tablist" aria-label="Controls & proof" className="flex max-w-full gap-1 overflow-x-auto border-b border-border pb-2">
