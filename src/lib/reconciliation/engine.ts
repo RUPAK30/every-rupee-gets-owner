@@ -391,7 +391,6 @@ export function computeDeskImpact(w: Workspace, approvals: SalesApproval[] = sal
         autoTriagedBills++;
         blockedLeakagePaise += chk.excess;
       } else if (chk.status === 'expired' || chk.status === 'none') {
-        autoTriagedBills++;
         blockedLeakagePaise += chk.short;
       }
     }
