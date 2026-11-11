@@ -62,7 +62,7 @@ hash[i] = SHA-256( JSON.stringify({ invoiceId, at, who, text, prevHash }) )
 ### 4. Quantified Operational Outcomes (Public CPG Benchmarks + 25-Bill Batch Preset)
 In the live demo desk, switch between the **4-bill starter sample** (`₹1.91L`) and the **25-bill regional distributor batch** (`₹68.4L` across 10 distributors, calibrated to **Cello World FY24–FY25 Annual Report AR disclosures** and **APQC / The Hackett Group CPG O2C benchmarks**):
 - **Detection Latency:** `7–14 days` manual bank-to-ERP lag $\rightarrow$ **`Day 0 (< 5 ms)`** at UTR import.
-- **Manual 4-Way Check Effort:** `22 min / bill` manual lookup across UTR, ERP invoice, scheme circular, and credit-note ledger $\rightarrow$ **`< 2 min / bill`** (`21 / 25` bills auto-triaged, saving **~7.0 hours** of analyst lookup per batch).
+- **Manual 4-Way Check Effort:** `22 min / bill` manual lookup across UTR, ERP invoice, scheme circular, and credit-note ledger $\rightarrow$ **`< 2 min / bill`** (`19 / 25` bills auto-triaged, saving **~6.3 hours** of analyst lookup per batch).
 - **Dispute Resolution Cycle:** `30–45 days` CPG industry median $\rightarrow$ **`3–7 day` role-locked owner SLA**, preventing disputed tails from crossing into the >180-day Ind AS Expected Credit Loss (ECL) provision bucket.
 - **Silent Leakage Blocked:** Automatically flags expired scheme approvals (`APV-2026-035`) and over-cap deductions (`APV-2026-038`), enforcing `₹0` write-offs by rule (`BR-4`) and dual-control above `₹10,000` (`BR-5`).
 
