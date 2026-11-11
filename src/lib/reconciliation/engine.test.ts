@@ -171,8 +171,8 @@ describe('25-bill public benchmark batch & operational impact metrics', () => {
     expect(impact.totalBills).toBe(25);
     expect(impact.fullPaidBills).toBe(15);
     expect(impact.shortBills).toBe(10);
-    expect(impact.autoTriagedBills).toBe(21); // 15 full paid + 6 Ten Today rule-checked short bills
-    expect(impact.manualMinutesSaved).toBe(420); // 7.0 hours saved @ 20 min/bill delta
+    expect(impact.autoTriagedBills).toBe(19); // 15 fully paid + 4 covered/excess Ten Today short bills
+    expect(impact.manualMinutesSaved).toBe(380); // 6.3 hours saved @ 20 min/bill delta
     expect(impact.blockedLeakagePaise).toBeGreaterThan(0);
   });
 });
