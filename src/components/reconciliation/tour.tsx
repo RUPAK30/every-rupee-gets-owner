@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-export type TourStep = { target: string; title: string; text: string; cta?: string; run?: () => void };
+export type TourStep = { target: string; title: string; text: string; cta?: string; run?: () => void; outcome?: boolean };
 
 /** Spotlight tour: dims the page, highlights [data-tour=target] and scrolls it into view. */
 export function Tour({ steps, step, setStep }: { steps: TourStep[]; step: number | null; setStep: (n: number | null) => void }) {
@@ -26,6 +26,7 @@ export function Tour({ steps, step, setStep }: { steps: TourStep[]; step: number
     <div className="mt-2 h-1 rounded-full bg-secondary"><div className="h-1 rounded-full bg-primary transition-all" style={{ width: `${((step + 1) / steps.length) * 100}%` }} /></div>
     <h2 className="mt-3 text-lg font-semibold">{current.title}</h2>
     <p className="mt-1 text-sm leading-6 text-muted-foreground">{current.text}</p>
+    {current.outcome && <Button asChild className="mt-3"><a href="mailto:rupakr2g@gmail.com">Let's talk</a></Button>}
     <div className="mt-4 flex flex-wrap justify-end gap-2">
       {step > 0 && <Button variant="ghost" onClick={() => setStep(step - 1)}><ArrowLeft />Back</Button>}
       {current.run && ran.current !== step ? <Button onClick={() => { current.run?.(); ran.current = step; window.setTimeout(next, 700); }}>{current.cta} <ArrowRight /></Button>
