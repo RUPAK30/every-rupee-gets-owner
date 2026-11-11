@@ -244,7 +244,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <Button size="sm" disabled={!deskBlocks.length} onClick={() => void verifyDeskRecord()}>Verify record</Button>
-            <Button size="sm" variant="outline" disabled={openingHistory} onClick={() => void openSampleHistory()}>Open sample approval record</Button>
+            <Button size="sm" variant="outline" disabled={openingHistory || !deskBlocks.length} onClick={() => void openSampleHistory()}>Open sample approval record</Button>
             <button type="button" onClick={() => { setDeskBlockIdx(0); setDeskBlockText(deskBlocks[0]?.text ?? ''); setDeskEditing(v => !v); }} className="rounded-lg border border-border bg-white px-3.5 py-1.5 text-xs font-semibold text-foreground hover:bg-muted/40">Try tampering yourself</button>
             {deskUndo && <button type="button" onClick={() => void restoreDeskRecord()} className="rounded-lg border border-[#059669]/40 bg-white px-3 py-1.5 text-xs font-semibold text-[#059669] hover:bg-[#ECFDF5]">↺ Restore original</button>}
           </div>

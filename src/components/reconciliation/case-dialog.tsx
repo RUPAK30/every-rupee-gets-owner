@@ -63,6 +63,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
     });
   }, [caseId, demo]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
+    setApprovalEvidence(undefined);
     if (e?.log?.some(l => !l.hash)) { change(w); return; }
     const head = e?.log?.at(-1)?.hash;
     if (head && caseId) {
