@@ -480,7 +480,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             <div className="p-3.5 sm:px-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-primary">Estimated manual checks saved</p>
               <p className="mt-1 text-xl font-bold tabular-nums text-foreground">~{hrs} h saved per {sampleImpact.totalBills} bills <span className="text-sm font-semibold text-muted-foreground">({sampleImpact.autoTriagedBills}/{sampleImpact.totalBills} auto-triaged)</span></p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">Cuts 4-way lookup from <b>22 min → &lt;2 min/bill</b> across UTR, invoice &amp; scheme circular (APQC)</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">Cuts 4-way lookup from <b>22 min → &lt;2 min/bill</b> across UTR, invoice &amp; scheme circular (my assumption; to test in a pilot)</p>
             </div>
             <div className="p-3.5 sm:px-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-money-wip">Invalid / Excess Claims Caught</p>

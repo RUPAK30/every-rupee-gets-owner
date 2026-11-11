@@ -39,7 +39,7 @@ export function PresentationHeader({ onTour, onBatch, onReset, onExport, benchma
               {onReset ? <Button variant="ghost" className="justify-start" onClick={() => action(onReset)}>Reset sample</Button> : <Button variant="ghost" className="justify-start" asChild><a href="/demo">Reset sample</a></Button>}
               {onExport ? <Button variant="ghost" className="justify-start" onClick={() => action(onExport)}>Export</Button> : <Button variant="ghost" className="justify-start" asChild><a href="/demo?export=1">Export</a></Button>}
               <Button variant="ghost" className="justify-start" asChild><a href="/capabilities">Release limitations</a></Button>
-              <details className="border-t border-border pt-2"><summary className="cursor-pointer py-3 text-sm font-medium">Sources</summary><ol className="grid gap-3 pl-4 text-xs leading-5"><li><a href={industrySources[1]?.href} target="_blank" rel="noreferrer" className="underline">HighRadius · Attain/CRF 2021 survey</a></li><li><a href={auditSource} target="_blank" rel="noreferrer" className="underline">ICAI · audit-trail requirements</a></li>{onTour && <li><a href="https://www.apqc.org/resource-library" className="underline">APQC resource library · cited 20-minute saving assumption, not a measured result</a></li>}</ol></details>
+              <details className="border-t border-border pt-2"><summary className="cursor-pointer py-3 text-sm font-medium">Sources</summary><ol className="grid gap-3 pl-4 text-xs leading-5"><li><a href={industrySources[1]?.href} target="_blank" rel="noreferrer" className="underline">HighRadius · Attain/CRF 2021 survey</a></li><li><a href={auditSource} target="_blank" rel="noreferrer" className="underline">ICAI · audit-trail requirements</a></li>{onTour && <li><span>20-minute saving per bill is my assumption, to validate in a pilot</span></li>}</ol></details>
             </nav>
           </SheetContent>
         </Sheet>
@@ -79,7 +79,7 @@ export function NumbersBand({ w, approvals }: { w: Workspace; approvals?: SalesA
     { label: 'Cash identified', value: n.cashIdentifiedPaise, meaning: 'Cash you can count on, so DSO drops.', how: 'How: sum of cash paired with bills; matching alone does not change DSO.' },
     { label: 'Leakage stopped', value: n.leakageStoppedPaise, meaning: 'Margin kept.', how: 'How: unapproved, over-cap or expired gaps flagged for Sales; not recovered cash.' },
     { label: 'Silent write-offs', value: n.silentWriteOffsPaise, meaning: 'Every short rupee has an owner (BR-4, BR-5).', how: 'How: no write-off action; unassigned gaps stay open until owned.' },
-    { label: 'Team hours saved', value: n.manualMinutesSaved, meaning: '20 min saved per auto-triaged bill (APQC).', how: `How: ${n.autoTriagedBills}/${n.totalBills} bills × 20 min; estimated, not measured.`, currency: false },
+    { label: 'Team hours saved', value: n.manualMinutesSaved, meaning: '20 min saved per auto-triaged bill (my assumption, to test in a pilot).', how: `How: ${n.autoTriagedBills}/${n.totalBills} bills × 20 min; estimated, not measured.`, currency: false },
   ];
   return <section data-tour="numbers" aria-label="What this does to your numbers" className="er-numbers py-3">
     <h2 className="m-0 text-xs font-semibold uppercase">What this does to your numbers</h2><p className="mb-2 mt-1 text-[10px] text-muted-foreground">Estimated from this sample · updates as you work</p>

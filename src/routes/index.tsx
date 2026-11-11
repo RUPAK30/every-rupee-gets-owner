@@ -82,7 +82,7 @@ function HomepagePromise() {
   ];
   const source = 'https://www.highradius.com/finsider/deduction-metrics-enterprises/';
   return <section className="er-app er-home-promise" aria-label="Every Rupee at a glance">
-    <h1>Every missing rupee gets an owner on Day 0. ₹0 silent write-offs. No history rewritten later.</h1>
+    <h1>Every missing rupee gets an owner on Day 0. ₹0 silent write-offs. Any edit to history gets caught.</h1>
     <p className="er-promise-audience">For finance teams where customers pay short and the gap sits unowned.</p>
     <div className="er-promise-actions"><Button asChild><Link to="/demo">Try the live product →</Link></Button><Button variant="outline" asChild><a href="/demo?tour=1">▶ 60-sec tour</a></Button><Button variant="ghost" asChild><a href="mailto:rupakr2g@gmail.com">Let's talk</a></Button></div>
     <div className="er-promise-tiles">{tiles.map(([label, old, value, tag]) => <article key={label}><h2>{label}</h2><p className="er-old-state"><s>{old}</s><span aria-hidden="true"> →</span></p><p className="er-new-state">{value}</p><span className={tag === 'Computed' ? 'er-computed-tag' : 'er-enforced-tag'}>{tag}</span></article>)}</div>
