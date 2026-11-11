@@ -263,26 +263,62 @@
 .er-receivables-demo #sn-gateway h3 { flex-shrink: 0; }
 .er-receivables-demo #sn-gateway > div:first-child > div:first-child > div > div { flex-wrap: wrap; }
 @media (max-width: 639px) {
-  .er-receivables-demo > header > div { padding: 8px 16px; gap: 4px; }
-  .er-receivables-demo > header > div > a { font-size: 14px; }
-  .er-receivables-demo > header > div > div { gap: 2px; }
-  .er-receivables-demo > header nav { padding: 2px; }
-  .er-receivables-demo > header nav a { padding: 4px 6px; font-size: 11px; }
-  .er-receivables-demo > header a:not([aria-current]), .er-receivables-demo > header button { min-height: 24px; height: 24px; padding: 2px 6px; font-size: 11px; }
   .er-receivables-demo > main { padding-top: 8px; padding-bottom: 16px; }
-  .er-receivables-demo main > div:first-of-type { gap: 8px; }
-  .er-receivables-demo h1 { margin-top: 2px; font-size: 24px; }
-  .er-receivables-demo h1 + p { margin-top: 4px; font-size: 12px; line-height: 18px; }
-  .er-receivables-demo main > div:first-of-type > div:last-child { gap: 4px; }
-  .er-receivables-demo main > div:first-of-type > div:last-child button { padding: 4px 8px; height: 30px; font-size: 11px; }
   .er-receivables-demo [aria-label="Desk summary"] { margin-top: 6px; }
   .er-receivables-demo [aria-label="Do this next"] { margin-top: 10px; gap: 6px; }
   .er-receivables-demo [aria-label="Do this next"] li { padding: 6px 8px; gap: 3px; border-radius: 8px; }
   .er-receivables-demo [aria-label="Do this next"] li > div > span:first-child { width: 24px; height: 24px; }
   .er-receivables-demo [aria-label="Do this next"] li p { font-size: 11px; line-height: 14px; }
-  .er-receivables-demo [aria-label="Do this next"] li button { height: 28px; }
+  .er-receivables-demo [aria-label="Do this next"] li button { min-height: 44px; }
   .er-receivables-demo [data-tour="totals"] { margin-top: 12px; padding: 4px 0; }
   .er-receivables-demo [data-tour="totals"] > div { padding: 3px 8px; }
   .er-receivables-demo [data-tour="totals"] > div > p:nth-child(2) { font-size: 10px; line-height: 14px; }
   .er-receivables-demo [data-tour="totals"] > div > p:last-child { margin-top: 2px; font-size: 18px; }
+}
+
+.er-presentation-header a, .er-presentation-header button,
+.er-menu a, .er-menu button, .er-menu summary,
+.er-builder a, .er-builder button { min-height: 44px; }
+.er-presentation-header button, .er-presentation-header div > a { padding-left: 8px; padding-right: 8px; }
+.er-menu > button { width: 44px; height: 44px; display: grid; place-items: center; }
+.er-menu a { display: flex; align-items: center; }
+.er-builder a { color: var(--foreground); }
+.er-builder p > a { display: inline; }
+.er-industry .er-source { vertical-align: middle; margin-top: -16px; margin-bottom: -16px; }
+.er-home-intro h1 { font-size: 18px; line-height: 26px; }
+.er-home-intro h2, .er-home-intro h3, .er-home-intro p { letter-spacing: 0; }
+@media (max-width: 640px) {
+  .er-receivables-demo button, .er-receivables-demo input, .er-receivables-demo select,
+  .er-receivables-demo summary, .er-decisions summary { min-height: 44px; }
+  .er-receivables-demo .er-table td { padding-top: 10px; padding-bottom: 10px; }
+  .er-receivables-demo [data-tour="receipts"] > div:first-child,
+  .er-receivables-demo [data-tour="invoices"] > div:first-child { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+  .er-receivables-demo [data-tour="receipts"] > div:first-child > div,
+  .er-receivables-demo [data-tour="invoices"] > div:first-child > div { min-width: 0; }
+  .er-receivables-demo [data-tour="receipts"] > div:first-child button,
+  .er-receivables-demo [data-tour="invoices"] > div:first-child button { flex-shrink: 0; }
+  .er-receivables-demo [data-tour="receipts"] > div:first-child p,
+  .er-receivables-demo [data-tour="invoices"] > div:first-child p { font-size: 10px; line-height: 14px; }
+  .er-receivables-demo [data-tour="totals"] { margin-top: 8px; }
+  .er-receivables-demo [data-tour="receipts"], .er-receivables-demo [data-tour="invoices"] { border-radius: 0; }
+  .er-receivables-demo main > div:has(> [data-tour="receipts"]) { gap: 16px; margin-top: 16px; }
+  .er-builder { padding: 4px 0; }
+  .er-builder > div { gap: 0; }
+  .er-builder p { font-size: 10px; line-height: 14px; }
+  .er-numbers { padding: 8px 0; }
+  .er-numbers > div { gap: 8px; }
+  .er-numbers h3 { font-size: 11px; }
+  .er-numbers > div > div > p:nth-child(2) { font-size: 18px; line-height: 24px; margin: 2px 0; }
+  .er-numbers > div > div > p:nth-child(3) { font-size: 11px; line-height: 14px; }
+  .er-industry h1 { font-size: 15px; line-height: 20px; }
+  .er-industry { padding-bottom: 8px; }
+  .er-industry ul { font-size: 10px; line-height: 14px; gap: 3px; }
+}
+@media (min-width: 1024px) {
+  .er-receivables-demo > main { padding-top: 16px; padding-bottom: 16px; }
+  .er-receivables-demo [aria-label="Do this next"] { margin-top: 12px; }
+  .er-receivables-demo [data-tour="totals"] { margin-top: 12px; padding-top: 4px; padding-bottom: 4px; }
+  .er-receivables-demo [data-tour="totals"] > div { padding-top: 6px; padding-bottom: 6px; }
+  .er-receivables-demo .er-table td { padding-top: 10px; padding-bottom: 10px; }
+  .er-receivables-demo footer { margin-top: 16px; }
 }
