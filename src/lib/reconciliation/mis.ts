@@ -10,6 +10,8 @@ const zeroRule = (n: number, hasData: boolean): MisStatus => !hasData ? 'NO DATA
 /** CGST s.34(2): credit note must be declared by 30 Nov after the end of the invoice's financial year. */
 export const gstCreditNoteDeadline = (invoiceDate: string) => { const d = new Date(invoiceDate + 'T00:00:00Z'); const fyEnd = d.getUTCMonth() >= 3 ? d.getUTCFullYear() + 1 : d.getUTCFullYear(); return Date.UTC(fyEnd, 10, 30); };
 
+/** The desk's "today": the latest payment or bill date in the data, so sample data never ages against the real clock. */
+export const deskDate = (w: Workspace): Date => { const ds = [...w.receipts.map(r => r.date), ...w.invoices.map(i => i.date)].filter(Boolean) as string[]; return ds.length ? new Date(ds.sort().at(-1)! + 'T00:00:00Z') : new Date(); };
 export function computeMis(w: Workspace, history: MisHistory, asOf: Date = new Date(), approvals: SalesApproval[] = salesApprovals()): MisRow[] {
   const now = asOf.getTime();
   const short = w.invoices.filter(i => w.allocations.some(a => a.invoiceId === i.id) && invoiceBalance(w, i.id) > 0);
@@ -18,7 +20,9 @@ export function computeMis(w: Workspace, history: MisHistory, asOf: Date = new D
   const triaged = short.filter(i => { const s = approvalCheck(w, i.id, approvals).status; return s === 'covered' || s === 'excess'; }).length;
   const open = short.filter(i => (exc(i.id)?.status ?? (exc(i.id)?.resolved ? 'resolved' : 'open')) !== 'resolved');
   const age = (d: string) => (now - Date.parse(d + 'T00:00:00Z')) / DAY;
-  const pastSla = open.filter(i => age(i.date) > SLA_DAYS).length;
+  // A short-pay is discovered when the payment lands, so the SLA clock starts at the latest payment date.
+  const paidOn = (id: string) => w.allocations.filter(a => a.invoiceId === id).map(a => w.receipts.find(r => r.id === a.receiptId)?.date).filter(Boolean).sort().at(-1) ?? w.invoices.find(i => i.id === id)!.date;
+  const pastSla = open.filter(i => age(paidOn(i.id)) > SLA_DAYS).length;
   const old = open.filter(i => age(i.date) >= 30);
   const oldPaise = old.reduce((s, i) => s + invoiceBalance(w, i.id), 0);
   const resolvedHigh = short.filter(i => exc(i.id)?.resolved && invoiceBalance(w, i.id) > APPROVAL_LIMIT);

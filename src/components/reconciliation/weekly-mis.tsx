@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import type { Workspace } from '@/lib/reconciliation/engine';
-import { computeMis, misCsv, misFilename, type MisHistory, type MisStatus } from '@/lib/reconciliation/mis';
+import { computeMis, deskDate, misCsv, misFilename, type MisHistory, type MisStatus } from '@/lib/reconciliation/mis';
 
 const chip: Record<MisStatus, [string, string]> = {
   PASS: ['✓ Pass', 'bg-money-ok/10 text-money-ok'],
@@ -10,10 +10,10 @@ const chip: Record<MisStatus, [string, string]> = {
 };
 
 export function WeeklyMis({ w, history }: { w: Workspace; history: MisHistory }) {
-  const rows = computeMis(w, history);
+  const rows = computeMis(w, history, deskDate(w));
   const download = () => {
     const url = URL.createObjectURL(new Blob([misCsv(rows)], { type: 'text/csv;charset=utf-8' }));
-    const a = document.createElement('a'); a.href = url; a.download = misFilename(); document.body.appendChild(a); a.click(); a.remove();
+    const a = document.createElement('a'); a.href = url; a.download = misFilename(deskDate(w)); document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 30_000);
   };
   return <section aria-label="Weekly MIS" className="mt-6 min-w-0 rounded-lg border border-border bg-card p-3 sm:p-4">
@@ -30,6 +30,6 @@ export function WeeklyMis({ w, history }: { w: Workspace; history: MisHistory })
           <td className="hidden py-2 text-muted-foreground md:table-cell">{r.proves}</td></tr>)}</tbody>
       </table>
     </div>
-    <p className="mt-3 text-xs text-muted-foreground">Built like the weekly MIS I ran at HDFC Bank: 15+ KPIs, prep cut from 8 hours to 3. Here it takes zero prep.</p>
+    <p className="mt-3 text-xs text-muted-foreground">Built like the weekly MIS I ran at HDFC Bank: 15+ KPIs, prep cut from 8 hours to 3. Here it takes zero prep. A red row is a live problem in this sample: assign an owner under "Gaps to explain" and watch it turn green.</p>
   </section>;
 }
