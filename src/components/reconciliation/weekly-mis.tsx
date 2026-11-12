@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import type { Workspace } from '@/lib/reconciliation/engine';
+import { useCreditNotes } from './gst-notes';
 import { computeMis, deskDate, misCsv, misFilename, type MisHistory, type MisStatus } from '@/lib/reconciliation/mis';
 
 const chip: Record<MisStatus, [string, string]> = {
@@ -10,7 +11,8 @@ const chip: Record<MisStatus, [string, string]> = {
 };
 
 export function WeeklyMis({ w, history }: { w: Workspace; history: MisHistory }) {
-  const rows = computeMis(w, history, deskDate(w));
+  const { notes } = useCreditNotes(w);
+  const rows = computeMis(w, history, deskDate(w), undefined, notes.length ? notes : undefined);
   const download = () => {
     const url = URL.createObjectURL(new Blob([misCsv(rows)], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a'); a.href = url; a.download = misFilename(deskDate(w)); document.body.appendChild(a); a.click(); a.remove();
