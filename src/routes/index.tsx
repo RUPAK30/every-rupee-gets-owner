@@ -1,7 +1,10 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, type MouseEvent } from "react";
 import { Button } from '@/components/ui/button';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, UserCheck, CircleDollarSign, History, ChevronDown } from 'lucide-react';
+import { PhoneStory } from '@/components/reconciliation/phone-story';
+import { PlainWords, NotBuilt } from '@/components/reconciliation/plain-words';
+import { invoiceBalance, money } from '@/lib/reconciliation/engine';
 import { DemoRequest } from '@/components/reconciliation/demo-request';
 import { PresentationHeader, BuilderStrip, BeforeAfterScorecard, DesignDecisions } from '@/components/reconciliation/presentation';
 import { autoMatch, benchmarkWorkspace, benchmarkApprovals, computeDeskImpact } from '@/lib/reconciliation/engine';
@@ -51,19 +54,14 @@ function Index() {
   return (
     <div onClick={followAnchor}>
       <style>{capturedCSS}</style>
-      <div className="mesh h-[900px] top-0 right-0 bottom-auto left-0 overflow-hidden pointer-events-none absolute -z-1" aria-hidden="true">
-        <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[50%] h-[420px] left-[-120px] opacity-75 absolute top-[-80px] w-[520px] [filter:blur(70px)]" />
-        <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[50%] h-[420px] opacity-75 absolute right-[-140px] top-[-60px] w-[480px] [filter:blur(70px)]" />
-        <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-site-import-muted rounded-[50%] h-[360px] left-[38%] opacity-[.55] absolute top-[180px] w-[420px] [filter:blur(70px)]" />
-      </div>
       <PresentationHeader />
-      <main className="col my-0 mx-auto max-w-[1040px]">
-        <HomepagePromise />
+      <main className="col my-0 mx-auto max-w-[1200px]">
+        <HomepagePromise /><PhoneStory />
         <ImportedSectionADistributorPaysShort />
         <details id="detail-how" className="er-app border-b border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">How it works · 3 steps</summary><QuickTour /></details><div className="er-app"><DesignDecisions /></div>
         <details className="er-app border-y border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">Lender desk</summary><CanonicalWorkflows /></details>
         <details className="er-app border-b border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">ServiceNow simulated workflow</summary><ServiceNowITILSection /></details>
-        <ImportedSectionOpenWhatYouCare openDetails={openDetails} setOpenDetails={setOpenDetails} deadline={deadline} />
+        <ImportedSectionOpenWhatYouCare openDetails={openDetails} setOpenDetails={setOpenDetails} deadline={deadline} /><div className="er-app"><PlainWords /><NotBuilt /></div>
         <ImportedSection2 />
       </main>
       <ImportedFooter />
@@ -73,29 +71,40 @@ function Index() {
 }
 
 function HomepagePromise() {
-  const impact = computeDeskImpact(autoMatch(benchmarkWorkspace()), benchmarkApprovals());
+  const w = autoMatch(benchmarkWorkspace());
+  const short = w.invoices.filter(i => w.allocations.some(a => a.invoiceId === i.id) && invoiceBalance(w, i.id) > 0);
+  const exception = (id: string) => w.exceptions.find(e => e.invoiceId === id);
+  const billed = w.invoices.reduce((sum, i) => sum + i.amount, 0);
+  const unowned = short.filter(i => !exception(i.id)?.owner).reduce((sum, i) => sum + invoiceBalance(w, i.id), 0);
+  const unexplained = short.filter(i => !exception(i.id)?.reason || exception(i.id)?.reason === 'Unexplained').reduce((sum, i) => sum + invoiceBalance(w, i.id), 0);
+  const sampleDay = [...w.receipts.map(r => r.date)].sort().at(-1) ?? '';
+  const aged = short.filter(i => (Date.parse(sampleDay) - Date.parse(i.date)) / 86400000 > 15).reduce((sum, i) => sum + invoiceBalance(w, i.id), 0);
+  const totalShort = short.reduce((sum, i) => sum + invoiceBalance(w, i.id), 0);
+  const ownedPercent = totalShort ? Math.round((totalShort - unowned) / totalShort * 100) : 0;
   const tiles = [
-    ['Short payment spotted', 'days later', 'Day 0', 'Enforced'],
-    ['Bills checked by hand', `all ${impact.totalBills}`, `${impact.autoTriagedBills} of ${impact.totalBills} auto`, 'Computed'],
-    ['Silent write-offs', 'quietly absorbed', '₹0', 'Enforced'],
-    ['“Who changed this?”', 'nobody knows', '1 click', 'Enforced'],
+    { value: money(unexplained), long: 'Short-paid with no recorded reason', short: 'No reason', id: 'INV-104' },
+    { value: money(aged), long: 'Short-paid bills older than 15 days', short: '15+ days old', id: 'INV-101' },
+    { value: '₹0', long: 'Silently written off in this desk', short: 'Silent write-offs', id: 'INV-102' },
+    { value: `${ownedPercent}%`, long: 'Short-paid ₹ with an owner · Day 0 target: 100%', short: '₹ with an owner', id: 'INV-108' },
   ];
-  const source = 'https://www.highradius.com/finsider/deduction-metrics-enterprises/';
-  return <section className="er-app er-home-promise" aria-label="Every Rupee at a glance">
-    <h1>Every missing rupee gets an owner on Day 0. ₹0 silent write-offs. Any edit to history gets caught.</h1>
-    <p className="er-promise-audience">For finance teams where customers pay short and the gap sits unowned.</p>
-    <div className="er-promise-actions"><Button asChild><Link to="/demo">Try the live product →</Link></Button><Button variant="outline" asChild><a href="/demo?tour=1">▶ 60-sec tour</a></Button><Button variant="ghost" asChild><a href="mailto:rupakr2g@gmail.com">Let's talk</a></Button></div>
-    <div className="er-promise-tiles">{tiles.map(([label, old, value, tag]) => <article key={label}><h2>{label}</h2><p className="er-old-state"><s>{old}</s><span aria-hidden="true"> →</span></p><p className="er-new-state">{value}</p><span className={tag === 'Computed' ? 'er-computed-tag' : 'er-enforced-tag'}>{tag}</span></article>)}</div>
-    <p className="er-promise-seal">🔒 <b>Every case is sealed (SHA-256) and anchored daily.</b> If anyone later edits a reason, owner or amount, one click shows which entry changed. It supports the auditor’s Rule 11(g) check (demo: anchor kept in this session).</p>
-    <div className="er-promise-stats">{[
-      ['41 days', 'average to resolve a deduction', 'HighRadius', source],
-      ['87%', 'of enterprises auto-write off some short-pays', 'Attain/CRF 2021 survey', source],
-      ['FY24', 'auditors must report whether the audit trail was tampered with', 'ICAI · Rule 11(g)', 'https://cajournal.icai.org/article-details/audit-trail-requirements-responsibilities'],
-    ].map(([number, meaning, label, href]) => <article key={number}><strong>{number}</strong><p>{meaning}</p><a href={href} target="_blank" rel="noreferrer">{label} ↗</a></article>)}</div>
-    <p className="er-promise-key">Enforced = a rule with a test · Computed = from the 25-bill sample · Pilot target = what I'd prove with a real AR team. Sample data; no customer results claimed.</p>
+  return <section className="er-app er-money-hero" aria-label="Every Rupee at a glance">
+    <div className="er-hero-grid"><div><p className="er-eyebrow">EVERY RUPEE · RECEIVABLES WORKBENCH</p><h1>Customers pay less than the bill. The missing money usually belongs to nobody.</h1><p className="er-hero-sub">Every Rupee gives every missing rupee a reason, an owner and a deadline on Day 0, and keeps proof nobody can quietly change.</p><p className="er-author-line">Built by Rupak Ghanpathi, ex-HDFC Bank BA: requirements → rules → tests → a working product.</p><div className="er-hero-actions"><Button asChild><Link to="/demo">Open the desk</Link></Button><Button variant="outline" asChild><a href="#walkthrough">See one case</a></Button><Button variant="ghost" asChild><a href="mailto:rupakr2g@gmail.com">Let’s talk</a></Button></div></div>
+      <aside className="er-sample-money"><p className="text-xs font-semibold uppercase text-muted-foreground">Computed from existing sample data</p><h2>On {w.invoices.length} sample bills worth <b>{money(billed)}</b>, Every Rupee found <b className="text-money-risk">{money(unowned)} unowned</b></h2><div className="er-live-tiles">{tiles.map(t => <a key={t.id + t.short} href={`/demo?batch=25#case/${t.id}`}><strong>{t.value}</strong><span className="er-long-label">{t.long}</span><span className="er-short-label">{t.short}</span><span className="er-tile-arrow" aria-hidden="true">↗</span></a>)}</div><p className="er-explanation mt-3 text-[10px] leading-4 text-muted-foreground">Matched short-payments only; the unreferenced receipt stays held. Ageing is at {sampleDay}. Ownership is the current sample state, not timestamped proof of Day 0. ₹0 is actual write-offs, not hypothetical loss prevented.</p></aside>
+    </div>
+    <div className="er-outcome-chips">{[[UserCheck, 'Day 0 · every gap gets an owner'], [CircleDollarSign, '₹0 silent write-offs'], [History, 'Every edit shows']].map(([Icon, label]) => { const Symbol = Icon as typeof UserCheck; return <div key={String(label)}><Symbol size={20}/><b>{String(label)}</b></div>; })}</div>
+    <details className="er-curiosity"><summary><span>A customer pays ₹1,00,000 short. How long can a deduction take to resolve?</span><ChevronDown size={18}/></summary><p><b>About 41 days on average</b> · <a href="https://www.highradius.com/finsider/deduction-metrics-enterprises/" target="_blank" rel="noreferrer" className="underline">HighRadius ↗</a>. Every Rupee’s goal: an owner on Day 0. The published figure is resolution time, not time without an owner.</p></details>
+    <WorthCalculator />
     <BuilderStrip compact />
     <details className="border-b border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">Sources, numbers &amp; trust tags</summary><BeforeAfterScorecard /></details>
   </section>;
+}
+function WorthCalculator() {
+  const [v, setV] = useState([500, 2, 25, 10]);
+  const annual = (v[0] ?? 0) * 10000000 * (v[1] ?? 0) / 100;
+  const atRisk = annual * (v[2] ?? 0) / 100 * (v[3] ?? 0) / 100;
+  const crore = (rupees: number) => `₹${(rupees / 10000000).toLocaleString('en-IN', { maximumFractionDigits: 2 })} crore`;
+  const sliders = [['Revenue (₹ crore / year)', 50, 2000, 50], ['Billing short-paid (%)', 0, 20, 0.5], ['Short-paid ₹ with no reason (%)', 0, 100, 1], ['Unexplained ₹ written off (%)', 0, 100, 1]] as const;
+  return <section className="er-worth" id="worth"><p className="er-eyebrow">WHAT IT COULD BE WORTH · ESTIMATE</p><p className="er-worth-sentence">A {crore(v[0] ? v[0] * 10000000 : 0)} company with {v[1]}% of billing short-paid has <b>{crore(annual)} a year to chase</b>; <b className="text-money-risk">{money(Math.round(atRisk * 100))}</b> of it is at risk of silent write-off.</p><div className="er-worth-bar" aria-label="Annual short-paid money compared with assumed write-off risk"><div className="er-worth-safe" style={{ flexGrow: Math.max(1, annual - atRisk) }}/><div className="er-worth-risk" style={{ flexGrow: Math.max(1, atRisk) }}/></div><div className="er-worth-legend"><span>To chase · {crore(annual)}</span><span>At risk · {money(Math.round(atRisk * 100))}</span></div><div className="er-range-grid">{sliders.map(([label, min, max, step], i) => <label key={label}><span>{label}<b>{v[i]}</b></span><input aria-label={label} type="range" min={min} max={max} step={step} value={v[i]} onChange={e => setV(values => values.map((x, n) => n === i ? Number(e.target.value) : x))}/></label>)}</div><p className="er-assumptions text-[10px] text-muted-foreground">All defaults (₹500 crore, 2%, 25%, 10%) are illustrative assumptions, not published rates. <a href="https://www.highradius.com/finsider/deduction-metrics-enterprises/" className="underline" target="_blank" rel="noreferrer">HighRadius / Attain-CRF</a> reports prevalence of write-offs, not these percentages. Replace them with your own figures. Revenue × short-paid % × no-reason % × write-off %. Estimate, not a promise.</p></section>;
 }
 
 const steps = [
@@ -151,7 +160,7 @@ function ServiceNowITILSection() {
           <div className="rounded-xl border border-border bg-background p-3.5">
             <span className="text-xs font-bold text-primary">2 · Mandatory Proof Gate</span>
             <p className="mt-1 text-xs font-semibold text-foreground">Signed GRN / POD Upload</p>
-            <p className="mt-1 text-xs text-muted-foreground">Tickets physically lock until verified delivery notes or trade circulars are attached via <code>sys_attachment</code>.</p>
+            <p className="mt-1 text-xs text-muted-foreground">The simulated case can’t close until delivery proof is attached via <code>sys_attachment</code>.</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3.5">
             <span className="text-xs font-bold text-primary">3 · HoD &amp; PVT Sign-off</span>
@@ -174,7 +183,7 @@ function CanonicalWorkflows() {
         </div>
         <Button asChild size="sm" className="text-primary-foreground! no-underline!"><a href="/lender-demo?tour=1">▶ Try the lender desk · 60-second tour</a></Button>
       </div>
-      <p className="mt-1.5 max-w-[65ch] text-sm leading-6 text-muted-foreground">For lenders, the "short payment" is a loan instalment that fails. The bank sends a NACH return code; Every Rupee turns it into a reason, an owner and a next step.</p>
+      <p className="mt-1.5 max-w-[65ch] text-sm leading-6 text-muted-foreground">For lenders, the "short payment" is a loan instalment that fails. The bank sends a NACH return code (its reason the EMI bounced); Every Rupee turns it into a reason, an owner and a next step.</p>
       <div className="mt-3 overflow-hidden rounded-2xl border border-border bg-card">
         <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Bounce queue · sample</span><span>3 open · RBI Aug 2023 penal rules enforced</span></div>
         {[['Code 04', 'Not enough balance', 'Collections · call, then re-present', 'bg-money-wip/15 text-money-wip'], ['Code 61', 'Mandate cancelled', 'Ops · request a fresh mandate', 'bg-money-risk/10 text-money-risk'], ['Code 06', 'Stopped by customer', 'Relationship · talk first, may be a dispute', 'bg-money-risk/10 text-money-risk']].map(([c, m, n, k]) => <div key={c} className="grid gap-1 border-b border-border px-4 py-2.5 text-sm last:border-0 sm:grid-cols-[5.5rem_1fr_auto] sm:items-center"><span className="font-semibold">{c}</span><span>{m}</span><span className={'er-pill ' + k}>{n}</span></div>)}
@@ -266,8 +275,8 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
             <ol className="tr6 gap-[10px] list-none m-0 p-0 [counter-reset:t]">
               <li className="p-[12px]">
                 <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Signal</small>
-                <b className="text-[.86rem] leading-[1.3] mb-[4px]">Receivables +14.0% vs revenue +8.8%</b>
-                <span className="text-(--mut) text-[.76rem]">Cello World, FY25→FY26</span>
+                <b className="text-[.86rem] leading-[1.3] mb-[4px]">Revenue up 9% to ₹2,324 Cr</b>
+                <span className="text-(--mut) text-[.76rem]">Cello World FY26 · BW Retail World</span>
               </li>
               <li className="p-[12px]">
                 <small className="text-[.66rem] font-bold tracking-[.08em] mb-[4px] uppercase">Risk</small>
@@ -297,49 +306,7 @@ function ImportedSectionOpenWhatYouCare({ openDetails, setOpenDetails, deadline 
             </ol>
           </section>
         </details>
-        <details id="detail-evidence" open={openDetails['detail-evidence'] ?? false} onToggle={event => { const open = event.currentTarget.open; setOpenDetails(previous => previous['detail-evidence'] === open ? previous : { ...previous, ['detail-evidence']: open }); }} className="dp bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white overflow-hidden">
-          <summary className="items-center cursor-pointer list-none">
-            <span className="flex-1">
-              <b>A deduction can have a tax deadline: 30 November</b>
-              <em className="text-(--mut) not-italic">Receivables vs revenue, distributor margins, and the credit-note deadline in detail.</em>
-            </span>
-            <i className="bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-[#eef5ff] rounded-[50%] text-[#0a66d1] flex-none text-[1.1rem] not-italic h-[30px] place-items-center transition-transform duration-200 w-[30px]" aria-hidden="true">+</i>
-          </summary>
-          <section className="sec m-0!" id="evidence">
-            <p className="k text-[.74rem] font-bold tracking-[.12em]! mt-0 mr-0 mb-[8px] ml-0 text-left! uppercase">Why now</p>
-            <h2 className="text-[clamp(1.5rem,3vw,2.1rem)]! font-bold tracking-[-.02em] leading-[1.15] mt-0 mr-auto mb-[22px] ml-auto mb-[16px]! ml-0! max-w-[30ch]! text-left!">Why this matters now</h2>
-            <div className="g3 g2 gap-[14px]">
-              <div className="tile bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white p-[18px]">
-                <div className="text-(--gd) text-[1.5rem] font-bold tracking-[-.02em] mb-[2px]">+14% vs +8.8%</div>
-                <b className="text-[.98rem] mb-[5px]">Cello's receivables outgrew revenue</b>
-                <span className="text-(--ink2) text-[.87rem]">About ₹34 Cr above revenue pace, FY25→FY26.</span>
-                <small className="text-(--mut) text-[.74rem] mt-[8px]">Annual reports · my estimate, a reason to look, not a diagnosis</small>
-              </div>
-              <div className="tile bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white p-[18px]">
-                <div className="text-(--gd) text-[1.5rem] font-bold tracking-[-.02em] mb-[2px]">₹3.5–5</div>
-                <b className="text-[.98rem] mb-[5px]">Distributor margin per ₹100</b>
-                <span className="text-(--ink2) text-[.87rem]">Too thin to wait on slow claims, so they deduct.</span>
-                <small className="text-(--mut) text-[.74rem] mt-[8px]">AICPDF, Jun 2026</small>
-              </div>
-            </div>
-            <div className="mt-[14px]" id="expiry">
-              <div className="exp items-center bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white gap-[22px] py-[26px] px-[28px] [@media(min-width:820px)]:grid-cols-[1fr_220px]">
-                <div>
-                  <p className="k text-[.95rem] font-bold tracking-[.12em]! leading-[1.6] mt-0 mr-0 mb-[10px] ml-0 text-left! uppercase">The part nobody owns</p>
-                  <h2 className="text-[clamp(1.5rem,3vw,2.1rem)]! font-bold tracking-[-.02em] leading-[1.15] mt-0! mr-0! mb-[12px]! ml-0! max-w-[30ch]! text-left!">A deduction can have a tax deadline.</h2>
-                  <p className="text-[.95rem] leading-[1.6] mt-0 mr-0 mb-[10px] ml-0">When a brand settles a scheme claim with a <b className="text-(--ink)">GST credit note</b>, it gets back the GST already paid on the discount. That credit note must go out by <b className="text-(--ink)">30 November after the financial year ends</b> (or the annual return date, if earlier). For FY <span>2025-26</span> supplies, that's <b className="text-(--ink)">30 November <span>2026</span></b>.</p>
-                  <p className="text-[.95rem] leading-[1.6] mt-0 mr-0 mb-[10px] ml-0">Many brands settle schemes with a plain <b className="text-(--ink)">financial credit note</b> instead and keep the GST cost. From 1 Nov 2026 the GST route gets easier, so more claims will qualify. An undecided deduction quietly loses that choice after the deadline.</p>
-                  <p className="text-[.95rem] leading-[1.6] mt-0 mr-0 mb-[10px] ml-0">The brand's GST gain is the distributor's input-credit reversal. That's why the two sides negotiate which kind of credit note gets issued.</p>
-                  <small className="text-(--mut) text-[.76rem]">CGST Act s.34(2); s.15(3)(b) as amended by Finance Act 2026; CBIC Circular 251/08/2025. Summarised from public sources, Oct 2026. Not tax advice.</small>
-                </div>
-                <div className="ex2 [background:linear-gradient(160deg,#F5F5F7,#F5F5F7)] border border-solid border-[#e8e8ed] rounded-[18px] py-[22px] px-[14px] text-center">
-                  <b className="text-[#0071e3] text-[3.4rem] tracking-[-.04em] leading-none [font-variant-numeric:tabular-nums]" id="xd">{deadline === undefined ? '--' : deadline === null ? 'Passed' : deadline === 0 ? 'Today' : deadline}</b>
-                  <span className="text-(--ink2) text-[.82rem] mt-[8px]" id="xl">{deadline === undefined ? 'days to the FY 2025-26 credit-note deadline' : deadline === null ? 'Deadline passed: GST credit notes for FY 2025-26 are no longer allowed' : deadline === 0 ? 'is the last day for FY 2025-26 GST credit notes' : (deadline === 1 ? 'day' : 'days') + ' to the FY 2025-26 credit-note deadline'}</span>
-                </div>
-              </div>
-            </div>
-          </section>
-        </details>
+        <div className="er-app border-b border-border py-4 text-sm"><a href="https://tentoday.vercel.app/app.html#controls" className="underline">Post-sale discounts and GST credit notes are handled in Ten Today ↗</a></div>
         <details id="detail-calc" open={openDetails['detail-calc'] ?? false} onToggle={event => { const open = event.currentTarget.open; setOpenDetails(previous => previous['detail-calc'] === open ? previous : { ...previous, ['detail-calc']: open }); }} className="dp bg-none [background-position:0%_0%] [background-size:auto_auto] [background-repeat:repeat] [background-origin:padding-box] [background-clip:border-box] [background-attachment:scroll] bg-white overflow-hidden">
           <summary className="items-center cursor-pointer list-none">
             <span className="flex-1">
@@ -446,7 +413,7 @@ function ImportedSection2() {
 function ImportedFooter() {
   return (
     <footer className="bg-none! [background-position:0%_0%]! [background-size:auto_auto]! [background-repeat:repeat]! [background-origin:padding-box]! [background-clip:border-box]! [background-attachment:scroll]! bg-white! text-(--ink2) text-[.86rem] mt-[32px]! pt-[28px] pr-0 pb-[20px] pl-0 [border-top:1px_solid_#E2E8F0]">
-      <div className="col my-0 mx-auto max-w-[1040px]">
+      <div className="col my-0 mx-auto max-w-[1200px]">
         <div className="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-[1.3fr_1fr_1fr_1fr] sm:gap-8">
           <div className="col-span-2 sm:col-span-1">
             <a className="flex items-center gap-2 font-semibold text-foreground no-underline" href="/"><svg width="28" height="28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Every Rupee">
