@@ -1,4 +1,3 @@
-import { gstAtRisk, type CreditNote } from './gst';
 import { APPROVAL_LIMIT, approvalCheck, invoiceBalance, money, salesApprovals, type SalesApproval, type Workspace } from './engine';
 
 export type MisStatus = 'PASS' | 'FAIL' | 'TRACKED' | 'NO DATA YET';
@@ -13,7 +12,7 @@ export const gstCreditNoteDeadline = (invoiceDate: string) => { const d = new Da
 
 /** The desk's "today": the latest payment or bill date in the data, so sample data never ages against the real clock. */
 export const deskDate = (w: Workspace): Date => { const ds = [...w.receipts.map(r => r.date), ...w.invoices.map(i => i.date)].filter(Boolean) as string[]; return ds.length ? new Date(ds.sort().at(-1)! + 'T00:00:00Z') : new Date(); };
-export function computeMis(w: Workspace, history: MisHistory, asOf: Date = new Date(), approvals: SalesApproval[] = salesApprovals(), notes?: CreditNote[]): MisRow[] {
+export function computeMis(w: Workspace, history: MisHistory, asOf: Date = new Date(), approvals: SalesApproval[] = salesApprovals()): MisRow[] {
   const now = asOf.getTime();
   const short = w.invoices.filter(i => w.allocations.some(a => a.invoiceId === i.id) && invoiceBalance(w, i.id) > 0);
   const exc = (id: string) => w.exceptions.find(e => e.invoiceId === id);
@@ -29,8 +28,6 @@ export function computeMis(w: Workspace, history: MisHistory, asOf: Date = new D
   const resolvedHigh = short.filter(i => exc(i.id)?.resolved && invoiceBalance(w, i.id) > APPROVAL_LIMIT);
   const noChecker = w.exceptions.filter(e => e.resolved && invoiceBalance(w, e.invoiceId) > APPROVAL_LIMIT && (!e.approvedBy || e.approvedBy === e.submittedBy)).length;
   const selfApproved = resolvedHigh.filter(i => { const e = exc(i.id)!; return !!e.approvedBy && e.approvedBy === e.submittedBy; }).length;
-  const cn = w.exceptions.filter(e => e.reason === 'Pending credit note' && !e.resolved);
-  const cnDue = cn.filter(e => { const inv = w.invoices.find(i => i.id === e.invoiceId); return inv && (gstCreditNoteDeadline(inv.date) - now) / DAY <= 30; }).length;
   const has = short.length > 0;
   return [
     { kpi: 'Short-paid bills with an owner on Day 0', value: has ? pct(owned, short.length) : '—', target: '100%', status: !has ? 'NO DATA YET' : owned === short.length ? 'PASS' : 'FAIL', proves: 'Every missing rupee gets an owner' },
@@ -39,8 +36,7 @@ export function computeMis(w: Workspace, history: MisHistory, asOf: Date = new D
     { kpi: 'Short-pays open 30+ days', value: has ? `${old.length} · ${money(oldPaise)}` : '—', target: '0', status: zeroRule(old.length, has), proves: 'Ageing is caught before provisions' },
     { kpi: 'Write-offs without maker-checker approval', value: has ? String(noChecker) : '—', target: '0', status: zeroRule(noChecker, has), proves: 'No silent write-offs' },
     { kpi: 'Approvals above ₹10,000 where maker = checker', value: resolvedHigh.length ? String(selfApproved) : '—', target: '0', status: zeroRule(selfApproved, resolvedHigh.length > 0), proves: 'Self-approval is blocked' },
-    notes ? (() => { const r = gstAtRisk(notes, asOf.toISOString().slice(0, 10)); const any = notes.some(n => n.kind === 'gst'); return { kpi: 'GST relief at risk before the s.34(2) date (30 Nov)', value: !any ? '—' : r.count ? `${money(r.paise)} · ${r.count} note${r.count === 1 ? '' : 's'}${r.rejected ? `, ${r.rejected} rejected` : ''}` : '₹0', target: '₹0', status: (!any ? 'NO DATA YET' : r.count === 0 ? 'PASS' : r.rejected || r.overdue ? 'FAIL' : 'TRACKED') as MisStatus, proves: 'The GST cut you claim actually holds' }; })()
-      : { kpi: 'GST credit notes due within 30 days of the CGST s.34(2) deadline', value: cn.length ? String(cnDue) : '—', target: 'Tracked', status: cn.length ? 'TRACKED' : 'NO DATA YET', proves: 'Tax deadlines are visible' },
+    { kpi: 'Open items explained for weekly review', value: has ? `${open.filter(i => exc(i.id)?.notes.trim()).length} of ${open.length}` : '—', target: 'Every open item', status: !has ? 'NO DATA YET' : open.every(i => exc(i.id)?.notes.trim()) ? 'PASS' : 'FAIL', proves: 'You know why each item remains open' },
     { kpi: 'Case history intact (hash chain + daily anchor)', value: !history.sealedEntries ? '—' : history.intact ? `✓ ${history.sealedEntries} sealed entries` : '✗ altered', target: 'Intact', status: !history.sealedEntries ? 'NO DATA YET' : history.intact ? 'PASS' : 'FAIL', proves: 'Any rewrite gets caught' },
   ];
 }
