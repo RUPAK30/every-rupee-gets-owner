@@ -7,9 +7,6 @@ const DAY = 86_400_000;
 const SLA_DAYS = 3; // BR-8 review deadline
 const pct = (x: number, y: number) => `${x} of ${y} (${Math.round((x / y) * 100)}%)`;
 const zeroRule = (n: number, hasData: boolean): MisStatus => !hasData ? 'NO DATA YET' : n === 0 ? 'PASS' : 'FAIL';
-/** CGST s.34(2): credit note must be declared by 30 Nov after the end of the invoice's financial year. */
-export const gstCreditNoteDeadline = (invoiceDate: string) => { const d = new Date(invoiceDate + 'T00:00:00Z'); const fyEnd = d.getUTCMonth() >= 3 ? d.getUTCFullYear() + 1 : d.getUTCFullYear(); return Date.UTC(fyEnd, 10, 30); };
-
 /** The desk's "today": the latest payment or bill date in the data, so sample data never ages against the real clock. */
 export const deskDate = (w: Workspace): Date => { const ds = [...w.receipts.map(r => r.date), ...w.invoices.map(i => i.date)].filter(Boolean) as string[]; return ds.length ? new Date(ds.sort().at(-1)! + 'T00:00:00Z') : new Date(); };
 export function computeMis(w: Workspace, history: MisHistory, asOf: Date = new Date(), approvals: SalesApproval[] = salesApprovals()): MisRow[] {

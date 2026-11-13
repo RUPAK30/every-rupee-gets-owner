@@ -45,3 +45,8 @@ use the editor.
 - Receivables proof panels share one tab state below the tables; summary shortcuts and tour targets open that state, while per-25-bill savings use the shared benchmark engine to avoid conflicting estimates.
 - Presentation numbers use current allocations and shared approval checks, excluding unmatched invoices from flagged leakage; the homepage owns its single builder strip, the root supplies other pages, and shared drawer headers keep sample actions in their owning workspace.
 - Audit-drill anchors are session-only independent snapshots; legitimate appends verify the checkpoint prefix, while simulated rule releases never change the live approval limit or claim auditor delivery.
+- Presentation walkthroughs use isolated snapshots produced by existing engine actions; never apply illustrative approvals to the visitor's desk.
+- Weekly sign-offs are session-only SHA-256 snapshots in a separate module, pinning each case's sealed prefix; legitimate appends remain valid and separate sample actors cannot be represented as authenticated signatures.
+- Collector suggestions read prior same-customer deductions only, stay editable and require explicit confirmation through the unchanged engine.
+- Visit palettes are global semantic tokens with session navigation continuity; financial status tokens never rotate.
+- Keep legacy eight-row MIS calculation compatibility for preserved tests, but omit the replaced review row from the displayed seven-control report; GST workflow belongs to the linked Ten Today product.

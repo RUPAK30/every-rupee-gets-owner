@@ -195,7 +195,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     {active && (n === 1 ? <Button data-tour="automatch" className="mt-auto" onClick={() => action(() => { const next = autoMatch(w); const added = next.allocations.length - w.allocations.length; change(next, added ? `${added} payments paired with their bills.` : 'Everything that can be paired already is.'); if (added) setNotice(`Done: ${added} payments were paired with the bill they mention. Any bill still marked Partial was paid short. Open "Gaps to explain" to say why.`); })}><GitMerge />{cta}</Button> : <Button className="mt-auto" onClick={ev => { ev.stopPropagation(); go(); }}>{cta} <ArrowRight /></Button>)}
   </li>; })}</ol>; })()}
       <div data-tour="totals" className="mt-7 grid grid-cols-2 border-y border-border py-5 md:grid-cols-4">{[['Money received', received, 'Payments in the bank'], ['Matched', matched, 'Paired with an invoice'], ['Not yet matched', received - matched, 'Payments waiting for a bill'], ['Still owed', billed - matched, 'Billed but not paid']].map(([label, value, hint]) => <div key={String(label)} className="min-w-0 px-2 py-3 sm:px-4"><p className="text-xs font-medium">{label}</p><p className="text-[.7rem] text-muted-foreground">{hint}</p><p className="mt-2 break-words text-xl font-semibold tabular-nums">{money(Number(value))}</p></div>)}</div>
-      <WeeklyMis w={w} history={{ sealedEntries: deskBlocks.filter(b => b.hash).length + w.exceptions.reduce((n, e) => n + (e.log ?? []).filter(l => l.hash).length, 0), intact: deskCheck?.ok !== false }} />
+      <WeeklyMis w={w} approvals={approvals} history={{ sealedEntries: deskBlocks.filter(b => b.hash).length + w.exceptions.reduce((n, e) => n + (e.log ?? []).filter(l => l.hash).length, 0), intact: deskCheck?.ok !== false }} />
       <WeeklySignOff w={w} change={change} demo={demo} />
       <div className="mt-6 flex flex-wrap justify-between gap-3 border-b border-border"><div id="er-tabs" data-tour="tabs" className="grid w-full grid-cols-2 gap-1 rounded-md sm:flex sm:w-auto [&>button]:h-auto [&>button]:min-h-10 [&>button]:whitespace-normal [&>button]:text-left [&>button]:text-xs sm:[&>button]:text-sm"><Button variant={tab === 'reconcile' ? 'secondary' : 'ghost'} onClick={() => setTab('reconcile')}>Payments &amp; bills</Button><Button variant={tab === 'exceptions' ? 'secondary' : 'ghost'} onClick={() => setTab('exceptions')}>Gaps to explain <span className="er-pill bg-money-risk/10 text-money-risk">{w.invoices.filter(i => invoiceBalance(w, i.id) > 0 && !w.exceptions.find(e => e.invoiceId === i.id)?.resolved).length}</span></Button></div>{!demo && <div className="pb-3 flex flex-wrap gap-2"><Button variant="outline" onClick={() => download('everyrupee-workspace.json', JSON.stringify(w, null, 2))}><Download />Export</Button></div>}</div>
       <div className="mt-4 flex flex-wrap items-center gap-3"><label className="flex min-w-0 flex-1 items-center gap-2"><Search className="size-4 text-muted-foreground" /><input aria-label="Search invoices" className="er-input w-full max-w-sm" placeholder="Search customer or invoice" value={search} onChange={e => setSearch(e.target.value)} /></label><select aria-label="Invoice status" className="er-input" value={filter} onChange={e => setFilter(e.target.value)}><option value="all">All invoices</option><option value="outstanding">Outstanding</option><option value="paid">Paid</option></select></div>
@@ -346,7 +346,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             </Button>
             <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs font-semibold border-teal-600/30 text-teal-800 bg-teal-50/60 hover:bg-teal-100/60" onClick={() => setSnShowConfig(v => !v)}>
               <span>🔌</span>
-              <span>{snShowConfig ? 'Hide API connection' : 'API connection & login'}</span>
+              <span>{snShowConfig ? 'Hide API connection' : 'Connection preview · simulated'}</span>
             </Button>
           </div>
         </div>
@@ -383,9 +383,9 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           <div id="sn-desk-login" className="mt-4 rounded-xl border border-teal-600/30 bg-[#F0FDFA] p-3.5 text-xs text-foreground">
             <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-teal-200">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-teal-900 text-sm">ServiceNow Instance Connection &amp; API Credentials</span>
+                <span className="font-bold text-teal-900 text-sm">ServiceNow connection preview · not connected</span>
                 <span className="rounded-full bg-teal-600/15 px-2 py-0.5 text-[0.65rem] font-bold text-teal-800">
-                  {snPingStatus ? 'Simulation checked' : 'Ready to Ping'}
+                  {snPingStatus ? 'Simulation checked' : 'Preview, not connected'}
                 </span>
               </div>
               <span className="text-[0.7rem] text-muted-foreground font-mono">Disputes: illustrative u_dispute_case &amp; sys_attachment; rules: change_request</span>
@@ -436,7 +436,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
                     setSnPingStatus('Simulation checked · ServiceNow Table API format (u_dispute_case + sys_attachment); no connection made.');
                   }}
                 >
-                  Save &amp; Test Ping
+                  Check simulated format
                 </Button>
                 <Button
                   size="sm"

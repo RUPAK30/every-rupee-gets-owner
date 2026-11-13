@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import type { Workspace } from '@/lib/reconciliation/engine';
+import type { Workspace, SalesApproval } from '@/lib/reconciliation/engine';
 import { computeMis, deskDate, misCsv, misFilename, type MisHistory, type MisStatus } from '@/lib/reconciliation/mis';
 
 const chip: Record<MisStatus, [string, string]> = {
@@ -9,8 +9,8 @@ const chip: Record<MisStatus, [string, string]> = {
   'NO DATA YET': ['No data yet', 'bg-muted text-muted-foreground'],
 };
 
-export function WeeklyMis({ w, history }: { w: Workspace; history: MisHistory }) {
-  const rows = computeMis(w, history, deskDate(w), undefined).filter(r => r.kpi !== 'Open items explained for weekly review');
+export function WeeklyMis({ w, history, approvals }: { w: Workspace; history: MisHistory; approvals?: SalesApproval[] }) {
+  const rows = computeMis(w, history, deskDate(w), approvals).filter(r => r.kpi !== 'Open items explained for weekly review');
   const download = () => {
     const url = URL.createObjectURL(new Blob([misCsv(rows)], { type: 'text/csv;charset=utf-8' }));
     const a = document.createElement('a'); a.href = url; a.download = misFilename(deskDate(w)); document.body.appendChild(a); a.click(); a.remove();
