@@ -455,3 +455,5 @@ main, section, aside { min-width: 0; } .er-app button { min-height: 44px; }.er-a
 .er-app a.bg-primary, .er-hero-actions a.bg-primary { color: var(--primary-foreground) !important; }
 .er-phone-next { background: var(--glass); backdrop-filter: saturate(180%) blur(20px); }
 @media (max-width:640px) { .er-app .er-table td:nth-child(5), .er-app .er-table th:nth-child(5) { overflow-wrap: anywhere; }.er-app [data-tour="emis"] .er-table { table-layout: fixed; }.er-app [data-tour="emis"] .er-table td, .er-app [data-tour="emis"] .er-table th { white-space: normal; font-size: 10px; padding: 8px 5px; }.er-app [data-tour="emis"] .er-table td:nth-child(5), .er-app [data-tour="emis"] .er-table th:nth-child(5) { display:none; }.er-app [data-tour="emis"] .er-input { width:100%; padding:8px 4px; font-size:10px; }.er-app [data-tour="emis"] .er-pill { padding:2px 4px; font-size:9px; } }
+.er-menu[data-state="open"] { right:0; left:auto; transform: none; }
+@media (max-width:640px) { .er-menu[data-state="open"] { left:0; right:0; width:100%; max-width:none; } .er-phone { scroll-margin-top:85px; } }
