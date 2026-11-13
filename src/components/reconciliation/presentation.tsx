@@ -24,26 +24,17 @@ type HeaderProps = { onTour?: () => void; onBatch?: () => void; onReset?: () => 
 export function PresentationHeader({ onTour, onBatch, onReset, onExport, benchmark }: HeaderProps) {
   const [open, setOpen] = useState(false);
   const action = (run?: () => void) => { setOpen(false); run?.(); };
-  return <header className="er-app er-presentation-header border-b border-border bg-card">
-    <div className="mx-auto grid max-w-7xl grid-cols-[minmax(0,1fr)_auto] items-center gap-1 px-3 py-2 sm:px-8">
-      <a href="/" aria-label="Every Rupee home" className="flex min-w-0 items-center gap-1.5 font-semibold text-foreground no-underline"><span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">₹</span><span className="text-xs sm:text-base">Every Rupee</span></a>
-      <div className="flex shrink-0 items-center gap-1">
-        {onTour ? <Button className="text-xs" onClick={onTour}>▶ 60-second tour</Button> : <Button className="text-xs" asChild><a href="/demo?tour=1">▶ 60-second tour</a></Button>}
-        <Button variant="ghost" className="text-xs" asChild><a href="mailto:rupakr2g@gmail.com">Let's talk</a></Button>
-        <Sheet open={open} onOpenChange={setOpen}><SheetTrigger asChild><Button variant="ghost" size="icon" aria-label="Open menu" title="Menu"><Menu /></Button></SheetTrigger>
-          <SheetContent side="right" className="er-app er-menu w-full max-w-none overflow-y-auto lg:w-[360px] lg:max-w-[360px]">
-            <SheetTitle>Every Rupee</SheetTitle><SheetDescription>Desks, sample actions &amp; sources</SheetDescription>
-            <nav aria-label="Side menu" className="mt-5 grid gap-1">
-              {[['Receivables desk', '/demo'], ['Lender desk', '/lender-demo'], ['Capability status', '/capabilities'], ['Your workspace', '/workspace']].map(([label, href]) => <Button key={label} variant="ghost" className="justify-start" asChild><a href={href}>{label}</a></Button>)}
-              {onBatch ? <Button variant="ghost" className="justify-start" onClick={() => action(onBatch)}>{benchmark ? 'Back to 4-bill sample' : 'Load 25-bill batch'}</Button> : <Button variant="ghost" className="justify-start" asChild><a href="/demo?batch=25">Load 25-bill batch</a></Button>}
-              {onReset ? <Button variant="ghost" className="justify-start" onClick={() => action(onReset)}>Reset sample</Button> : <Button variant="ghost" className="justify-start" asChild><a href="/demo">Reset sample</a></Button>}
-              {onExport ? <Button variant="ghost" className="justify-start" onClick={() => action(onExport)}>Export</Button> : <Button variant="ghost" className="justify-start" asChild><a href="/demo?export=1">Export</a></Button>}
-              <Button variant="ghost" className="justify-start" asChild><a href="/capabilities">Release limitations</a></Button>
-              <details className="border-t border-border pt-2"><summary className="cursor-pointer py-3 text-sm font-medium">Sources</summary><ol className="grid gap-3 pl-4 text-xs leading-5"><li><a href={industrySources[1]?.href} target="_blank" rel="noreferrer" className="underline">HighRadius · Attain/CRF 2021 survey</a></li><li><a href={auditSource} target="_blank" rel="noreferrer" className="underline">ICAI · audit-trail requirements</a></li>{onTour && <li><span>20-minute saving per bill is my assumption, to validate in a pilot</span></li>}</ol></details>
-            </nav>
-          </SheetContent>
-        </Sheet>
-      </div>
+  const nav = [['Overview', '/'], ['Receivables desk', '/demo'], ['The lender desk', '/lender-demo'], ['Weekly sign-off', '/demo#signoff'], ['Walkthrough', '/demo?tour=1']];
+  return <header className="er-app er-presentation-header border-b border-border">
+    <div className="er-centred-header mx-auto grid max-w-7xl items-center px-3 py-2 sm:px-8">
+      <Sheet open={open} onOpenChange={setOpen}><SheetTrigger asChild><Button variant="outline" size="icon" className="er-glass justify-self-start rounded-full" aria-label="Open menu" title="Menu"><Menu /></Button></SheetTrigger>
+        <SheetContent side="right" className="er-app er-menu"><SheetTitle>Every Rupee</SheetTitle><SheetDescription>Choose your desk or review the proof.</SheetDescription><nav aria-label="Side menu" className="mt-5 flex flex-col gap-1"><h2 className="py-2 text-xs font-semibold uppercase text-muted-foreground">Every Rupee</h2>{nav.map(([label, href]) => <Button key={label} variant="ghost" className="justify-start" asChild><a href={href} onClick={() => setOpen(false)}>{label}</a></Button>)}{onTour && <Button variant="ghost" className="justify-start" onClick={() => action(onTour)}>Start this desk’s tour</Button>}
+          <h2 className="mt-4 py-2 text-xs font-semibold uppercase text-muted-foreground">More</h2>{[['Case study', '/#thinking'], ['Ten Today ↗', 'https://tentoday.vercel.app'], ['Portfolio ↗', 'https://rupak-lemon.vercel.app'], ["Let’s talk", 'mailto:rupakr2g@gmail.com'], ['Your private workspace', '/workspace'], ['Sources & limitations', '/capabilities']].map(([label, href]) => <Button key={label} variant="ghost" className="justify-start" asChild><a href={href} onClick={() => setOpen(false)}>{label}</a></Button>)}
+          <details className="mt-2 border-t border-border"><summary className="cursor-pointer py-3 text-sm font-semibold">Sample tools</summary><div className="grid gap-1"><Button variant="ghost" className="justify-start" onClick={() => action(onBatch)} asChild={!onBatch}>{onBatch ? benchmark ? 'Back to 4-bill sample' : 'Load 25-bill batch' : <a href="/demo?batch=25" onClick={() => setOpen(false)}>Load 25-bill batch</a>}</Button><Button variant="ghost" className="justify-start" onClick={() => action(onReset)} asChild={!onReset}>{onReset ? 'Reset sample' : <a href="/demo" onClick={() => setOpen(false)}>Reset sample</a>}</Button><Button variant="ghost" className="justify-start" onClick={() => action(onExport)} asChild={!onExport}>{onExport ? 'Export' : <a href="/demo?export=1" onClick={() => setOpen(false)}>Export</a>}</Button></div></details>
+        </nav></SheetContent>
+      </Sheet>
+      <a href="/" aria-label="Every Rupee home" className="er-logo flex items-center gap-1.5 font-semibold no-underline"><span className="grid size-7 place-items-center rounded-full bg-primary text-primary-foreground">₹</span><span className="text-xs sm:text-base">Every Rupee</span></a>
+      <Button className="justify-self-end rounded-full text-xs" asChild><a href="mailto:rupakr2g@gmail.com">Let’s talk</a></Button>
     </div>
   </header>;
 }
@@ -76,9 +67,9 @@ export function NumbersBand({ w, approvals }: { w: Workspace; approvals?: SalesA
   const monthlyLeakage = Math.round(Math.max(0, Number(shorts) || 0) * 100 * leakageRatio);
   const monthlyMinutes = Math.max(0, Number(bills) || 0) * triageRatio * 20;
   const tiles = [
-    { label: 'Cash identified', value: n.cashIdentifiedPaise, meaning: 'Cash you can count on, so DSO drops.', how: 'How: sum of cash paired with bills; matching alone does not change DSO.' },
-    { label: 'Leakage stopped', value: n.leakageStoppedPaise, meaning: 'Margin kept.', how: 'How: unapproved, over-cap or expired gaps flagged for Sales; not recovered cash.' },
-    { label: 'Silent write-offs', value: n.silentWriteOffsPaise, meaning: 'Every short rupee has an owner (BR-4, BR-5).', how: 'How: no write-off action; unassigned gaps stay open until owned.' },
+    { label: 'Cash identified', value: n.cashIdentifiedPaise, meaning: 'Payments paired with bills.', how: 'How: sum of cash paired with bills; matching alone does not change DSO.' },
+    { label: 'Leakage stopped', value: n.leakageStoppedPaise, meaning: 'Unapproved gaps flagged, not yet recovered.', how: 'How: unapproved, over-cap or expired gaps flagged for Sales; not recovered cash.' },
+    { label: 'Silent write-offs', value: n.silentWriteOffsPaise, meaning: 'No gap is silently absorbed (BR-4, BR-5).', how: 'How: no write-off action; unassigned gaps stay open until owned.' },
     { label: 'Team hours saved', value: n.manualMinutesSaved, meaning: '20 min saved per auto-triaged bill (my assumption, to test in a pilot).', how: `How: ${n.autoTriagedBills}/${n.totalBills} bills × 20 min; estimated, not measured.`, currency: false },
   ];
   return <section data-tour="numbers" aria-label="What this does to your numbers" className="er-numbers py-3">
@@ -113,7 +104,7 @@ export function BeforeAfterScorecard() {
 }
 
 export function AuditFraming() {
-  return <div className="my-3 text-xs leading-5"><h3 className="text-sm font-semibold">SHA-256 record: the better fit</h3><p className="my-1">Designed around the MCA audit-trail standard for receivables and credit notes, which are books of account: since FY 2023-24, accounting software must keep an edit log that can't be disabled, and the auditor reports whether it was tampered with (<a href={auditSource} className="underline" target="_blank" rel="noreferrer">Rule 3(1), Rule 11(g); 8-year retention</a>).</p><p className="my-1">Tamper-evident, not tamper-proof: uses independent digest comparison, as in <a className="underline" href="https://learn.microsoft.com/en-us/sql/relational-databases/security/ledger/ledger-overview" target="_blank" rel="noreferrer">Microsoft's SQL Ledger</a>, not its full protection model. It supports the auditor's Rule 11(g) check; it is not a compliance certificate.</p><p className="my-1 text-muted-foreground">Daily anchor and auditor delivery are simulated in this session. No statutory delivery, disabled-log enforcement or 8-year retention service is implemented.</p></div>;
+  return <div className="my-3 text-xs leading-5"><h3 className="text-sm font-semibold">SHA-256 record: the better fit</h3><p className="my-1">Designed around the MCA audit-trail standard for receivables and credit notes, which are books of account: since FY 2023-24, accounting software must keep an edit log that can't be disabled, and the auditor reports whether it was tampered with (<a href={auditSource} className="underline" target="_blank" rel="noreferrer">Rule 3(1), Rule 11(g); 8-year retention</a>).</p><p className="my-1">Tamper-evident (later edits show where): uses independent digest comparison, as in <a className="underline" href="https://learn.microsoft.com/en-us/sql/relational-databases/security/ledger/ledger-overview" target="_blank" rel="noreferrer">Microsoft's SQL Ledger</a>, not its full protection model. It supports the auditor's Rule 11(g) check; it is not a compliance certificate.</p><p className="my-1 text-muted-foreground">Daily anchor and auditor delivery are simulated in this session. No statutory delivery, disabled-log enforcement or 8-year retention service is implemented.</p></div>;
 }
 
 function ReadyFromDayOne() {

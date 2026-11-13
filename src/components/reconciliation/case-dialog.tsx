@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { collectorPrefill } from '@/lib/reconciliation/signoff';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import {
@@ -39,7 +40,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   const e = caseId ? w.exceptions.find(x => x.invoiceId === caseId) : undefined;
   useEffect(() => {
     if (!caseId) return;
-    setReason(e?.reason ?? 'Unexplained'); setOwner(e?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setChainNodes([]); setAnchorHash(undefined); setEditingRow(false); setOriginalTexts({}); setUndoLog(null); setApprovalEvidence(undefined); setAdminRewrite(false);
+    const prefill = collectorPrefill(w, caseId); setReason(prefill?.reason ?? 'Unexplained'); setOwner(prefill?.owner ?? ''); setNotes(e?.notes ?? ''); setError(''); setWhy(''); setDone(''); setCheck(null); setChainNodes([]); setAnchorHash(undefined); setEditingRow(false); setOriginalTexts({}); setUndoLog(null); setApprovalEvidence(undefined); setAdminRewrite(false);
   }, [caseId]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!caseId || !demo) return;
@@ -48,12 +49,12 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
     const invObj = w.invoices.find(i => i.id === caseId);
     const shortAmt = invoiceBalance(w, caseId);
     const r = cur?.reason ?? 'Unexplained';
-    const o = cur?.owner || (ownersFor(r)[0]?.name ?? 'Asha');
+    const o = cur?.owner ?? '';
     const n = cur?.notes || `Initial triage for ${caseId}`;
     const seedEntries: LogEntry[] = [
       { at: '2026-10-26T09:15:00.000Z', who: 'Asha', text: `Detected ${money(shortAmt)} short-payment on ${caseId} (${invObj?.customer ?? 'Distributor'}).` },
-      { at: '2026-10-26T09:18:00.000Z', who: 'Asha', text: `Classified reason as "${r}" and routed to ${personLabel(o)}.` },
-      { at: '2026-10-26T09:22:00.000Z', who: o, text: `Recorded evidence note: ${n}` },
+      { at: '2026-10-26T09:18:00.000Z', who: 'Asha', text: `Recorded current reason "${r}"; owner ${o ? personLabel(o) : "not assigned"}.` },
+      { at: '2026-10-26T09:22:00.000Z', who: o || 'Asha', text: `Recorded evidence note: ${n}` },
     ];
     void sealLog(caseId, seedEntries).then(sealed => {
       const nextExc = cur
@@ -175,7 +176,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
   return <Dialog open onOpenChange={open => { if (!open) onClose(); }}>
     <DialogContent className="er-app max-h-[92vh] sm:max-w-2xl overflow-y-auto">
       <DialogTitle>{caseId} · {inv?.customer} · {money(short)} short</DialogTitle>
-      <DialogDescription>Every short-payment gets a reason, a role-locked owner, and a SHA-256 sealed audit trail.</DialogDescription>
+      <DialogDescription>Short payment (the customer paid less): confirm the reason, choose the right owner and keep tamper-evident proof (later edits show where).</DialogDescription>
 
       <div className="rounded-xl border border-border bg-muted/40 p-3 text-xs leading-5">
         <p className="m-0 font-semibold text-foreground">How this workflow works (why Asha, Rahul, Kavita &amp; Vikram exist):</p>
@@ -278,6 +279,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
         <b>Ten Today sales-approval check skipped:</b> This gap is classified as <b>{reason}</b> (handled by <b>{personLabel(owner || (eligible[0]?.name ?? 'Asha'))}</b>), not a sales discount claim.
       </div>)}
 
+      <div className="rounded-lg border border-border bg-muted/40 p-3 text-xs"><b>Prepared from your desk · nothing approved or sent</b><p className="mt-1">{inv?.customer} · {caseId} · {money(short)} short · {collectorPrefill(w, caseId)?.ageDays} days since billing (ageing)</p><p className="mt-1 text-muted-foreground">Past deductions: {collectorPrefill(w, caseId)?.pattern}. Suggested owner: {collectorPrefill(w, caseId)?.owner || 'choose after confirming the reason'}.</p></div>
       <div className="grid gap-3">
         <p className="m-0 text-sm font-semibold">Why is the money missing, and who owns it?</p>
         <label className="grid gap-1 text-sm">Reason
@@ -289,14 +291,14 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
           </select></label>
         <label className="grid gap-1 text-sm">Evidence / decision note
           <textarea className="er-input" value={notes} disabled={locked} onChange={ev => setNotes(ev.target.value)} maxLength={2000} rows={3} placeholder="e.g. Approval APV-2026-031 attached; rep confirmed by email." /></label>
-        {!locked && <Button type="button" variant="outline" disabled={!dirty} onClick={() => run(() => saveCase(w, caseId, { reason, owner, notes }, actor), `Saved: ${caseId} owned by ${owner ? personLabel(owner) : 'nobody yet'}.`)}>Save</Button>}
+        {!locked && <Button type="button" variant="outline" disabled={!dirty} onClick={() => run(() => saveCase(w, caseId, { reason, owner, notes }, actor), `Saved: ${caseId} owned by ${owner ? personLabel(owner) : 'nobody yet'}.`)}>Confirm reason & owner</Button>}
       </div>
 
       {/* Enterprise ITIL Change & Dispute Governance (Native in Dialog) */}
       <div className="rounded-xl border border-[#93C5FD] bg-[#EFF6FF]/60 p-3.5 text-xs">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-[#1E3A8A]">⚡ Dispute case · proof &amp; approval gate</span>
+            <span className="font-bold text-[#1E3A8A]">Simulated dispute case · proof &amp; approval gate</span>
             <span className={`rounded px-1.5 py-0.5 text-[.68rem] font-bold ${snType === 'Emergency' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>{snType} Dispute (DSP-${caseId?.replace('INV-', '') ?? '101'})</span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -338,7 +340,7 @@ export function CaseDialog({ w, caseId, approvals, demo = false, focusHistory = 
             ) : (
               <div className="mt-1 flex items-center justify-between">
                 <span className="text-amber-800 font-medium">Pending test sign-off</span>
-                <button type="button" onClick={() => { setSnPvtSigned(true); setNotes(n => `${n}\nServiceNow PVT passed: ledger & GST credit balanced by ${actor}.`.trim()); }} className="rounded bg-emerald-700 px-2 py-0.5 text-[.7rem] font-semibold text-white hover:bg-emerald-800">Sign off PVT</button>
+                <button type="button" onClick={() => { setSnPvtSigned(true); setNotes(n => `${n}\nServiceNow PVT passed: ledger checked by ${actor}.`.trim()); }} className="rounded bg-emerald-700 px-2 py-0.5 text-[.7rem] font-semibold text-white hover:bg-emerald-800">Sign off PVT</button>
               </div>
             )}
           </div>
