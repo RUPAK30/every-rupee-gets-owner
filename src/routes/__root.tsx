@@ -1,3 +1,4 @@
+import { VisitPalette } from '@/components/reconciliation/palette';
 import { BuilderStrip } from '@/components/reconciliation/presentation';
 import { Toaster } from '@/components/ui/sonner';
 import { useMatches as useImportedMatches } from "@tanstack/react-router";
@@ -153,8 +154,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AccountContext.Provider value={{ signedIn }}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      {/* Required: nested routes render here. Removing <VisitPalette /><Outlet /> breaks all child routes. */}
+      <VisitPalette /><Outlet />
       {!isHomepage && <BuilderStrip />}
       </AccountContext.Provider>
     </QueryClientProvider>

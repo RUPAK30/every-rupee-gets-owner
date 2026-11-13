@@ -8,7 +8,8 @@ import { PresentationHeader, NumbersBand, DesignDecisions, AuditFraming } from '
 import { computePresentationNumbers } from '@/lib/reconciliation/presentation';
 import { RuleChangeRequest } from './rule-change';
 import { WeeklyMis } from './weekly-mis';
-import { GstNotes } from './gst-notes';
+import { WeeklySignOff } from './weekly-signoff';
+import { PlainWords, NotBuilt } from './plain-words';
 import { CaseDialog } from './case-dialog';
 import { ServiceNowModal, type ServiceNowTicket } from './servicenow-modal';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -37,6 +38,8 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
   const [reset, setReset] = useState(false);
   const [focusHistory, setFocusHistory] = useState(false);
   const [openingHistory, setOpeningHistory] = useState(false);
+  const [caseHistoryIntact, setCaseHistoryIntact] = useState(true);
+  useEffect(() => { let live = true; void Promise.all(w.exceptions.map(e => verifyLogWithAnchor(e.invoiceId, (e.log ?? []).filter(l => l.hash)))).then(results => { if (live) setCaseHistoryIntact(results.every(r => r.ok)); }); return () => { live = false; }; }, [w.exceptions]);
   const [proofTab, setProofTab] = useState<'record' | 'servicenow' | 'impact'>('record');
   const proofRef = useRef<HTMLElement>(null);
   function openProof(next: 'record' | 'servicenow' | 'impact') { setProofTab(next); setTimeout(() => proofRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80); }
@@ -112,7 +115,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     { target: 'totals', title: 'That is reconciliation', text: 'Once all payments are paired, ₹1,73,710 is matched against ₹1,91,300 billed, leaving ₹17,590 still owed. Open a case with Review to record a decision. For gaps above ₹10,000, a second person must approve.' },
     { target: 'record', title: 'Check the sealed record', text: 'Each recorded action links to the previous fingerprint. Verify the record, or try editing a stored row to see a broken link.' },
     { target: 'servicenow', title: 'Escalate a disputed gap', text: 'These sample ServiceNow tickets show the Table API format, evidence and approval gates. No ticket is sent to an external service.' },
-    { target: 'numbers', title: 'Every missing rupee has a next step', text: `${money(computePresentationNumbers(w, approvals).salesOwnedPaise)} that would have been written off is now owned by Sales, with a deadline. Silent write-offs: ₹0.`, outcome: true },
+    { target: 'numbers', title: 'Every missing rupee has a next step', text: `${money(computePresentationNumbers(w, approvals).salesOwnedPaise)} in flagged deductions is now owned by Sales, with a deadline. Silent write-offs: ₹0.`, outcome: true },
   ];
   useEffect(() => {
     const target = tour === null ? undefined : tourSteps[tour]?.target;
@@ -164,9 +167,10 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     else { setBatchMode('starter'); change(initial, 'Restored the 4-bill sample.'); }
   }
   useEffect(() => { const query = new URLSearchParams(window.location.search); if (demo && query.get('batch') === '25') { setBatchMode('benchmark'); setW(autoMatch(benchmarkWorkspace())); } if (demo && query.get('export') === '1') download('everyrupee-workspace.json', JSON.stringify(initial, null, 2)); }, [demo, initial]);
+  useEffect(() => { const follow = () => { const hash = decodeURIComponent(window.location.hash); if (hash.startsWith('#case/')) { const id = hash.slice(6); if (w.invoices.some(i => i.id === id)) { setTab('exceptions'); setCaseId(id); } } else if (hash === '#signoff') setTimeout(() => document.getElementById('signoff')?.scrollIntoView({ block: 'start' }), 150); }; follow(); window.addEventListener('hashchange', follow); return () => window.removeEventListener('hashchange', follow); }, [w.invoices]);
   const escalations = evaluated.invoices.filter(i => invoiceBalance(evaluated, i.id) > 0 && !['covered', 'paid'].includes(approvalCheck(evaluated, i.id, approvals).status)).length;
   return <div className={`er-app ${demo ? 'er-receivables-demo' : 'min-h-screen'} bg-background text-foreground`}>
-    {demo ? <PresentationHeader onTour={() => { setTour(0); setBatchMode('starter'); setW(initial); }} onBatch={toggleBatch} benchmark={batchMode === 'benchmark'} onReset={() => setReset(true)} onExport={() => download('everyrupee-workspace.json', JSON.stringify(w, null, 2))} /> : <header className="border-b border-border bg-card px-4 py-3"><div className="mx-auto flex max-w-7xl items-center justify-between"><Link to="/">Every Rupee</Link><Button variant="outline" onClick={onSignOut}>Sign out</Button></div></header>}
+    {demo ? <PresentationHeader onTour={() => { setTour(0); setBatchMode('starter'); setW(initial); }} onBatch={toggleBatch} benchmark={batchMode === 'benchmark'} onReset={() => setReset(true)} onExport={() => download('everyrupee-workspace.json', JSON.stringify(w, null, 2))} /> : <><PresentationHeader /><div className="px-4 py-2 text-right"><Button variant="outline" onClick={onSignOut}>Sign out</Button></div></>}
     <main className="mx-auto max-w-7xl px-4 py-7 sm:px-8">
       {handoff && <div role="status" className={`mb-5 rounded-xl border p-4 text-sm leading-6 ${handoff.error ? 'border-destructive/40 bg-destructive/5 text-destructive' : 'border-[#FED7AA] border-l-4 border-l-[#C2410C] bg-[#FFF8F2]'}`}>
         {handoff.error ? <><b>Approval from Ten Today rejected.</b> {handoff.error}</> : (() => { const a = handoff.approval; if (!a) return null; const inv = w.invoices.find(i => i.customer === a.customer); return <><p className="m-0 text-[.7rem] font-semibold uppercase tracking-[.06em] text-[#C2410C]">Received from Ten Today · handoff contract v1</p>
@@ -177,7 +181,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
       </div>}
       {!demo && <div className="flex items-center justify-between"><h1 className="text-2xl font-semibold">Reconciliation desk</h1><Button disabled={!dirty || saving} onClick={async () => { if (!onSave) return; setSaving(true); setError(''); try { await onSave(w); setDirty(false); toast.success('Saved. Your records are up to date.'); } catch (e) { setError(e instanceof Error ? e.message : 'Save failed.'); } finally { setSaving(false); } }}><Save />{saving ? 'Saving…' : dirty ? 'Save changes' : 'Saved'}</Button><Button variant="outline" onClick={() => setReset(true)}>Clear workspace</Button></div>}
       {demo && <div aria-label="Desk summary" className="mt-3 flex flex-wrap items-center gap-x-1 text-xs">
-        <Button variant="ghost" size="sm" className={`h-auto px-1 py-1 text-xs ${deskCheck?.ok === false ? 'text-destructive' : 'text-money-ok'}`} onClick={() => openProof('record')}>🔒 Record {deskCheck?.ok === false ? 'altered' : 'intact'} · {deskBlocks.length} blocks</Button><span>·</span>
+        <Button variant="ghost" size="sm" className={`h-auto px-1 py-1 text-xs ${deskCheck?.ok === false || !caseHistoryIntact ? 'text-destructive' : 'text-money-ok'}`} onClick={() => openProof('record')}>🔒 Record {deskCheck?.ok === false || !caseHistoryIntact ? 'altered' : 'intact'} · {deskBlocks.length} blocks</Button><span>·</span>
         <Button variant="ghost" size="sm" className="h-auto px-1 py-1 text-xs" onClick={() => openProof('servicenow')}>⚡ {escalations} escalations</Button><span>·</span>
         <Button variant="ghost" size="sm" className="h-auto px-1 py-1 text-xs" onClick={() => openProof('impact')}>~{impactHours} h saved per {sampleImpact.totalBills} bills</Button>
       </div>}
@@ -193,8 +197,8 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
     {active && (n === 1 ? <Button data-tour="automatch" className="mt-auto" onClick={() => action(() => { const next = autoMatch(w); const added = next.allocations.length - w.allocations.length; change(next, added ? `${added} payments paired with their bills.` : 'Everything that can be paired already is.'); if (added) setNotice(`Done: ${added} payments were paired with the bill they mention. Any bill still marked Partial was paid short. Open "Gaps to explain" to say why.`); })}><GitMerge />{cta}</Button> : <Button className="mt-auto" onClick={ev => { ev.stopPropagation(); go(); }}>{cta} <ArrowRight /></Button>)}
   </li>; })}</ol>; })()}
       <div data-tour="totals" className="mt-7 grid grid-cols-2 border-y border-border py-5 md:grid-cols-4">{[['Money received', received, 'Payments in the bank'], ['Matched', matched, 'Paired with an invoice'], ['Not yet matched', received - matched, 'Payments waiting for a bill'], ['Still owed', billed - matched, 'Billed but not paid']].map(([label, value, hint]) => <div key={String(label)} className="min-w-0 px-2 py-3 sm:px-4"><p className="text-xs font-medium">{label}</p><p className="text-[.7rem] text-muted-foreground">{hint}</p><p className="mt-2 break-words text-xl font-semibold tabular-nums">{money(Number(value))}</p></div>)}</div>
-      <WeeklyMis w={w} history={{ sealedEntries: deskBlocks.filter(b => b.hash).length + w.exceptions.reduce((n, e) => n + (e.log ?? []).filter(l => l.hash).length, 0), intact: deskCheck?.ok !== false }} />
-      <GstNotes w={w} />
+      <WeeklyMis w={w} approvals={approvals} history={{ sealedEntries: deskBlocks.filter(b => b.hash).length + w.exceptions.reduce((n, e) => n + (e.log ?? []).filter(l => l.hash).length, 0), intact: deskCheck?.ok !== false && caseHistoryIntact }} />
+      <WeeklySignOff w={w} change={change} demo={demo} approvals={approvals} />
       <div className="mt-6 flex flex-wrap justify-between gap-3 border-b border-border"><div id="er-tabs" data-tour="tabs" className="grid w-full grid-cols-2 gap-1 rounded-md sm:flex sm:w-auto [&>button]:h-auto [&>button]:min-h-10 [&>button]:whitespace-normal [&>button]:text-left [&>button]:text-xs sm:[&>button]:text-sm"><Button variant={tab === 'reconcile' ? 'secondary' : 'ghost'} onClick={() => setTab('reconcile')}>Payments &amp; bills</Button><Button variant={tab === 'exceptions' ? 'secondary' : 'ghost'} onClick={() => setTab('exceptions')}>Gaps to explain <span className="er-pill bg-money-risk/10 text-money-risk">{w.invoices.filter(i => invoiceBalance(w, i.id) > 0 && !w.exceptions.find(e => e.invoiceId === i.id)?.resolved).length}</span></Button></div>{!demo && <div className="pb-3 flex flex-wrap gap-2"><Button variant="outline" onClick={() => download('everyrupee-workspace.json', JSON.stringify(w, null, 2))}><Download />Export</Button></div>}</div>
       <div className="mt-4 flex flex-wrap items-center gap-3"><label className="flex min-w-0 flex-1 items-center gap-2"><Search className="size-4 text-muted-foreground" /><input aria-label="Search invoices" className="er-input w-full max-w-sm" placeholder="Search customer or invoice" value={search} onChange={e => setSearch(e.target.value)} /></label><select aria-label="Invoice status" className="er-input" value={filter} onChange={e => setFilter(e.target.value)}><option value="all">All invoices</option><option value="outstanding">Outstanding</option><option value="paid">Paid</option></select></div>
       {error && <p className="mt-4 border-l-2 border-destructive p-3 text-sm text-destructive" role="alert">{error}</p>}{notice && <p className="mt-4 border-l-2 border-accent p-3 text-sm" role="status">{notice}</p>}
@@ -344,7 +348,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             </Button>
             <Button size="sm" variant="outline" className="h-8 gap-1.5 text-xs font-semibold border-teal-600/30 text-teal-800 bg-teal-50/60 hover:bg-teal-100/60" onClick={() => setSnShowConfig(v => !v)}>
               <span>🔌</span>
-              <span>{snShowConfig ? 'Hide API connection' : 'API connection & login'}</span>
+              <span>{snShowConfig ? 'Hide API connection' : 'Connection preview · simulated'}</span>
             </Button>
           </div>
         </div>
@@ -364,7 +368,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
               <span className="font-mono">sys_attachment</span>
             </div>
             <p className="m-0 mt-1 font-semibold text-foreground">Signed GRN / POD Upload</p>
-            <p className="m-0 mt-0.5 text-muted-foreground leading-4.5">Tickets physically lock until verified delivery notes or trade circulars are attached.</p>
+            <p className="m-0 mt-0.5 text-muted-foreground leading-4.5">In this simulated dispute workflow, the case can’t close until delivery proof is attached.</p>
           </div>
           <div className="rounded-xl border border-border bg-background p-3">
             <div className="flex items-center justify-between text-[.7rem] text-muted-foreground">
@@ -381,9 +385,9 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           <div id="sn-desk-login" className="mt-4 rounded-xl border border-teal-600/30 bg-[#F0FDFA] p-3.5 text-xs text-foreground">
             <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-teal-200">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-teal-900 text-sm">ServiceNow Instance Connection &amp; API Credentials</span>
+                <span className="font-bold text-teal-900 text-sm">ServiceNow connection preview · not connected</span>
                 <span className="rounded-full bg-teal-600/15 px-2 py-0.5 text-[0.65rem] font-bold text-teal-800">
-                  {snPingStatus ? 'Simulation checked' : 'Ready to Ping'}
+                  {snPingStatus ? 'Simulation checked' : 'Preview, not connected'}
                 </span>
               </div>
               <span className="text-[0.7rem] text-muted-foreground font-mono">Disputes: illustrative u_dispute_case &amp; sys_attachment; rules: change_request</span>
@@ -434,7 +438,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
                     setSnPingStatus('Simulation checked · ServiceNow Table API format (u_dispute_case + sys_attachment); no connection made.');
                   }}
                 >
-                  Save &amp; Test Ping
+                  Check simulated format
                 </Button>
                 <Button
                   size="sm"
@@ -473,13 +477,13 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
               <span className="rounded-full bg-primary px-2.5 py-0.5 text-[.68rem] font-bold uppercase tracking-wider text-primary-foreground">Estimated impact</span>
               <span className="text-xs font-medium text-foreground">from this sample, against cited benchmarks</span>
             </div>
-            {demo && <button type="button" className="text-xs font-semibold text-primary underline" onClick={() => { if (batchMode === 'starter') { const bw = autoMatch(benchmarkWorkspace()); setBatchMode('benchmark'); setW(bw); setNotice('Loaded & auto-matched 25-bill distributor batch (₹68.4L billed).'); } else { setBatchMode('starter'); setW(initial); } }}>{batchMode === 'starter' ? 'Switch to 25-bill CPG batch (₹68.4L) →' : '← Back to 4-bill starter'}</button>}
+            {demo && <button type="button" className="text-xs font-semibold text-primary underline" onClick={() => { if (batchMode === 'starter') { const bw = autoMatch(benchmarkWorkspace()); setBatchMode('benchmark'); setW(bw); setNotice('Loaded and auto-matched the 25-bill sample.'); } else { setBatchMode('starter'); setW(initial); } }}>{batchMode === 'starter' ? 'Switch to 25-bill sample →' : '← Back to 4-bill starter'}</button>}
           </div>
           <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-x sm:divide-y-0 md:grid-cols-4">
             <div className="p-3.5 sm:px-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-primary">Short-Payment Detection</p>
               <p className="mt-1 text-xl font-bold tabular-nums text-foreground">Day 0</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">Down from <b>7–14 days</b> manual bank-to-ERP lag (The Hackett Group CPG baseline)</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">When exact references in your imported file match; no live bank connection.</p>
             </div>
             <div className="p-3.5 sm:px-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-primary">Estimated manual checks saved</p>
@@ -494,7 +498,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
             <div className="p-3.5 sm:px-4">
               <p className="text-xs font-semibold uppercase tracking-wide text-foreground">Faster Resolution &amp; Control</p>
               <p className="mt-1 text-xl font-bold tabular-nums text-foreground">3–7d SLA</p>
-              <p className="mt-1 text-xs leading-5 text-muted-foreground">{money(imp.dualControlPaise)} in gaps above ₹10,000 need two approvers (<b>BR-5</b>). Compared with <b>30–45d CPG average</b>.</p>
+              <p className="mt-1 text-xs leading-5 text-muted-foreground">{money(imp.dualControlPaise)} in gaps above ₹10,000 need two approvers (<b>BR-5</b>). Configured workflow targets, not measured customer results.</p>
             </div>
           </div>
         </section>;
@@ -502,7 +506,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           </>}
         </div>
       </section>
-      <footer className="mt-10 flex flex-wrap justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground"><span>Strict reference matching · no automatic write-offs</span><span>{demo ? 'Sample changes are not saved.' : dirty ? 'Unsaved changes' : 'Private records'}{!demo && <> · <Link to="/capabilities" className="underline">Release limitations</Link></>}</span></footer>
+      <PlainWords /><NotBuilt /><footer className="mt-10 flex flex-wrap justify-between gap-2 border-t border-border pt-4 text-xs text-muted-foreground"><span>Strict reference matching · no automatic write-offs</span><span>{demo ? 'Sample changes are not saved.' : dirty ? 'Unsaved changes' : 'Private records'}{!demo && <> · <Link to="/capabilities" className="underline">Release limitations</Link></>}</span></footer>
     </main>
     <Tour steps={tourSteps} step={tour} setStep={setTour} />
     <Dialog open={importKind !== null} onOpenChange={open => { if (!open) setImportKind(null); }}><DialogContent className="er-app max-h-[90vh] overflow-y-auto"><DialogTitle>Import {importKind}</DialogTitle><DialogDescription>CSV · amounts in rupees · dates YYYY-MM-DD · up to 1,000 records per type. Imports append; duplicate IDs are rejected.</DialogDescription><Button variant="outline" onClick={() => download(`${importKind}-template.csv`, importKind === 'invoices' ? 'id,customer,amount,date\nINV-NEW,Example Distributors,11800.00,2026-10-01' : 'id,reference,amount,date\nUTR-NEW,INV-NEW,10620.00,2026-10-15')}><Download />Download template</Button><input ref={fileRef} type="file" accept=".csv,text/csv" aria-label="Choose CSV" className="er-input" onChange={async e => { const file = e.target.files?.[0]; if (!file || !importKind) return; if (file.size > 2_000_000) { setError('CSV must be smaller than 2 MB.'); return; } try { const next = importCsv(w, importKind, await file.text()); change(next, `${next[importKind].length - w[importKind].length} ${importKind} imported.`); setImportKind(null); } catch (e) { setError(e instanceof Error ? e.message : 'Import failed.'); } }} />{error && <p role="alert" className="text-sm text-destructive">{error}</p>}</DialogContent></Dialog>

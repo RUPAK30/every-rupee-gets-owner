@@ -1,4 +1,7 @@
 # Roadmap
+- [x] One-pass upgrade: money-first homepage, engine-driven phone story, rotating tokens, centred navigation, plain-language glossary and compact phone layouts.
+- [x] Add bounded weekly sign-off and history-based collector prefill without changing the reconciliation engine; remove GST presentation in favour of Ten Today.
+- [x] Run preserved tests plus new workflow tests; 46 tests pass. Verified 360px, 390px and 1366px pages, centred logos, full-screen scrollable menu at 480px height, automatic/manual/reduced-motion playback, countersign rejection and post-sign-off rewrite warning. Weekly review is explicitly session-only; eight-row calculation compatibility retained for unchanged MIS tests, seven control rows displayed after GST removal.
 - [x] Homepage 10-second pass: compact promise/actions/tiles, sourced facts and folded details; demo starts at desk; all 37 tests pass, clean preview checks, single homepage builder strip, phone/desktop matching and no overflow verified. Daily anchoring remains explicitly a session drill, not statutory certification.
 - [x] Apply uploaded framing: first-person hook, scorecard, anchored rewrite drill, sealed approval lookup, dispute/rule-change separation and Day One evidence; 37 tests pass, phone/desktop widths and new workflows verified; auditor delivery and releases labelled simulated.
 - [x] Import the supplied EveryRupee home page.
