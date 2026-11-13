@@ -13,5 +13,6 @@ describe('weekly sign-off', () => {
     e.log = await sealLog(e.invoiceId, [...(e.log ?? []), { who: 'Asha', at: '2026-11-14', text: 'New evidence' }]); expect(await checkSignoff(signoff, workspace)).toEqual([]);
     e.log = await forceResealLog(e.invoiceId, e.log.map((l, i) => i === 0 ? { ...l, text: 'Edited' } : l)); expect(await checkSignoff(signoff, workspace)).toContain('INV-101');
   });
+  it('uses only earlier deductions from the same customer', () => { const data = w(); data.invoices.push({ id: 'INV-NEW', customer: 'Aarav Distributors', amount: 100000, date: '2026-11-13' }); const suggestion = collectorPrefill(data, 'INV-NEW'); expect(suggestion?.reason).toBe('Scheme claim · approved in Ten Today'); expect(suggestion?.owner).toBe('Asha'); expect(suggestion?.pattern).toContain('1 past deduction'); });
   it('does not guess a past pattern', () => { expect(collectorPrefill(w(), 'INV-104')?.pattern).toBe('no past pattern'); });
 });
