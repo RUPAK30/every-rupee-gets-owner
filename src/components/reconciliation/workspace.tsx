@@ -12,6 +12,7 @@ import { WeeklySignOff } from './weekly-signoff';
 import { PlainWords, NotBuilt } from './plain-words';
 import { CaseDialog } from './case-dialog';
 import { ServiceNowModal, type ServiceNowTicket } from './servicenow-modal';
+import { LiveServiceNowPayments } from './live-servicenow-payments';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { checkTenTodaySeal, readTenTodayApproval, salesApprovals, benchmarkApprovals, benchmarkWorkspace, computeDeskImpact, type SalesApproval, type LogEntry, type ChainNodeCheck, allocate, approvalCheck, autoMatch, caseStatus, emptyWorkspace, personLabel, importCsv, invoiceBalance, money, parseMoney, receiptBalance, saveCase, sealLog, forceResealLog, inspectLogChain, verifyLogWithAnchor, validateWorkspace, type Workspace as Data } from '@/lib/reconciliation/engine';
 
@@ -319,6 +320,7 @@ export function Workspace({ initial, demo = false, onSave, onSignOut }: Props) {
           </>}
           {proofTab === 'servicenow' && <>
       {/* Enterprise ServiceNow ITIL Change & Dispute Hub (Native Desk Component) */}
+      <LiveServiceNowPayments />
       <section id="sn-gateway" data-tour="servicenow" className="pt-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
