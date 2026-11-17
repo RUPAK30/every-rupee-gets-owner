@@ -54,6 +54,6 @@ export function LiveServiceNowPayments() {
           : <span className="text-xs text-muted-foreground">{o.error ?? WHY[o.why ?? ''] ?? 'ServiceNow did not answer.'}{o.detail ? ` (${o.detail})` : ''}</span>}</td>
       </tr>; })}</tbody>
     </table></div>}
-    <p className="mt-3 text-xs"><a className="text-primary underline" href="https://tentoday.vercel.app/app.html#controls" target="_blank" rel="noreferrer">See the same discounts in Ten Today ↗</a></p>
+    <p className="mt-3 text-xs"><a className="text-primary underline" href="https://tentoday.vercel.app/case.html" target="_blank" rel="noreferrer">Open the Meera File: the same case, live in ServiceNow ↗</a> · <a className="text-primary underline" href="https://tentoday.vercel.app/app.html#controls" target="_blank" rel="noreferrer">See the discounts in Ten Today ↗</a></p>
   </section>;
 }
